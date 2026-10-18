@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRoutes = void 0;
+const express_1 = require("express");
+const user_controller_1 = require("./user.controller");
+const user_validation_1 = require("./user.validation");
+const validate_middleware_1 = require("../../middlewares/validate.middleware");
+const auth_middleware_1 = require("../../middlewares/auth.middleware");
+const role_middleware_1 = require("../../middlewares/role.middleware");
+const common_types_1 = require("../../types/common.types");
+const router = (0, express_1.Router)();
+// All user management routes require ADMIN role
+router.use(auth_middleware_1.authenticate, (0, role_middleware_1.authorize)(common_types_1.UserRole.ADMIN));
+router.get('/stats', user_controller_1.UserController.getUserStats);
+router.get('/', (0, validate_middleware_1.validate)({ query: user_validation_1.listUsersQuerySchema }), user_controller_1.UserController.getUsers);
+router.post('/', (0, validate_middleware_1.validate)({ body: user_validation_1.createUserSchema }), user_controller_1.UserController.createUser);
+router.get('/:id', (0, validate_middleware_1.validateMongoId)('id'), user_controller_1.UserController.getUserById);
+router.patch('/:id', (0, validate_middleware_1.validateMongoId)('id'), (0, validate_middleware_1.validate)({ body: user_validation_1.updateUserSchema }), user_controller_1.UserController.updateUser);
+router.patch('/:id/password', (0, validate_middleware_1.validateMongoId)('id'), (0, validate_middleware_1.validate)({ body: user_validation_1.changeUserPasswordSchema }), user_controller_1.UserController.changePassword);
+router.patch('/:id/status', (0, validate_middleware_1.validateMongoId)('id'), user_controller_1.UserController.toggleStatus);
+router.delete('/:id', (0, validate_middleware_1.validateMongoId)('id'), user_controller_1.UserController.deleteUser);
+exports.userRoutes = router;

@@ -1,0 +1,91 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = require("mongoose");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const common_types_1 = require("../../types/common.types");
+const userSchema = new mongoose_1.Schema({
+    name: {
+        type: String,
+        required: [true, 'Name is required'],
+        trim: true,
+        minlength: [2, 'Name must be at least 2 characters'],
+        maxlength: [100, 'Name cannot exceed 100 characters'],
+    },
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        unique: true,
+        lowercase: true,
+        trim: true,
+        match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
+        index: true,
+    },
+    password: {
+        type: String,
+        required: [true, 'Password is required'],
+        minlength: [8, 'Password must be at least 8 characters'],
+        select: false, // Never return password by default
+    },
+    role: {
+        type: String,
+        enum: Object.values(common_types_1.UserRole),
+        default: common_types_1.UserRole.EDITOR,
+        index: true,
+    },
+    avatar: {
+        type: String,
+        trim: true,
+        default: null,
+    },
+    bio: {
+        type: String,
+        trim: true,
+        default: null,
+    },
+    socials: {
+        github: { type: String, trim: true, default: '' },
+        linkedin: { type: String, trim: true, default: '' },
+        youtube: { type: String, trim: true, default: '' },
+        facebook: { type: String, trim: true, default: '' },
+        twitter: { type: String, trim: true, default: '' },
+        tiktok: { type: String, trim: true, default: '' },
+        website: { type: String, trim: true, default: '' },
+        whatsapp: { type: String, trim: true, default: '' },
+        mostaql: { type: String, trim: true, default: '' },
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+        index: true,
+    },
+    lastLoginAt: {
+        type: Date,
+        default: null,
+    },
+}, {
+    timestamps: true,
+    toJSON: {
+        transform(_doc, ret) {
+            delete ret['password'];
+            delete ret['__v'];
+            return ret;
+        },
+    },
+});
+userSchema.pre('save', async function () {
+    if (!this.isModified('password') || !this.password) {
+        return;
+    }
+    const salt = await bcryptjs_1.default.genSalt(12);
+    this.password = await bcryptjs_1.default.hash(this.password, salt);
+});
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    if (!this.password)
+        return false;
+    return bcryptjs_1.default.compare(candidatePassword, this.password);
+};
+exports.User = (0, mongoose_1.model)('User', userSchema);
