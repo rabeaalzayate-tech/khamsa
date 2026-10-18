@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodSchema, ZodError } from 'zod';
-import mongoose from 'mongoose';
 import { ApiError, ErrorDetail } from '../utils/api-error';
 
 interface RequestValidators {
@@ -51,9 +50,11 @@ export const validate = (validators: RequestValidators) => {
 export const validateMongoId = (paramName = 'id') => {
   return (req: Request, _res: Response, next: NextFunction): void => {
     const id = req.params[paramName];
-    if (typeof id === 'string' && !mongoose.Types.ObjectId.isValid(id)) {
+    if (typeof id !== 'string' || id.trim().length === 0) {
       return next(ApiError.badRequest(`Invalid ID format for parameter '${paramName}'`));
     }
     next();
   };
 };
+
+export const validateId = validateMongoId;

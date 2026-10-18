@@ -4,21 +4,14 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
 import { env, getAllowedOrigins } from './config/env.config';
 import { connectDatabase } from './config/database.config';
+import { prisma } from './config/prisma.config';
 import { apiRoutes } from './routes';
 import { apiLimiter } from './middlewares/rate-limiter.middleware';
 import { notFoundHandler } from './middlewares/not-found.middleware';
 import { errorHandler } from './middlewares/error.middleware';
 import { ApiResponse } from './utils/api-response';
-
-// Eagerly register all Mongoose models for serverless populate relations
-import './modules/users/user.model';
-import './modules/articles/article.model';
-import './modules/videos/video.model';
-import './modules/media/media.model';
-import './modules/settings/settings.model';
 
 export const createApp = (): Application => {
   const app: Application = express();
@@ -39,7 +32,6 @@ export const createApp = (): Application => {
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin, allowedOrigins list, wildcard, or any vercel.app preview URL
         if (
           !origin ||
           allowedOrigins.includes(origin) ||
@@ -96,6 +88,7 @@ export const createApp = (): Application => {
         name: 'Khamsa CMS API',
         brand: 'خمسة برمجة بالبلدي',
         version: '1.0.0',
+        databaseEngine: 'MySQL',
         status: 'online',
         endpoints: {
           health: '/health',
@@ -110,19 +103,21 @@ export const createApp = (): Application => {
   });
 
   // Health Check Endpoint
-  app.get('/health', (_req: Request, res: Response) => {
-    const dbStatus =
-      mongoose.connection.readyState === 1
-        ? 'connected'
-        : mongoose.connection.readyState === 2
-          ? 'connecting'
-          : 'disconnected';
+  app.get('/health', async (_req: Request, res: Response) => {
+    let dbStatus = 'disconnected';
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      dbStatus = 'connected';
+    } catch {
+      dbStatus = 'disconnected';
+    }
 
     return ApiResponse.success(
       res,
       {
         environment: env.NODE_ENV,
         database: dbStatus,
+        databaseEngine: 'MySQL',
         timestamp: new Date().toISOString(),
       },
       'API is healthy',

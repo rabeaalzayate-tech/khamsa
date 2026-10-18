@@ -1,33 +1,36 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { env } from '../config/env.config';
-import { User } from '../modules/users/user.model';
+import { prisma } from '../config/prisma.config';
 import { UserRole } from '../types/common.types';
 
 async function resetAdmin() {
   try {
-    await mongoose.connect(env.MONGODB_URI);
-    console.log('Connected to DB');
+    await prisma.$connect();
+    console.log('Connected to MySQL via Prisma');
 
     const hashedPassword = await bcrypt.hash('AdminPassword123!', 12);
 
-    await User.findOneAndUpdate(
-      { email: 'admin@khamsa.dev' },
-      {
+    const user = await prisma.user.upsert({
+      where: { email: 'admin@khamsa.dev' },
+      update: {
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+        isActive: true,
+      },
+      create: {
         name: 'Khamsa Admin',
         email: 'admin@khamsa.dev',
         password: hashedPassword,
         role: UserRole.ADMIN,
         isActive: true,
       },
-      { upsert: true, new: true },
-    );
+    });
 
-    console.log('✅ Admin user reset successfully with password: AdminPassword123!');
-    await mongoose.connection.close();
+    console.log(`✅ Admin user (${user.email}) reset successfully with password: AdminPassword123!`);
+    await prisma.$disconnect();
     process.exit(0);
   } catch (err) {
     console.error('Error resetting admin:', err);
+    await prisma.$disconnect();
     process.exit(1);
   }
 }

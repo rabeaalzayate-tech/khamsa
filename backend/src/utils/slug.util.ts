@@ -1,8 +1,8 @@
 import slugify from 'slugify';
-import { Model } from 'mongoose';
+import { prisma } from '../config/prisma.config';
 
 export const generateSlug = (text: string): string => {
-  // slugify handles latin and remove special chars
+  // slugify handles latin and removes special chars
   // For Arabic, we clean special symbols while preserving arabic words
   const baseSlug = text
     .trim()
@@ -14,8 +14,7 @@ export const generateSlug = (text: string): string => {
   return baseSlug || slugify(text, { lower: true, strict: true, trim: true }) || `post-${Date.now()}`;
 };
 
-export const getUniqueSlug = async <T>(
-  model: Model<T>,
+export const getUniqueSlug = async (
   title: string,
   customSlug?: string,
   excludeId?: string,
@@ -25,12 +24,13 @@ export const getUniqueSlug = async <T>(
   let counter = 1;
 
   while (true) {
-    const query: Record<string, unknown> = { slug: uniqueSlug };
-    if (excludeId) {
-      query._id = { $ne: excludeId };
-    }
+    const existing = await prisma.article.findFirst({
+      where: {
+        slug: uniqueSlug,
+        ...(excludeId ? { id: { not: excludeId } } : {}),
+      },
+    });
 
-    const existing = await model.findOne(query).lean().exec();
     if (!existing) {
       break;
     }

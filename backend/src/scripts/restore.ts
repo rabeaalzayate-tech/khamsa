@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
-import mongoose from 'mongoose';
-import { env } from '../config/env.config';
+import { prisma } from '../config/prisma.config';
 
 interface BackupPayload {
   version: string;
@@ -20,7 +19,6 @@ async function runRestore() {
   let targetFilePath = targetArg;
 
   if (!targetFilePath) {
-    // Find most recent backup in backupsDir
     if (!fs.existsSync(backupsDir)) {
       throw new Error(`Backups directory does not exist: ${backupsDir}`);
     }
@@ -43,7 +41,7 @@ async function runRestore() {
     throw new Error(`Backup file not found at: ${targetFilePath}`);
   }
 
-  console.log(`🚀 Starting Database Restore from: ${targetFilePath}`);
+  console.log(`🚀 Starting Database Restore to MySQL from: ${targetFilePath}`);
 
   const rawBuffer = fs.readFileSync(targetFilePath);
   let jsonString = '';
@@ -57,47 +55,208 @@ async function runRestore() {
   const backup: BackupPayload = JSON.parse(jsonString);
   console.log(`📦 Backup Created At: ${backup.timestamp} (${backup.appName})`);
 
-  console.log(`📡 Connecting to Database: ${env.MONGODB_URI.replace(/:[^:@]+@/, ':****@')}`);
-  await mongoose.connect(env.MONGODB_URI);
-  const db = mongoose.connection.db;
-
-  if (!db) {
-    throw new Error('Could not get database handle.');
-  }
-
-  for (const [colName, docs] of Object.entries(backup.data)) {
-    if (!Array.isArray(docs) || docs.length === 0) {
-      console.log(`  ℹ️ Skipping empty collection: ${colName}`);
-      continue;
+  // Restore Users
+  if (Array.isArray(backup.data.users)) {
+    console.log(`  🔄 Restoring users (${backup.data.users.length} items)...`);
+    for (const u of backup.data.users as any[]) {
+      const id = String(u.id || u._id);
+      await prisma.user.upsert({
+        where: { id },
+        create: {
+          id,
+          name: u.name,
+          email: u.email,
+          password: u.password,
+          role: u.role === 'ADMIN' ? 'ADMIN' : 'EDITOR',
+          avatar: u.avatar || null,
+          bio: u.bio || null,
+          socials: u.socials || {},
+          isActive: u.isActive !== undefined ? Boolean(u.isActive) : true,
+          lastLoginAt: u.lastLoginAt ? new Date(u.lastLoginAt) : null,
+          createdAt: u.createdAt ? new Date(u.createdAt) : new Date(),
+          updatedAt: u.updatedAt ? new Date(u.updatedAt) : new Date(),
+        },
+        update: {
+          name: u.name,
+          email: u.email,
+          password: u.password,
+          role: u.role === 'ADMIN' ? 'ADMIN' : 'EDITOR',
+          avatar: u.avatar || null,
+          bio: u.bio || null,
+          socials: u.socials || {},
+          isActive: u.isActive !== undefined ? Boolean(u.isActive) : true,
+          lastLoginAt: u.lastLoginAt ? new Date(u.lastLoginAt) : null,
+        },
+      });
     }
-
-    console.log(`  🔄 Restoring ${colName} (${docs.length} items)...`);
-    const collection = db.collection(colName);
-
-    // Delete existing documents in this collection
-    await collection.deleteMany({});
-
-    // Convert string ObjectIds back to proper BSON ObjectIds
-    const convertedDocs = (docs as Record<string, unknown>[]).map(doc => {
-      const item = { ...doc };
-      if (typeof item._id === 'string' && /^[0-9a-fA-F]{24}$/.test(item._id)) {
-        item._id = new mongoose.Types.ObjectId(item._id);
-      }
-      const relationFields = ['author', 'uploadedBy', 'userId'];
-      for (const field of relationFields) {
-        if (typeof item[field] === 'string' && /^[0-9a-fA-F]{24}$/.test(item[field] as string)) {
-          item[field] = new mongoose.Types.ObjectId(item[field] as string);
-        }
-      }
-      return item;
-    });
-
-    await collection.insertMany(convertedDocs);
-    console.log(`  ✅ Restored ${colName} successfully.`);
+    console.log(`  ✅ Users restored.`);
   }
 
-  await mongoose.disconnect();
-  console.log('\n✨ Database Restore Completed Successfully!');
+  // Restore Articles
+  if (Array.isArray(backup.data.articles)) {
+    console.log(`  🔄 Restoring articles (${backup.data.articles.length} items)...`);
+    for (const a of backup.data.articles as any[]) {
+      const id = String(a.id || a._id);
+      const authorId = String(a.authorId || a.author);
+      await prisma.article.upsert({
+        where: { id },
+        create: {
+          id,
+          title: a.title,
+          slug: a.slug,
+          excerpt: a.excerpt || '',
+          content: a.content || {},
+          coverImage: a.coverImage || null,
+          category: a.category || 'عام',
+          tags: Array.isArray(a.tags) ? a.tags : [],
+          authorId,
+          status: a.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+          isFeatured: Boolean(a.isFeatured),
+          seo: a.seo || {},
+          publishedAt: a.publishedAt ? new Date(a.publishedAt) : null,
+          createdAt: a.createdAt ? new Date(a.createdAt) : new Date(),
+          updatedAt: a.updatedAt ? new Date(a.updatedAt) : new Date(),
+        },
+        update: {
+          title: a.title,
+          slug: a.slug,
+          excerpt: a.excerpt || '',
+          content: a.content || {},
+          coverImage: a.coverImage || null,
+          category: a.category || 'عام',
+          tags: Array.isArray(a.tags) ? a.tags : [],
+          status: a.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+          isFeatured: Boolean(a.isFeatured),
+          seo: a.seo || {},
+          publishedAt: a.publishedAt ? new Date(a.publishedAt) : null,
+        },
+      });
+    }
+    console.log(`  ✅ Articles restored.`);
+  }
+
+  // Restore Videos
+  if (Array.isArray(backup.data.videos)) {
+    console.log(`  🔄 Restoring videos (${backup.data.videos.length} items)...`);
+    for (const v of backup.data.videos as any[]) {
+      const id = String(v.id || v._id);
+      const authorId = String(v.authorId || v.author);
+      let platform: 'TIKTOK' | 'YOUTUBE' | 'FACEBOOK' = 'YOUTUBE';
+      const p = String(v.platform || '').toUpperCase();
+      if (p === 'TIKTOK') platform = 'TIKTOK';
+      else if (p === 'FACEBOOK') platform = 'FACEBOOK';
+
+      await prisma.video.upsert({
+        where: { id },
+        create: {
+          id,
+          title: v.title,
+          description: v.description || '',
+          platform,
+          url: v.url,
+          thumbnail: v.thumbnail || null,
+          status: v.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+          authorId,
+          publishedAt: v.publishedAt ? new Date(v.publishedAt) : null,
+          createdAt: v.createdAt ? new Date(v.createdAt) : new Date(),
+          updatedAt: v.updatedAt ? new Date(v.updatedAt) : new Date(),
+        },
+        update: {
+          title: v.title,
+          description: v.description || '',
+          platform,
+          url: v.url,
+          thumbnail: v.thumbnail || null,
+          status: v.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT',
+          publishedAt: v.publishedAt ? new Date(v.publishedAt) : null,
+        },
+      });
+    }
+    console.log(`  ✅ Videos restored.`);
+  }
+
+  // Restore Media
+  if (Array.isArray(backup.data.media)) {
+    console.log(`  🔄 Restoring media (${backup.data.media.length} items)...`);
+    for (const m of backup.data.media as any[]) {
+      const id = String(m.id || m._id);
+      const uploadedById = String(m.uploadedById || m.uploadedBy);
+      await prisma.media.upsert({
+        where: { id },
+        create: {
+          id,
+          filename: m.filename,
+          originalName: m.originalName || m.filename,
+          mimeType: m.mimeType || 'image/png',
+          size: Number(m.size) || 0,
+          url: m.url,
+          key: m.key,
+          uploadedById,
+          createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
+          updatedAt: m.updatedAt ? new Date(m.updatedAt) : new Date(),
+        },
+        update: {
+          filename: m.filename,
+          originalName: m.originalName || m.filename,
+          mimeType: m.mimeType || 'image/png',
+          size: Number(m.size) || 0,
+          url: m.url,
+          key: m.key,
+        },
+      });
+    }
+    console.log(`  ✅ Media restored.`);
+  }
+
+  // Restore Settings
+  if (Array.isArray(backup.data.settings) && backup.data.settings.length > 0) {
+    console.log(`  🔄 Restoring settings...`);
+    const s = backup.data.settings[0] as any;
+    const id = String(s.id || s._id);
+    await prisma.settings.upsert({
+      where: { id },
+      create: {
+        id,
+        siteName: s.siteName || 'خمسة برمجة بالبلدي',
+        tagline: s.tagline || 'افهمها بالبلدي.. اكتبها بالكود.',
+        siteDescription: s.siteDescription || 'منصة لتبسيط البرمجة',
+        language: s.language || 'ar',
+        direction: s.direction || 'rtl',
+        timezone: s.timezone || 'Africa/Cairo',
+        logo: s.logo || null,
+        favicon: s.favicon || null,
+        socialLinks: s.socialLinks || {},
+        contact: s.contact || {},
+        defaultSeo: s.defaultSeo || {},
+        homepage: s.homepage || {},
+        hero: s.hero || {},
+        about: s.about || {},
+        founder: s.founder || {},
+        footer: s.footer || {},
+        createdAt: s.createdAt ? new Date(s.createdAt) : new Date(),
+        updatedAt: s.updatedAt ? new Date(s.updatedAt) : new Date(),
+      },
+      update: {
+        siteName: s.siteName || 'خمسة برمجة بالبلدي',
+        tagline: s.tagline || 'افهمها بالبلدي.. اكتبها بالكود.',
+        siteDescription: s.siteDescription || 'منصة لتبسيط البرمجة',
+        logo: s.logo || null,
+        favicon: s.favicon || null,
+        socialLinks: s.socialLinks || {},
+        contact: s.contact || {},
+        defaultSeo: s.defaultSeo || {},
+        homepage: s.homepage || {},
+        hero: s.hero || {},
+        about: s.about || {},
+        founder: s.founder || {},
+        footer: s.footer || {},
+      },
+    });
+    console.log(`  ✅ Settings restored.`);
+  }
+
+  await prisma.$disconnect();
+  console.log('\n✨ Database Restore to MySQL Completed Successfully!');
 }
 
 runRestore().catch(err => {

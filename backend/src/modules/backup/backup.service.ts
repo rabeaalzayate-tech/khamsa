@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
-import mongoose from 'mongoose';
 import { PutObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { r2Client, R2_CONFIG } from '../../config/r2.config';
+import { prisma } from '../../config/prisma.config';
 
 export interface BackupMetadata {
   filename: string;
@@ -17,39 +17,46 @@ export interface BackupMetadata {
 
 export class BackupService {
   /**
-   * Generates a full database backup, compresses with GZIP, saves locally and uploads to Cloud Storage.
+   * Generates a full database backup from MySQL, compresses with GZIP, saves locally and uploads to Cloud Storage.
    */
   static async createBackup(): Promise<BackupMetadata> {
-    const db = mongoose.connection.db;
-    if (!db) {
-      throw new Error('Database is not connected.');
-    }
+    const [users, articles, videos, media, settings, featuredLinks] = await Promise.all([
+      prisma.user.findMany(),
+      prisma.article.findMany(),
+      prisma.video.findMany(),
+      prisma.media.findMany(),
+      prisma.settings.findMany(),
+      prisma.featuredLink.findMany(),
+    ]);
 
-    const collections = ['users', 'articles', 'videos', 'media', 'settings'];
-    const backupData: Record<string, unknown[]> = {};
-    const counts: Record<string, number> = {};
+    const backupData: Record<string, unknown[]> = {
+      users,
+      articles,
+      videos,
+      media,
+      settings,
+      featured_links: featuredLinks,
+    };
 
-    for (const colName of collections) {
-      try {
-        const docs = await db.collection(colName).find({}).toArray();
-        backupData[colName] = docs;
-        counts[colName] = docs.length;
-      } catch (err) {
-        console.warn(`Could not export collection ${colName}:`, err);
-        backupData[colName] = [];
-        counts[colName] = 0;
-      }
-    }
+    const counts: Record<string, number> = {
+      users: users.length,
+      articles: articles.length,
+      videos: videos.length,
+      media: media.length,
+      settings: settings.length,
+      featured_links: featuredLinks.length,
+    };
 
     const timestampIso = new Date().toISOString();
     const timestampFormatted = timestampIso.replace(/[:.]/g, '-');
     const totalRecords = Object.values(counts).reduce((acc, curr) => acc + curr, 0);
 
     const backupPayload = {
-      version: '1.0.0',
+      version: '2.0.0',
+      databaseEngine: 'MySQL',
       appName: 'khamsa_cms',
       timestamp: timestampIso,
-      database: db.databaseName || 'khamsa_cms',
+      database: 'khamsa_cms',
       counts,
       data: backupData,
     };
@@ -159,7 +166,7 @@ export class BackupService {
   }
 
   /**
-   * Starts a daily recurring backup cron in the background (every 24h).
+   * Starts a daily recurring backup scheduler.
    */
   static startDailyBackupScheduler(): void {
     const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;

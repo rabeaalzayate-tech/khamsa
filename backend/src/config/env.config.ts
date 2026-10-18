@@ -10,37 +10,38 @@ const envSchema = z.object({
   CLIENT_URL: z
     .string()
     .default('https://khamsa-web.vercel.app,http://localhost:3000,http://localhost:3001,*'),
+  DATABASE_URL: z
+    .string()
+    .default(process.env.DATABASE_URL || 'mysql://root:@localhost:3306/khamsa_cms'),
   MONGODB_URI: z
     .string()
-    .default(
-      'mongodb+srv://rshaban2016_db_user:9VbFUq5WsfYr90sw@cluster0.nalbfbq.mongodb.net/khamsa_cms?retryWrites=true&w=majority&appName=Cluster0',
-    ),
+    .optional(),
   JWT_ACCESS_SECRET: z
     .string()
     .min(32, 'JWT_ACCESS_SECRET must be at least 32 characters')
-    .default('khamsa_jwt_access_super_secret_key_production_grade_32chars!'),
+    .default(process.env.JWT_ACCESS_SECRET || 'khamsa_jwt_access_super_secret_key_production_grade_32chars!'),
   JWT_REFRESH_SECRET: z
     .string()
     .min(32, 'JWT_REFRESH_SECRET must be at least 32 characters')
-    .default('khamsa_jwt_refresh_super_secret_key_production_grade_32chars!'),
+    .default(process.env.JWT_REFRESH_SECRET || 'khamsa_jwt_refresh_super_secret_key_production_grade_32chars!'),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
-  R2_ACCOUNT_ID: z.string().default('d9db13b29e66e00f79343eab60abf918'),
-  R2_ACCESS_KEY_ID: z.string().default('169a0affacfd95ac13dc8ace7b49a377'),
+  R2_ACCOUNT_ID: z.string().default(process.env.R2_ACCOUNT_ID || ''),
+  R2_ACCESS_KEY_ID: z.string().default(process.env.R2_ACCESS_KEY_ID || ''),
   R2_SECRET_ACCESS_KEY: z
     .string()
-    .default('cf44ba4df763d4fce9cbe824b2dd32796e5027f41fb0a5ce69d337b8284d5888'),
-  R2_BUCKET_NAME: z.string().default('khamsa-cms'),
-  R2_PUBLIC_URL: z.string().default('https://pub-f9f474a915314796ac71ef9e5b4b78a0.r2.dev'),
-  ADMIN_NAME: z.string().default('ربيع شعبان'),
-  ADMIN_EMAIL: z.string().email().default('r.shaban.2016@gmail.com'),
-  ADMIN_PASSWORD: z.string().min(8).default('AdminPassword123!'),
-  SMTP_HOST: z.string().default('smtp.gmail.com'),
-  SMTP_PORT: z.coerce.number().default(465),
+    .default(process.env.R2_SECRET_ACCESS_KEY || ''),
+  R2_BUCKET_NAME: z.string().default(process.env.R2_BUCKET_NAME || 'khamsa-cms'),
+  R2_PUBLIC_URL: z.string().default(process.env.R2_PUBLIC_URL || ''),
+  ADMIN_NAME: z.string().default(process.env.ADMIN_NAME || 'ربيع شعبان'),
+  ADMIN_EMAIL: z.string().email().default(process.env.ADMIN_EMAIL || 'admin@khamsa.dev'),
+  ADMIN_PASSWORD: z.string().min(8).default(process.env.ADMIN_PASSWORD || 'AdminPassword123!'),
+  SMTP_HOST: z.string().default(process.env.SMTP_HOST || 'smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().default(Number(process.env.SMTP_PORT) || 465),
   SMTP_SECURE: z.coerce.boolean().default(true),
-  SMTP_USER: z.string().default('r.shaban.2016@gmail.com'),
-  SMTP_PASS: z.string().default('yjxohpareqigfsga'),
-  CONTACT_RECEIVER_EMAIL: z.string().email().default('r.shaban.2016@gmail.com'),
+  SMTP_USER: z.string().default(process.env.SMTP_USER || ''),
+  SMTP_PASS: z.string().default(process.env.SMTP_PASS || ''),
+  CONTACT_RECEIVER_EMAIL: z.string().email().default(process.env.CONTACT_RECEIVER_EMAIL || 'admin@khamsa.dev'),
 });
 
 const parseEnv = () => {

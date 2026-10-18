@@ -1,60 +1,77 @@
-import { Settings } from './settings.model';
-import { ISettingsDocument } from './settings.types';
+import { prisma } from '../../config/prisma.config';
 import { UpdateSettingsDto } from './settings.validation';
 
 export class SettingsService {
-  static async getSettings(): Promise<ISettingsDocument> {
-    let settings = await Settings.findOne().exec();
+  static async getSettings(): Promise<any> {
+    let settings = await prisma.settings.findFirst();
 
     if (!settings) {
-      settings = await Settings.create({});
+      settings = await prisma.settings.create({
+        data: {
+          siteName: 'خمسة برمجة بالبلدي',
+          tagline: 'افهمها بالبلدي.. اكتبها بالكود.',
+          siteDescription: 'منصة لتبسيط البرمجة وعلوم الحاسب باللغة العربية البسيطة',
+        },
+      });
     }
 
     return settings;
   }
 
-  static async updateSettings(data: UpdateSettingsDto): Promise<ISettingsDocument> {
-    let settings = await Settings.findOne().exec();
+  static async updateSettings(data: UpdateSettingsDto): Promise<any> {
+    let settings = await prisma.settings.findFirst();
 
-    if (!settings) {
-      settings = new Settings(data);
-    } else {
-      if (data.siteName !== undefined) settings.siteName = data.siteName;
-      if (data.tagline !== undefined) settings.tagline = data.tagline;
-      if (data.siteDescription !== undefined) settings.siteDescription = data.siteDescription;
-      if (data.language !== undefined) settings.language = data.language;
-      if (data.direction !== undefined) settings.direction = data.direction;
-      if (data.timezone !== undefined) settings.timezone = data.timezone;
-      if (data.logo !== undefined) settings.logo = data.logo ?? undefined;
-      if (data.favicon !== undefined) settings.favicon = data.favicon ?? undefined;
+    const updatePayload: any = {};
+    if (data.siteName !== undefined) updatePayload.siteName = data.siteName;
+    if (data.tagline !== undefined) updatePayload.tagline = data.tagline;
+    if (data.siteDescription !== undefined) updatePayload.siteDescription = data.siteDescription;
+    if (data.language !== undefined) updatePayload.language = data.language;
+    if (data.direction !== undefined) updatePayload.direction = data.direction;
+    if (data.timezone !== undefined) updatePayload.timezone = data.timezone;
+    if (data.logo !== undefined) updatePayload.logo = data.logo;
+    if (data.favicon !== undefined) updatePayload.favicon = data.favicon;
 
+    if (settings) {
       if (data.socialLinks) {
-        settings.socialLinks = { ...settings.socialLinks, ...data.socialLinks };
+        updatePayload.socialLinks = { ...((settings.socialLinks as object) || {}), ...data.socialLinks };
       }
       if (data.contact) {
-        settings.contact = { ...settings.contact, ...data.contact };
+        updatePayload.contact = { ...((settings.contact as object) || {}), ...data.contact };
       }
       if (data.defaultSeo) {
-        settings.defaultSeo = { ...settings.defaultSeo, ...data.defaultSeo };
+        updatePayload.defaultSeo = { ...((settings.defaultSeo as object) || {}), ...data.defaultSeo };
       }
       if (data.homepage) {
-        settings.homepage = { ...settings.homepage, ...data.homepage };
+        updatePayload.homepage = { ...((settings.homepage as object) || {}), ...data.homepage };
       }
       if (data.hero) {
-        settings.hero = { ...settings.hero, ...data.hero };
+        updatePayload.hero = { ...((settings.hero as object) || {}), ...data.hero };
       }
       if (data.about) {
-        settings.about = { ...settings.about, ...data.about };
+        updatePayload.about = { ...((settings.about as object) || {}), ...data.about };
       }
       if (data.founder) {
-        settings.founder = { ...settings.founder, ...data.founder };
+        updatePayload.founder = { ...((settings.founder as object) || {}), ...data.founder };
       }
       if (data.footer) {
-        settings.footer = { ...settings.footer, ...data.footer };
+        updatePayload.footer = { ...((settings.footer as object) || {}), ...data.footer };
       }
-    }
 
-    await settings.save();
-    return settings;
+      const updated = await prisma.settings.update({
+        where: { id: settings.id },
+        data: updatePayload,
+      });
+      return updated;
+    } else {
+      const created = await prisma.settings.create({
+        data: {
+          siteName: data.siteName || 'خمسة برمجة بالبلدي',
+          tagline: data.tagline || 'افهمها بالبلدي.. اكتبها بالكود.',
+          siteDescription: data.siteDescription || 'منصة لتبسيط البرمجة',
+          ...updatePayload,
+        },
+      });
+      return created;
+    }
   }
 }

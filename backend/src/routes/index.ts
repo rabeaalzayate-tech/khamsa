@@ -20,25 +20,27 @@ import {
 } from '../modules/featured-links/featured-link.routes';
 import { backupRoutes } from '../modules/backup/backup.routes';
 import contactRoutes from '../modules/contact/contact.routes';
-import mongoose from 'mongoose';
+import { prisma } from '../config/prisma.config';
 import { ApiResponse } from '../utils/api-response';
 
 const router = Router();
 
 // Health Check: /api/v1/health
-router.get('/health', (_req, res) => {
-  const dbStatus =
-    mongoose.connection.readyState === 1
-      ? 'connected'
-      : mongoose.connection.readyState === 2
-        ? 'connecting'
-        : 'disconnected';
+router.get('/health', async (_req, res) => {
+  let dbStatus = 'disconnected';
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    dbStatus = 'connected';
+  } catch {
+    dbStatus = 'disconnected';
+  }
 
   return ApiResponse.success(
     res,
     {
       status: 'online',
       database: dbStatus,
+      databaseEngine: 'MySQL',
       timestamp: new Date().toISOString(),
     },
     'API v1 is healthy',

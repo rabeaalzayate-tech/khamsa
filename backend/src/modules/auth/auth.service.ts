@@ -1,15 +1,17 @@
-import { User } from '../users/user.model';
-import { IUserDocument } from '../users/user.types';
+import bcrypt from 'bcryptjs';
+import { prisma } from '../../config/prisma.config';
 import { LoginDto, AuthTokens } from './auth.types';
 import { ApiError } from '../../utils/api-error';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../utils/jwt.util';
-import { JwtPayload } from '../../types/common.types';
+import { JwtPayload, UserRole } from '../../types/common.types';
 
 export class AuthService {
   static async login(
     dto: LoginDto,
-  ): Promise<{ user: IUserDocument; tokens: AuthTokens }> {
-    const user = await User.findOne({ email: dto.email }).select('+password').exec();
+  ): Promise<{ user: Record<string, unknown>; tokens: AuthTokens }> {
+    const user = await prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+    });
 
     if (!user) {
       throw ApiError.unauthorized('Invalid email or password');
@@ -19,25 +21,30 @@ export class AuthService {
       throw ApiError.forbidden('Your account has been deactivated. Please contact an administrator.');
     }
 
-    const isMatch = await user.comparePassword(dto.password);
+    const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) {
       throw ApiError.unauthorized('Invalid email or password');
     }
 
     // Update lastLoginAt
-    await User.updateOne({ _id: user._id }, { $set: { lastLoginAt: new Date() } }).exec();
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
 
     const jwtPayload: JwtPayload = {
-      userId: user._id.toString(),
+      userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     };
 
     const accessToken = signAccessToken(jwtPayload);
     const refreshToken = signRefreshToken(jwtPayload);
 
+    const { password: _, ...userSafe } = user;
+
     return {
-      user,
+      user: userSafe,
       tokens: {
         accessToken,
         refreshToken,
@@ -47,13 +54,15 @@ export class AuthService {
 
   static async refreshToken(
     rawRefreshToken: string,
-  ): Promise<{ user: IUserDocument; tokens: AuthTokens }> {
+  ): Promise<{ user: Record<string, unknown>; tokens: AuthTokens }> {
     if (!rawRefreshToken) {
       throw ApiError.unauthorized('Refresh token is required');
     }
 
     const payload = verifyRefreshToken(rawRefreshToken);
-    const user = await User.findById(payload.userId).exec();
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
 
     if (!user) {
       throw ApiError.unauthorized('User not found');
@@ -64,16 +73,18 @@ export class AuthService {
     }
 
     const newPayload: JwtPayload = {
-      userId: user._id.toString(),
+      userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as UserRole,
     };
 
     const accessToken = signAccessToken(newPayload);
     const refreshToken = signRefreshToken(newPayload);
 
+    const { password: _, ...userSafe } = user;
+
     return {
-      user,
+      user: userSafe,
       tokens: {
         accessToken,
         refreshToken,
@@ -81,11 +92,16 @@ export class AuthService {
     };
   }
 
-  static async getMe(userId: string): Promise<IUserDocument> {
-    const user = await User.findById(userId).exec();
+  static async getMe(userId: string): Promise<Record<string, unknown>> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
     if (!user) {
       throw ApiError.notFound('User not found');
     }
-    return user;
+
+    const { password: _, ...userSafe } = user;
+    return userSafe;
   }
 }

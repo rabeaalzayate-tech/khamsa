@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum VideoPlatform {
+  TIKTOK
+  YOUTUBE
+  FACEBOOK
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  role        UserRole  @default(EDITOR)
+  avatar      String?   @db.Text
+  bio         String?   @db.Text
+  socials     Json?
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  articles    Article[]
+  videos      Video[]
+  media       Media[]
+
+  @@map("users")
+}
+
+model Article {
+  id          String        @id @default(uuid())
+  title       String        @db.VarChar(255)
+  slug        String        @unique @db.VarChar(255)
+  excerpt     String        @db.Text
+  content     Json
+  coverImage  String?       @db.Text
+  category    String        @db.VarChar(100)
+  tags        Json
+  authorId    String        @db.VarChar(255)
+  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  status      ContentStatus @default(DRAFT)
+  isFeatured  Boolean       @default(false)
+  seo         Json?
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([status, category, publishedAt])
+  @@index([authorId])
+  @@map("articles")
+}
+
+model Video {
+  id          String        @id @default(uuid())
+  title       String        @db.VarChar(255)
+  description String        @db.Text
+  platform    VideoPlatform
+  url         String        @db.Text
+  thumbnail   String?       @db.Text
+  status      ContentStatus @default(DRAFT)
+  authorId    String        @db.VarChar(255)
+  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([status, platform, publishedAt])
+  @@index([authorId])
+  @@map("videos")
+}
+
+model FeaturedLink {
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(255)
+  image       String   @db.Text
+  url         String   @db.Text
+  badge       String?  @default("") @db.VarChar(100)
+  description String?  @default("") @db.Text
+  ctaText     String?  @default("") @db.VarChar(100)
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, order, createdAt])
+  @@map("featured_links")
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  filename     String   @db.VarChar(255)
+  originalName String   @db.VarChar(255)
+  mimeType     String   @db.VarChar(100)
+  size         Int
+  url          String   @db.Text
+  key          String   @unique @db.VarChar(255)
+  uploadedById String   @db.VarChar(255)
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([uploadedById])
+  @@index([mimeType])
+  @@map("media")
+}
+
+model Settings {
+  id              String   @id @default(uuid())
+  siteName        String   @default("خمسة برمجة بالبلدي") @db.VarChar(255)
+  tagline         String   @default("افهمها بالبلدي.. اكتبها بالكود.") @db.VarChar(255)
+  siteDescription String   @db.Text
+  language        String   @default("ar") @db.VarChar(10)
+  direction       String   @default("rtl") @db.VarChar(10)
+  timezone        String   @default("Africa/Cairo") @db.VarChar(50)
+  logo            String?  @db.Text
+  favicon         String?  @db.Text
+  socialLinks     Json?
+  contact         Json?
+  defaultSeo      Json?
+  homepage        Json?
+  hero            Json?
+  about           Json?
+  founder         Json?
+  footer          Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("settings")
+}

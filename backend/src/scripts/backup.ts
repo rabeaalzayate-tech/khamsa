@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
-import mongoose from 'mongoose';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
-import { env } from '../config/env.config';
+import { prisma } from '../config/prisma.config';
 import { r2Client, R2_CONFIG } from '../config/r2.config';
 
 interface BackupPayload {
@@ -16,39 +15,45 @@ interface BackupPayload {
 }
 
 async function runBackup() {
-  console.log('🚀 Starting Full Automated Backup for Khamsa Platform...');
-  console.log(`📡 Connecting to Database: ${env.MONGODB_URI.replace(/:[^:@]+@/, ':****@')}`);
+  console.log('🚀 Starting Full Automated Backup for Khamsa MySQL Database...');
 
-  await mongoose.connect(env.MONGODB_URI);
-  const db = mongoose.connection.db;
+  const [users, articles, videos, media, settings, featuredLinks] = await Promise.all([
+    prisma.user.findMany(),
+    prisma.article.findMany(),
+    prisma.video.findMany(),
+    prisma.media.findMany(),
+    prisma.settings.findMany(),
+    prisma.featuredLink.findMany(),
+  ]);
 
-  if (!db) {
-    throw new Error('Could not get database handle.');
-  }
+  const backupData: Record<string, unknown[]> = {
+    users,
+    articles,
+    videos,
+    media,
+    settings,
+    featured_links: featuredLinks,
+  };
 
-  const collections = ['users', 'articles', 'videos', 'media', 'settings'];
-  const backupData: Record<string, unknown[]> = {};
-  const counts: Record<string, number> = {};
+  const counts: Record<string, number> = {
+    users: users.length,
+    articles: articles.length,
+    videos: videos.length,
+    media: media.length,
+    settings: settings.length,
+    featured_links: featuredLinks.length,
+  };
 
-  for (const colName of collections) {
-    try {
-      const docs = await db.collection(colName).find({}).toArray();
-      backupData[colName] = docs;
-      counts[colName] = docs.length;
-      console.log(`  ✓ ${colName.padEnd(12)}: ${docs.length} records`);
-    } catch (err) {
-      console.warn(`  ⚠️ Could not export ${colName}:`, err);
-      backupData[colName] = [];
-      counts[colName] = 0;
-    }
+  for (const [col, count] of Object.entries(counts)) {
+    console.log(`  ✓ ${col.padEnd(16)}: ${count} records`);
   }
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const backupPayload: BackupPayload = {
-    version: '1.0.0',
+    version: '2.0.0',
     appName: 'khamsa_cms',
     timestamp: new Date().toISOString(),
-    database: db.databaseName || 'khamsa_cms',
+    database: 'khamsa_cms',
     counts,
     data: backupData,
   };
@@ -102,7 +107,7 @@ async function runBackup() {
     console.error('  ❌ Failed to upload backup to Cloud Storage:', cloudErr);
   }
 
-  await mongoose.disconnect();
+  await prisma.$disconnect();
   console.log('\n✨ Full Backup Process Completed Successfully!');
 }
 

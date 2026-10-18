@@ -1,19 +1,23 @@
 import path from 'path';
 import crypto from 'crypto';
-import { QueryFilter } from 'mongoose';
 import {
   PutObjectCommand,
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { r2Client, R2_CONFIG } from '../../config/r2.config';
-import { Media } from './media.model';
-import '../users/user.model';
-import { IMediaDocument } from './media.types';
+import { prisma } from '../../config/prisma.config';
 import { ListMediaQueryDto, PresignedUrlDto } from './media.validation';
 import { PaginatedResult } from '../../types/common.types';
 import { ApiError } from '../../utils/api-error';
 import { getPaginationOptions, createPaginatedResult } from '../../utils/pagination';
+
+const UPLOADER_SELECT_FIELDS = {
+  id: true,
+  name: true,
+  email: true,
+  avatar: true,
+};
 
 export class MediaService {
   private static generateKey(
@@ -33,7 +37,7 @@ export class MediaService {
     file: Express.Multer.File,
     folder: string,
     userId: string,
-  ): Promise<IMediaDocument> {
+  ): Promise<any> {
     const { key, filename } = this.generateKey(folder, file.originalname);
 
     const command = new PutObjectCommand({
@@ -53,18 +57,24 @@ export class MediaService {
 
     const publicUrl = `${R2_CONFIG.publicUrl}/${key}`;
 
-    const media = new Media({
-      filename,
-      originalName: file.originalname,
-      mimeType: file.mimetype,
-      size: file.size,
-      url: publicUrl,
-      key,
-      uploadedBy: userId,
+    const media = await prisma.media.create({
+      data: {
+        filename,
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        url: publicUrl,
+        key,
+        uploadedById: userId,
+      },
+      include: {
+        uploadedBy: {
+          select: UPLOADER_SELECT_FIELDS,
+        },
+      },
     });
-    await media.save();
 
-    return (await media.populate('uploadedBy', 'name email avatar')) as IMediaDocument;
+    return media;
   }
 
   static async generatePresignedUploadUrl(
@@ -98,37 +108,45 @@ export class MediaService {
 
   static async getMediaList(
     query: ListMediaQueryDto,
-  ): Promise<PaginatedResult<IMediaDocument>> {
+  ): Promise<PaginatedResult<any>> {
     const { page, limit, skip } = getPaginationOptions({
       page: query.page,
       limit: query.limit,
     });
 
-    const filter: QueryFilter<IMediaDocument> = {};
+    const where: any = {};
 
     if (query.folder) {
-      filter.key = new RegExp(`^${query.folder}/`, 'i');
+      where.key = { startsWith: `${query.folder}/` };
     }
 
     if (query.mimeType) {
-      filter.mimeType = query.mimeType;
+      where.mimeType = query.mimeType;
     }
 
     const [items, total] = await Promise.all([
-      Media.find(filter)
-        .populate('uploadedBy', 'name email avatar')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .exec(),
-      Media.countDocuments(filter).exec(),
+      prisma.media.findMany({
+        where,
+        include: {
+          uploadedBy: {
+            select: UPLOADER_SELECT_FIELDS,
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.media.count({ where }),
     ]);
 
     return createPaginatedResult(items, total, page, limit);
   }
 
   static async deleteMedia(id: string): Promise<void> {
-    const media = await Media.findById(id).exec();
+    const media = await prisma.media.findUnique({
+      where: { id },
+    });
+
     if (!media) {
       throw ApiError.notFound('Media item not found');
     }
@@ -142,9 +160,10 @@ export class MediaService {
       await r2Client.send(command);
     } catch (error) {
       console.warn(`Failed to delete object '${media.key}' from R2:`, error);
-      // Proceed to remove from DB even if R2 delete encountered a warning
     }
 
-    await Media.findByIdAndDelete(id).exec();
+    await prisma.media.delete({
+      where: { id },
+    });
   }
 }

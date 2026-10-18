@@ -1,80 +1,106 @@
-import { QueryFilter } from 'mongoose';
-import { Video } from './video.model';
-import '../users/user.model';
-import { IVideoDocument } from './video.types';
+import { prisma } from '../../config/prisma.config';
 import {
   CreateVideoDto,
   UpdateVideoDto,
   PublicVideoQueryDto,
   AdminVideoQueryDto,
 } from './video.validation';
-import { ContentStatus, PaginatedResult } from '../../types/common.types';
+import { ContentStatus, PaginatedResult, VideoPlatform } from '../../types/common.types';
 import { ApiError } from '../../utils/api-error';
 import { getPaginationOptions, createPaginatedResult } from '../../utils/pagination';
+
+const AUTHOR_SELECT_FIELDS = {
+  id: true,
+  name: true,
+  email: true,
+  avatar: true,
+};
 
 export class VideoService {
   static async createVideo(
     data: CreateVideoDto,
     authorId: string,
-  ): Promise<IVideoDocument> {
+  ): Promise<any> {
     const publishedAt =
       data.status === ContentStatus.PUBLISHED ? new Date() : null;
 
-    const video = new Video({
-      ...data,
-      author: authorId,
-      publishedAt,
+    const video = await prisma.video.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        platform: data.platform as VideoPlatform,
+        url: data.url,
+        thumbnail: data.thumbnail || null,
+        status: (data.status as ContentStatus) || ContentStatus.DRAFT,
+        authorId,
+        publishedAt,
+      },
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
     });
-    await video.save();
 
-    return (await video.populate('author', 'name avatar email')) as IVideoDocument;
+    return video;
   }
 
   static async getPublicVideos(
     query: PublicVideoQueryDto,
-  ): Promise<PaginatedResult<IVideoDocument>> {
+  ): Promise<PaginatedResult<any>> {
     const { page, limit, skip } = getPaginationOptions({
       page: query.page,
       limit: query.limit,
     });
 
-    const filter: QueryFilter<IVideoDocument> = {
+    const where: any = {
       status: ContentStatus.PUBLISHED,
     };
 
     if (query.platform) {
-      filter.platform = query.platform;
+      where.platform = query.platform as VideoPlatform;
     }
 
     if (query.search) {
-      const sanitized = query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(sanitized, 'i');
-      filter.$or = [{ title: regex }, { description: regex }];
+      where.OR = [
+        { title: { contains: query.search } },
+        { description: { contains: query.search } },
+      ];
     }
 
-    const sortOrder: Record<string, 1 | -1> =
-      query.sort === 'oldest' ? { publishedAt: 1 } : { publishedAt: -1 };
+    const orderBy: any =
+      query.sort === 'oldest' ? { publishedAt: 'asc' } : { publishedAt: 'desc' };
 
     const [items, total] = await Promise.all([
-      Video.find(filter)
-        .populate('author', 'name avatar')
-        .sort(sortOrder)
-        .skip(skip)
-        .limit(limit)
-        .exec(),
-      Video.countDocuments(filter).exec(),
+      prisma.video.findMany({
+        where,
+        include: {
+          author: {
+            select: AUTHOR_SELECT_FIELDS,
+          },
+        },
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      prisma.video.count({ where }),
     ]);
 
     return createPaginatedResult(items, total, page, limit);
   }
 
-  static async getPublicVideoById(id: string): Promise<IVideoDocument> {
-    const video = await Video.findOne({
-      _id: id,
-      status: ContentStatus.PUBLISHED,
-    })
-      .populate('author', 'name avatar')
-      .exec();
+  static async getPublicVideoById(id: string): Promise<any> {
+    const video = await prisma.video.findFirst({
+      where: {
+        id,
+        status: ContentStatus.PUBLISHED,
+      },
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
+    });
 
     if (!video) {
       throw ApiError.notFound('Video not found');
@@ -85,48 +111,59 @@ export class VideoService {
 
   static async getAdminVideos(
     query: AdminVideoQueryDto,
-  ): Promise<PaginatedResult<IVideoDocument>> {
+  ): Promise<PaginatedResult<any>> {
     const { page, limit, skip } = getPaginationOptions({
       page: query.page,
       limit: query.limit,
     });
 
-    const filter: QueryFilter<IVideoDocument> = {};
+    const where: any = {};
 
     if (query.status) {
-      filter.status = query.status;
+      where.status = query.status as ContentStatus;
     }
 
     if (query.platform) {
-      filter.platform = query.platform;
+      where.platform = query.platform as VideoPlatform;
     }
 
     if (query.search) {
-      const sanitized = query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(sanitized, 'i');
-      filter.$or = [{ title: regex }, { description: regex }];
+      where.OR = [
+        { title: { contains: query.search } },
+        { description: { contains: query.search } },
+      ];
     }
 
-    const sortOrder: Record<string, 1 | -1> =
-      query.sort === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
+    const orderBy: any =
+      query.sort === 'oldest' ? { createdAt: 'asc' } : { createdAt: 'desc' };
 
     const [items, total] = await Promise.all([
-      Video.find(filter)
-        .populate('author', 'name email avatar')
-        .sort(sortOrder)
-        .skip(skip)
-        .limit(limit)
-        .exec(),
-      Video.countDocuments(filter).exec(),
+      prisma.video.findMany({
+        where,
+        include: {
+          author: {
+            select: AUTHOR_SELECT_FIELDS,
+          },
+        },
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      prisma.video.count({ where }),
     ]);
 
     return createPaginatedResult(items, total, page, limit);
   }
 
-  static async getVideoById(id: string): Promise<IVideoDocument> {
-    const video = await Video.findById(id)
-      .populate('author', 'name email avatar')
-      .exec();
+  static async getVideoById(id: string): Promise<any> {
+    const video = await prisma.video.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
+    });
 
     if (!video) {
       throw ApiError.notFound('Video not found');
@@ -138,58 +175,108 @@ export class VideoService {
   static async updateVideo(
     id: string,
     data: UpdateVideoDto,
-  ): Promise<IVideoDocument> {
-    const video = await Video.findById(id).exec();
+  ): Promise<any> {
+    const video = await prisma.video.findUnique({
+      where: { id },
+    });
+
     if (!video) {
       throw ApiError.notFound('Video not found');
     }
 
+    let publishedAt = video.publishedAt;
     if (
       data.status === ContentStatus.PUBLISHED &&
       video.status !== ContentStatus.PUBLISHED &&
       !video.publishedAt
     ) {
-      video.publishedAt = new Date();
+      publishedAt = new Date();
     }
 
-    Object.assign(video, data);
-    await video.save();
+    const updateData: any = {
+      publishedAt,
+    };
 
-    return (await video.populate('author', 'name email avatar')) as IVideoDocument;
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.platform !== undefined) updateData.platform = data.platform as VideoPlatform;
+    if (data.url !== undefined) updateData.url = data.url;
+    if (data.thumbnail !== undefined) updateData.thumbnail = data.thumbnail;
+    if (data.status !== undefined) updateData.status = data.status as ContentStatus;
+
+    const updated = await prisma.video.update({
+      where: { id },
+      data: updateData,
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
+    });
+
+    return updated;
   }
 
-  static async publishVideo(id: string): Promise<IVideoDocument> {
-    const video = await Video.findById(id).exec();
+  static async publishVideo(id: string): Promise<any> {
+    const video = await prisma.video.findUnique({
+      where: { id },
+    });
+
     if (!video) {
       throw ApiError.notFound('Video not found');
     }
 
-    video.status = ContentStatus.PUBLISHED;
-    if (!video.publishedAt) {
-      video.publishedAt = new Date();
-    }
+    const updated = await prisma.video.update({
+      where: { id },
+      data: {
+        status: ContentStatus.PUBLISHED,
+        publishedAt: video.publishedAt || new Date(),
+      },
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
+    });
 
-    await video.save();
-    return (await video.populate('author', 'name email avatar')) as IVideoDocument;
+    return updated;
   }
 
-  static async unpublishVideo(id: string): Promise<IVideoDocument> {
-    const video = await Video.findById(id).exec();
+  static async unpublishVideo(id: string): Promise<any> {
+    const video = await prisma.video.findUnique({
+      where: { id },
+    });
+
     if (!video) {
       throw ApiError.notFound('Video not found');
     }
 
-    video.status = ContentStatus.DRAFT;
-    await video.save();
-    return (await video.populate('author', 'name email avatar')) as IVideoDocument;
+    const updated = await prisma.video.update({
+      where: { id },
+      data: {
+        status: ContentStatus.DRAFT,
+      },
+      include: {
+        author: {
+          select: AUTHOR_SELECT_FIELDS,
+        },
+      },
+    });
+
+    return updated;
   }
 
   static async deleteVideo(id: string): Promise<void> {
-    const video = await Video.findById(id).exec();
+    const video = await prisma.video.findUnique({
+      where: { id },
+    });
+
     if (!video) {
       throw ApiError.notFound('Video not found');
     }
 
-    await Video.findByIdAndDelete(id).exec();
+    await prisma.video.delete({
+      where: { id },
+    });
   }
 }

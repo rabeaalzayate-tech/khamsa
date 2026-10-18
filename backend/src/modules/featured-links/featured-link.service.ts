@@ -1,6 +1,4 @@
-import { QueryFilter } from 'mongoose';
-import { FeaturedLink } from './featured-link.model';
-import { IFeaturedLinkDocument } from './featured-link.types';
+import { prisma } from '../../config/prisma.config';
 import {
   CreateFeaturedLinkDto,
   UpdateFeaturedLinkDto,
@@ -14,13 +12,13 @@ export class FeaturedLinkService {
   /**
    * Public: Get all active featured links sorted by order ASC, then newest
    */
-  static async getPublicFeaturedLinks(): Promise<IFeaturedLinkDocument[]> {
-    const links = await FeaturedLink.find({ isActive: true })
-      .sort({ order: 1, createdAt: -1 })
-      .lean()
-      .exec();
+  static async getPublicFeaturedLinks(): Promise<any[]> {
+    const links = await prisma.featuredLink.findMany({
+      where: { isActive: true },
+      orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
+    });
 
-    return links as unknown as IFeaturedLinkDocument[];
+    return links;
   }
 
   /**
@@ -28,36 +26,42 @@ export class FeaturedLinkService {
    */
   static async getAdminFeaturedLinks(
     query: AdminFeaturedLinkQueryDto,
-  ): Promise<PaginatedResult<IFeaturedLinkDocument>> {
+  ): Promise<PaginatedResult<any>> {
     const { page, limit, skip } = getPaginationOptions({
       page: query.page,
       limit: query.limit,
     });
 
-    const filter: QueryFilter<IFeaturedLinkDocument> = {};
+    const where: any = {};
 
     if (query.isActive === 'true') {
-      filter.isActive = true;
+      where.isActive = true;
     } else if (query.isActive === 'false') {
-      filter.isActive = false;
+      where.isActive = false;
     }
 
     if (query.search) {
-      const sanitized = query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(sanitized, 'i');
-      filter.$or = [{ title: regex }, { url: regex }];
+      where.OR = [
+        { title: { contains: query.search } },
+        { url: { contains: query.search } },
+      ];
     }
 
-    let sortOrder: Record<string, 1 | -1> = { order: 1, createdAt: -1 };
+    let orderBy: any = [{ order: 'asc' }, { createdAt: 'desc' }];
     if (query.sort === 'latest') {
-      sortOrder = { createdAt: -1 };
+      orderBy = [{ createdAt: 'desc' }];
     } else if (query.sort === 'oldest') {
-      sortOrder = { createdAt: 1 };
+      orderBy = [{ createdAt: 'asc' }];
     }
 
     const [items, total] = await Promise.all([
-      FeaturedLink.find(filter).sort(sortOrder).skip(skip).limit(limit).exec(),
-      FeaturedLink.countDocuments(filter).exec(),
+      prisma.featuredLink.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      prisma.featuredLink.count({ where }),
     ]);
 
     return createPaginatedResult(items, total, page, limit);
@@ -66,11 +70,15 @@ export class FeaturedLinkService {
   /**
    * Get a single featured link by ID
    */
-  static async getFeaturedLinkById(id: string): Promise<IFeaturedLinkDocument> {
-    const link = await FeaturedLink.findById(id).exec();
+  static async getFeaturedLinkById(id: string): Promise<any> {
+    const link = await prisma.featuredLink.findUnique({
+      where: { id },
+    });
+
     if (!link) {
       throw ApiError.notFound('الرابط المميز غير موجود');
     }
+
     return link;
   }
 
@@ -79,9 +87,20 @@ export class FeaturedLinkService {
    */
   static async createFeaturedLink(
     data: CreateFeaturedLinkDto,
-  ): Promise<IFeaturedLinkDocument> {
-    const link = new FeaturedLink(data);
-    await link.save();
+  ): Promise<any> {
+    const link = await prisma.featuredLink.create({
+      data: {
+        title: data.title,
+        image: data.image,
+        url: data.url,
+        badge: data.badge || '',
+        description: data.description || '',
+        ctaText: data.ctaText || '',
+        order: Number(data.order) || 0,
+        isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
+      },
+    });
+
     return link;
   }
 
@@ -91,40 +110,67 @@ export class FeaturedLinkService {
   static async updateFeaturedLink(
     id: string,
     data: UpdateFeaturedLinkDto,
-  ): Promise<IFeaturedLinkDocument> {
-    const link = await FeaturedLink.findById(id).exec();
+  ): Promise<any> {
+    const link = await prisma.featuredLink.findUnique({
+      where: { id },
+    });
+
     if (!link) {
       throw ApiError.notFound('الرابط المميز غير موجود');
     }
 
-    Object.assign(link, data);
-    await link.save();
-    return link;
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.image !== undefined) updateData.image = data.image;
+    if (data.url !== undefined) updateData.url = data.url;
+    if (data.badge !== undefined) updateData.badge = data.badge;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.ctaText !== undefined) updateData.ctaText = data.ctaText;
+    if (data.order !== undefined) updateData.order = Number(data.order);
+    if (data.isActive !== undefined) updateData.isActive = Boolean(data.isActive);
+
+    const updated = await prisma.featuredLink.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return updated;
   }
 
   /**
    * Toggle the active status of a featured link
    */
-  static async toggleActive(id: string): Promise<IFeaturedLinkDocument> {
-    const link = await FeaturedLink.findById(id).exec();
+  static async toggleActive(id: string): Promise<any> {
+    const link = await prisma.featuredLink.findUnique({
+      where: { id },
+    });
+
     if (!link) {
       throw ApiError.notFound('الرابط المميز غير موجود');
     }
 
-    link.isActive = !link.isActive;
-    await link.save();
-    return link;
+    const updated = await prisma.featuredLink.update({
+      where: { id },
+      data: { isActive: !link.isActive },
+    });
+
+    return updated;
   }
 
   /**
    * Delete a featured link by ID
    */
   static async deleteFeaturedLink(id: string): Promise<void> {
-    const link = await FeaturedLink.findById(id).exec();
+    const link = await prisma.featuredLink.findUnique({
+      where: { id },
+    });
+
     if (!link) {
       throw ApiError.notFound('الرابط المميز غير موجود');
     }
 
-    await FeaturedLink.findByIdAndDelete(id).exec();
+    await prisma.featuredLink.delete({
+      where: { id },
+    });
   }
 }
