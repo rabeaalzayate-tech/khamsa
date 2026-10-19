@@ -61,6 +61,7 @@ export const articleHTML01: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'css-tutorial-for-beginners',
     'learn-programming-from-scratch',
     'modern-css-architecture-tailwind-container-queries',
     'modern-javascript-comprehensive-guide-es6-async',
@@ -429,8 +430,8 @@ name="value"
 
 **تعلم لغة التنسيق والتصميم CSS!**
 
-في مقالنا القادم من السلسلة:
-> **«يعني إيه CSS؟ إزاي تحوّل صفحة HTML عادية لتصميم احترافي مبهر؟»**
+في مقالنا التالي من السلسلة:
+> **[يعني إيه CSS؟ شرح CSS للمبتدئين من الصفر مع أمثلة عملية](/articles/css-tutorial-for-beginners)**
 
 هنتعلم إزاي تلون النصوص، وتعمل بطاقات تفاعلية، وتستخدم تقنيات الـ Flexbox والـ CSS Grid علشان موقعك يظهر بشكل مذهل على شاشات الموبايل واللابتوب.
 
