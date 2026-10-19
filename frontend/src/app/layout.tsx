@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { Cairo } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/providers';
@@ -22,7 +21,7 @@ const gtmId =
   process.env.NEXT_PUBLIC_GTM_ID && process.env.NEXT_PUBLIC_GTM_ID !== 'GTM-MT8QVP4H'
     ? process.env.NEXT_PUBLIC_GTM_ID
     : 'GTM-PCT67FXD';
-const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9549884730788063';
+const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9826583080450782';
 
 function sanitizeArabicText(text: string | undefined, fallback: string): string {
   if (!text || typeof text !== 'string') return fallback;
@@ -161,7 +160,7 @@ export async function generateMetadata(): Promise<Metadata> {
       google: ['JAPcFUlh_MDW3tlYdlTU4VULl9Kld2X1PJ_P3yLoCeY', 'nNlwGk53zi-tWlVHmfwrF4yAgkzMN9n_lZji1_cAk9Y'],
     },
     other: {
-      'google-adsense-account': 'ca-pub-9549884730788063',
+      'google-adsense-account': adSenseClient,
     },
   };
 }
@@ -236,7 +235,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
         <meta name="google-site-verification" content={googleVerification} />
-        <meta name="google-adsense-account" content="ca-pub-9549884730788063" />
+        <meta name="google-adsense-account" content={adSenseClient} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -255,13 +254,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        {/* Conditional AdSense Integration: Loaded with lazyOnload to protect Core Web Vitals */}
+        {/* Google AdSense Integration */}
         {adSenseClient && (
-          <Script
-            id="adsbygoogle-init"
-            strategy="lazyOnload"
-            crossOrigin="anonymous"
+          <script
+            async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseClient}`}
+            crossOrigin="anonymous"
           />
         )}
         {/* Google tag (gtag.js) */}
