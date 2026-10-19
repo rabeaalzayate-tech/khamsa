@@ -18,7 +18,10 @@ const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
   'JAPcFUlh_MDW3tlYdlTU4VULl9Kld2X1PJ_P3yLoCeY';
 const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-69ERC50LB1';
-const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-PCT67FXD';
+const gtmId =
+  process.env.NEXT_PUBLIC_GTM_ID && process.env.NEXT_PUBLIC_GTM_ID !== 'GTM-MT8QVP4H'
+    ? process.env.NEXT_PUBLIC_GTM_ID
+    : 'GTM-PCT67FXD';
 const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9549884730788063';
 
 function sanitizeArabicText(text: string | undefined, fallback: string): string {
