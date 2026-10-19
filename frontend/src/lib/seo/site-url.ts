@@ -10,7 +10,7 @@ export function getSiteUrl(): string {
   }
 
   if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    return 'https://khamsa-web.vercel.app';
+    return 'https://khamsaprogramming.com';
   }
 
   return 'http://localhost:3000';

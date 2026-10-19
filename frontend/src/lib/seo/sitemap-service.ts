@@ -72,7 +72,7 @@ export async function getDynamicArticleSitemapEntries(siteUrl: string): Promise<
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL ||
       (process.env.NODE_ENV === 'production' || process.env.VERCEL
-        ? 'https://khamsa-webapi.vercel.app/api/v1'
+        ? 'https://api.khamsaprogramming.com/api/v1'
         : 'http://localhost:5000/api/v1');
 
     const res = await fetch(`${apiUrl}/public/articles?limit=1000&sort=latest`, {

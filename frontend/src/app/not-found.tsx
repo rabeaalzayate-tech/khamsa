@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 export default function NotFound() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-4">
+      <title>الصفحة غير موجودة (404) | خمسة برمجة بالبلدي</title>
       <div className="max-w-md w-full text-center space-y-6 p-8 rounded-3xl bg-card border border-border shadow-card relative overflow-hidden">
         {/* Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/10 rounded-full blur-3xl -z-10 pointer-events-none" />

@@ -21,12 +21,21 @@ const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-0NV2KE0NGC';
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-MT8QVP4H';
 const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9549884730788063';
 
+function sanitizeArabicText(text: string | undefined, fallback: string): string {
+  if (!text || typeof text !== 'string') return fallback;
+  // If text contains corrupted CP720/CP850 box-drawing characters (e.g. ╪, ┘, ┼, etc.)
+  if (/[\u2500-\u257F]/.test(text)) {
+    return fallback;
+  }
+  return text;
+}
+
 async function fetchPublicSettings(): Promise<Settings | null> {
   try {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL ||
       (process.env.NODE_ENV === 'production'
-        ? 'https://khamsa-webapi.vercel.app/api/v1'
+        ? 'https://api.khamsaprogramming.com/api/v1'
         : 'http://localhost:5000/api/v1');
     const res = await fetch(`${apiUrl}/public/settings`, {
       next: { revalidate: 60 },
@@ -44,8 +53,8 @@ async function fetchPublicSettings(): Promise<Settings | null> {
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchPublicSettings();
 
-  const siteName = settings?.siteName || 'خمسة برمجة بالبلدي';
-  const tagline = settings?.tagline || 'افهمها بالبلدي.. اكتبها بالكود';
+  const siteName = sanitizeArabicText(settings?.siteName, 'خمسة برمجة بالبلدي');
+  const tagline = sanitizeArabicText(settings?.tagline, 'افهمها بالبلدي.. اكتبها بالكود');
   const siteTitle = `${siteName} | ${tagline}`;
   const siteDescription =
     settings?.siteDescription ||
