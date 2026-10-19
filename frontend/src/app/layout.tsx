@@ -93,6 +93,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: siteDescription,
     keywords,
+    alternates: {
+      canonical: siteUrl,
+    },
     authors: [{ name: ownerName, url: `${siteUrl}/about` }],
     creator: ownerName,
     publisher: siteName,
@@ -226,12 +229,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }}
           />
         )}
-        {/* End Google Tag Manager */}
+        {/* Performance Preconnects and DNS Prefetch */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://pub-f9f474a915314796ac71ef9e5b4b78a0.r2.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://api.khamsaprogramming.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+
         <meta name="google-site-verification" content={googleVerification} />
         <meta name="google-adsense-account" content="ca-pub-9549884730788063" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="icon" href="/icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta property="og:image" content={`${siteUrl}/og-image.png`} />
         <meta property="og:image:secure_url" content={`${siteUrl}/og-image.png`} />
         <meta property="og:image:type" content="image/png" />
@@ -247,11 +255,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        {/* Conditional AdSense Integration: Loaded ONLY if real client is configured */}
+        {/* Conditional AdSense Integration: Loaded with lazyOnload to protect Core Web Vitals */}
         {adSenseClient && (
           <Script
             id="adsbygoogle-init"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             crossOrigin="anonymous"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseClient}`}
           />

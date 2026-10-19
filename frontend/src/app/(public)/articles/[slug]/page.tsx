@@ -232,11 +232,46 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'الرئيسية',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'المقالات',
+        item: `${siteUrl}/articles`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: currentCategory,
+        item: `${siteUrl}/articles?category=${encodeURIComponent(currentCategory)}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: currentTitle,
+        item: articleUrl,
+      },
+    ],
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-10 py-4 sm:py-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* Breadcrumb Navigation */}
@@ -325,6 +360,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
             alt={currentCoverAlt}
             className="h-full w-full object-cover"
             loading="eager"
+            fetchPriority="high"
           />
         </div>
       )}

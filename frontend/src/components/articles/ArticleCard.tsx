@@ -64,6 +64,9 @@ export function ArticleCard({ article, featured = false, className }: ArticleCar
             <img
               src="/logo.png"
               alt="خمسة برمجة بالبلدي"
+              width={64}
+              height={64}
+              loading="lazy"
               className="h-16 w-16 object-contain drop-shadow-md mb-2 transition-transform duration-500 group-hover:scale-110"
             />
             <span className="text-xs font-black text-foreground tracking-wide">

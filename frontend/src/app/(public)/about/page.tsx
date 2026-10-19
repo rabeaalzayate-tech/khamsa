@@ -22,10 +22,24 @@ import { SocialLinks } from '@/components/shared/SocialLinks';
 import { settingsApi } from '@/lib/api/settings.api';
 import { Settings } from '@/types/api';
 
+import { getSiteUrl } from '@/lib/seo/site-url';
+
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
   title: 'من نحن | خمسة برمجة بالبلدي',
   description:
     'تعرف على قصة، ورؤية، ورسالة، وفلسفة منصة خمسة برمجة بالبلدي ومؤسسها ربيع شعبان لتبسيط علوم البرمجة للمطور العربي.',
+  alternates: {
+    canonical: `${siteUrl}/about`,
+  },
+  openGraph: {
+    title: 'من نحن | خمسة برمجة بالبلدي',
+    description:
+      'تعرف على قصة، ورؤية، ورسالة، وفلسفة منصة خمسة برمجة بالبلدي ومؤسسها ربيع شعبان لتبسيط علوم البرمجة للمطور العربي.',
+    url: `${siteUrl}/about`,
+    type: 'website',
+  },
 };
 
 export default async function AboutPage() {

@@ -6,7 +6,11 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname, '..'),
   },
+  compress: true,
+  poweredByHeader: false,
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: 'https',
@@ -28,6 +32,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.tiktokcdn.com',
+      },
     ],
   },
   async redirects() {
@@ -46,6 +54,15 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: '/(favicon.ico|icon.png|logo.png|apple-touch-icon.png|og-image.png)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, stale-while-revalidate=2592000',
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [

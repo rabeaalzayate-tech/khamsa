@@ -36,6 +36,9 @@ export function Logo({ className, variant = 'full', href = '/', customLogo }: Lo
           <img
             src={logoUrl}
             alt={siteName}
+            width={40}
+            height={40}
+            fetchPriority="high"
             className="w-full h-full object-contain p-0.5"
           />
         </div>
