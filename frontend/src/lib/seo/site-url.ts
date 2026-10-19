@@ -4,14 +4,18 @@
  */
 
 export function getSiteUrl(): string {
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (envUrl && envUrl.trim() !== '') {
-    return envUrl.trim().replace(/\/+$/, '');
+  let url = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!url || url.trim() === '') {
+    url =
+      process.env.NODE_ENV === 'production' || process.env.VERCEL
+        ? 'https://www.khamsaprogramming.com'
+        : 'http://localhost:3000';
   }
 
-  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    return 'https://khamsaprogramming.com';
+  let cleaned = url.trim().replace(/\/+$/, '');
+  // Ensure khamsaprogramming.com is normalized to the primary canonical www domain
+  if (cleaned === 'https://khamsaprogramming.com' || cleaned === 'http://khamsaprogramming.com') {
+    cleaned = 'https://www.khamsaprogramming.com';
   }
-
-  return 'http://localhost:3000';
+  return cleaned;
 }

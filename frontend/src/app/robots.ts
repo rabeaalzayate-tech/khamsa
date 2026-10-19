@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
           '/cookie-policy',
           '/terms',
           '/disclaimer',
+          '/links',
           '/ads.txt',
         ],
         disallow: [
