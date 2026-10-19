@@ -62,11 +62,11 @@ export const articleHTMLTags01: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'advanced-html-tags-guide',
     'html-tutorial-for-beginners',
     'css-tutorial-for-beginners',
     'javascript-tutorial-for-beginners',
     'learn-programming-from-scratch',
-    'modern-css-architecture-tailwind-container-queries',
   ],
   seo: {
     title: 'شرح وسوم HTML الأساسية للمبتدئين بالعامية',
@@ -518,9 +518,9 @@ HTML مش مجرد لغة بتكتب فيها وسوم؛ هي فن تنظيم ا
 في المقال ده، غطينا كل الوسوم الأساسية اللي هتحتاجها في 95% من مشاريعك العملية اليومية.
 
 ### 🚀 مقالتنا التالية في السلسلة:
-> **«شرح وسوم HTML المتقدمة بالعامية المصرية: من النماذج والوسائط إلى العناصر التفاعلية وواجهات الويب الحديثة»**
+> **[شرح وسوم HTML المتقدمة بالعامية المصرية من الصفر بالأمثلة العملية](/articles/advanced-html-tags-guide)**
 
-في الجزء الثاني، هنتعمق في الوسوم المتطورة زي \`<dialog>\` للمودالز، \`<details>\` و \`<summary>\` للأكورديون، \`<template>\` و \`<slot>\` للمكونات، والوسوم الحديثة اللي بتغنيك عن مكتبات خارجية!
+في الجزء الثاني، هنتعمق في الوسوم المتطورة والرسومات والعناصر التفاعلية زي \`<details>\` و \`<summary>\` للأكورديون، و \`<canvas>\` و \`<svg>\`، و \`<meter>\` و \`<progress>\`، و \`<picture>\` للصور المتجاوبة، ومشروع صفحة أسئلة شائعة تفاعلية بالكامل!
 
 خمسة برمجة بالبلدي — **افهمها بالبلدي.. اكتبها بالكود! 💛**
 `,

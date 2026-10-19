@@ -4,6 +4,7 @@ import { articleHTML01 } from './articles/00b-html-tutorial-for-beginners';
 import { articleCSS01 } from './articles/00c-css-tutorial-for-beginners';
 import { articleJS01 } from './articles/00d-javascript-tutorial-for-beginners';
 import { articleHTMLTags01 } from './articles/00e-html-basic-tags-guide';
+import { articleHTMLAdvanced01 } from './articles/00f-advanced-html-tags-guide';
 import { article01 } from './articles/01-modern-javascript';
 import { article02 } from './articles/02-comprehensive-typescript';
 import { article03 } from './articles/03-react-19-architecture';
@@ -33,6 +34,7 @@ export const STATIC_ARTICLES: StaticArticle[] = [
   articleCSS01,
   articleJS01,
   articleHTMLTags01,
+  articleHTMLAdvanced01,
   article01,
   article02,
   article03,
