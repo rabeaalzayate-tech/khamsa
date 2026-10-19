@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0d13" />
+      <stop offset="50%" stop-color="#141824" />
+      <stop offset="100%" stop-color="#08090d" />
+    </linearGradient>
+    <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#EAB308" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0" />
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Glowing background orbs -->
+  <circle cx="220" cy="160" r="320" fill="url(#primaryGlow)"/>
+  <circle cx="980" cy="460" r="320" fill="url(#accentGlow)"/>
+
+  <!-- Left Header Branding -->
+  <g transform="translate(60, 48)">
+    <!-- Brand Icon -->
+    <g transform="translate(0, 0)">
+      <rect width="48" height="48" rx="12" fill="#F59E0B"/>
+      <text x="24" y="32" font-size="22" font-weight="900" fill="#000000" text-anchor="middle" font-family="'Cairo', sans-serif">5</text>
+    </g>
+    
+    <!-- Category Pill -->
+    <rect x="62" y="8" width="165" height="32" rx="16" fill="#1e293b" stroke="#F59E0B" stroke-opacity="0.6"/>
+    <text x="144" y="29" fill="#F59E0B" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" text-anchor="middle">تعلم البرمجة • 2026</text>
+
+    <!-- Title Ar -->
+    <text x="0" y="98" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif" font-size="28" font-weight="900" direction="rtl">
+      ازاي تتعلم البرمجة من الصفر في 2026؟
+    </text>
+
+    <!-- Subtitle En / Ar -->
+    <text x="0" y="132" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="15" font-weight="600">
+      دليلك العملي خطوة بخطوة • خارطة طريق الـ 90 يوماً • من الأساسيات للبورتفوليو
+    </text>
+  </g>
+
+  <!-- Code Snippet Box (Left Bottom) -->
+  <g transform="translate(60, 220)" filter="url(#shadow)">
+    <rect width="490" height="320" rx="16" fill="#0c0e14" stroke="#1e293b" stroke-width="2"/>
+    
+    <!-- Window Controls -->
+    <circle cx="25" cy="22" r="6" fill="#ef4444"/>
+    <circle cx="45" cy="22" r="6" fill="#f59e0b"/>
+    <circle cx="65" cy="22" r="6" fill="#10b981"/>
+    
+    <!-- File Tab -->
+    <rect x="90" y="10" width="180" height="24" rx="4" fill="#1e293b"/>
+    <text x="180" y="26" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">first-program.js</text>
+
+    <!-- Code Content -->
+    <text x="35" y="72" font-family="'Fira Code', Consolas, monospace" font-size="13" fill="#e2e8f0" xml:space="preserve">
+      <tspan x="35" dy="0"><span style="color:#94a3b8">// 1. افهم المشكلة وقسمها لخطوات</span></tspan>
+      <tspan x="35" dy="24"><span style="color:#f59e0b">const</span> <span style="color:#60a5fa">firstNumber</span> = <span style="color:#a78bfa">10</span>;</tspan>
+      <tspan x="35" dy="24"><span style="color:#f59e0b">const</span> <span style="color:#60a5fa">secondNumber</span> = <span style="color:#a78bfa">20</span>;</tspan>
+      <tspan x="35" dy="28"><span style="color:#94a3b8">// 2. عملية الجمع المنطقية</span></tspan>
+      <tspan x="35" dy="24"><span style="color:#f59e0b">const</span> <span style="color:#34d399">result</span> = <span style="color:#60a5fa">firstNumber</span> + <span style="color:#60a5fa">secondNumber</span>;</tspan>
+      <tspan x="35" dy="28"><span style="color:#94a3b8">// 3. عرض النتيجة</span></tspan>
+      <tspan x="35" dy="24"><span style="color:#38bdf8">console</span>.<span style="color:#fbbf24">log</span>(<span style="color:#f472b6">&quot;الناتج:&quot;</span>, <span style="color:#34d399">result</span>);</tspan>
+      <tspan x="35" dy="26"><span style="color:#10b981">// Output: الناتج: 30 🎉</span></tspan>
+    </text>
+  </g>
+
+  <!-- Right Side Interactive Diagram (Learning Roadmap & Pillars) -->
+  <g transform="translate(590, 110)">
+    <rect width="550" height="430" rx="16" fill="#141820" stroke="#F59E0B" stroke-opacity="0.35" stroke-width="2"/>
+    <text x="25" y="38" fill="#fbbf24" font-family="system-ui, sans-serif" font-size="15" font-weight="bold">خارطة طريق المبتدئ في البرمجة لعام 2026</text>
+    
+    <!-- 90 Days Roadmap Blocks -->
+    <!-- Month 1 -->
+    <g transform="translate(25, 60)">
+      <rect width="500" height="72" rx="10" fill="#1b202c" stroke="#334155"/>
+      <rect x="12" y="14" width="44" height="44" rx="8" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b"/>
+      <text x="34" y="42" fill="#f59e0b" font-family="'Cairo', sans-serif" font-size="14" font-weight="900" text-anchor="middle">1</text>
+      <text x="70" y="32" fill="#f8fafc" font-family="'Cairo', sans-serif" font-size="14" font-weight="bold">الشهر الأول: التأسيس وفهم المنطق البرمجي</text>
+      <text x="70" y="52" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">HTML5 + CSS3 + أساسيات JavaScript + حل المشكلات + Git</text>
+    </g>
+
+    <!-- Month 2 -->
+    <g transform="translate(25, 145)">
+      <rect width="500" height="72" rx="10" fill="#1b202c" stroke="#334155"/>
+      <rect x="12" y="14" width="44" height="44" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+      <text x="34" y="42" fill="#10b981" font-family="'Cairo', sans-serif" font-size="14" font-weight="900" text-anchor="middle">2</text>
+      <text x="70" y="32" fill="#f8fafc" font-family="'Cairo', sans-serif" font-size="14" font-weight="bold">الشهر الثاني: التطبيق العملي والمشاريع</text>
+      <text x="70" y="52" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">DOM Manipulation + Async/APIs + بناء آلة حاسبة و To-Do App</text>
+    </g>
+
+    <!-- Month 3 -->
+    <g transform="translate(25, 230)">
+      <rect width="500" height="72" rx="10" fill="#1b202c" stroke="#334155"/>
+      <rect x="12" y="14" width="44" height="44" rx="8" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8"/>
+      <text x="34" y="42" fill="#38bdf8" font-family="'Cairo', sans-serif" font-size="14" font-weight="900" text-anchor="middle">3</text>
+      <text x="70" y="32" fill="#f8fafc" font-family="'Cairo', sans-serif" font-size="14" font-weight="bold">الشهر الثالث: اختيار المسار وبناء الـ Portfolio</text>
+      <text x="70" y="52" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">React.js أو Node.js + رفع 3 مشاريع حقيقية على GitHub</text>
+    </g>
+
+    <!-- Golden Rules -->
+    <g transform="translate(25, 315)">
+      <rect width="500" height="95" rx="10" fill="#0c1017" stroke="#F59E0B" stroke-opacity="0.5"/>
+      <text x="18" y="26" fill="#fbbf24" font-family="'Cairo', sans-serif" font-size="13" font-weight="bold">💡 القواعد الذهبية لتعلم البرمجة بنجاح:</text>
+      <text x="18" y="50" fill="#cbd5e1" font-family="'Cairo', sans-serif" font-size="12">• التطبيق العملي 80% ومشاهدة الشروحات 20%</text>
+      <text x="18" y="72" fill="#cbd5e1" font-family="'Cairo', sans-serif" font-size="12">• الذكاء الاصطناعي معلّم ومرشد يشرح لك.. وليس كاتب كود بديل عنك</text>
+    </g>
+  </g>
+
+  <!-- Footer Watermark & Platform Logo -->
+  <g transform="translate(60, 580)">
+    <text x="0" y="0" fill="#94a3b8" font-family="'Cairo', sans-serif" font-size="14" font-weight="bold">
+      خمسة برمجة بالبلدي • افهمها بالبلدي.. اكتبها بالكود! 💛
+    </text>
+  </g>
+  <g transform="translate(1000, 560)">
+    <rect width="140" height="32" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-opacity="0.5"/>
+    <text x="70" y="21" fill="#f59e0b" font-family="system-ui, sans-serif" font-size="12" font-weight="900" text-anchor="middle">
+      دليل المبتدئين 2026
+    </text>
+  </g>
+</svg>

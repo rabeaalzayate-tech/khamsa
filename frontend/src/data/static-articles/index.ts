@@ -1,4 +1,5 @@
 import { StaticArticle } from './types';
+import { article00 } from './articles/00-learn-programming-from-scratch';
 import { article01 } from './articles/01-modern-javascript';
 import { article02 } from './articles/02-comprehensive-typescript';
 import { article03 } from './articles/03-react-19-architecture';
@@ -23,6 +24,7 @@ import { article20 } from './articles/20-clean-code-solid-design-patterns';
 export * from './types';
 
 export const STATIC_ARTICLES: StaticArticle[] = [
+  article00,
   article01,
   article02,
   article03,
