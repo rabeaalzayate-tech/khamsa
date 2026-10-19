@@ -61,6 +61,7 @@ export const articleCSS01: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'javascript-tutorial-for-beginners',
     'html-tutorial-for-beginners',
     'learn-programming-from-scratch',
     'modern-css-architecture-tailwind-container-queries',
@@ -590,8 +591,8 @@ CSS مش مجرد شفرات ألوان؛ هي فن تحويل الهيكل ال
 * نظام Flexbox السحري لمحاذاة العناصر.
 * إزاي تخلي تصميمك متجاوب ومناسب للهواتف.
 
-### 🚀 مقالتنا القادمة في السلسلة:
-> **«يعني إيه JavaScript؟ شرح JavaScript للمبتدئين من الصفر مع أمثلة عملية»**
+### 🚀 مقالتنا التالية في السلسلة:
+> **[شرح JavaScript للمبتدئين من الصفر بالأمثلة العملية](/articles/javascript-tutorial-for-beginners)**
 
 وده هيكون المقال التالت في السلسلة علشان ننتقل من بناء الصفحة بـ HTML، وتنسيقها بـ CSS، لإضافة التفاعل والسحر البرمجي بـ JavaScript!
 
