@@ -61,6 +61,7 @@ export const articleHTML01: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'html-basic-tags-guide',
     'css-tutorial-for-beginners',
     'learn-programming-from-scratch',
     'modern-css-architecture-tailwind-container-queries',

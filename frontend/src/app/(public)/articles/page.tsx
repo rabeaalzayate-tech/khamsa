@@ -20,6 +20,7 @@ import { AdSlot } from '@/components/ads/AdSlot';
 const CATEGORIES = [
   'الكل',
   'تعلم البرمجة',
+  'HTML وتطوير الويب',
   'JavaScript',
   'TypeScript',
   'React',
