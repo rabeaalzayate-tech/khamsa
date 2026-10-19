@@ -16,7 +16,7 @@ const cairo = Cairo({
 const siteUrl = getSiteUrl();
 const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
-  'nNlwGk53zi-tWlVHmfwrF4yAgkzMN9n_lZji1_cAk9Y';
+  'JAPcFUlh_MDW3tlYdlTU4VULl9Kld2X1PJ_P3yLoCeY';
 const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-0NV2KE0NGC';
 const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-MT8QVP4H';
 const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9549884730788063';
@@ -152,10 +152,9 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     verification: {
-      google: googleVerification,
+      google: ['JAPcFUlh_MDW3tlYdlTU4VULl9Kld2X1PJ_P3yLoCeY', 'nNlwGk53zi-tWlVHmfwrF4yAgkzMN9n_lZji1_cAk9Y'],
     },
     other: {
-      'google-site-verification': googleVerification,
       'google-adsense-account': 'ca-pub-9549884730788063',
     },
   };
