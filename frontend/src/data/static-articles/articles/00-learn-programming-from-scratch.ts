@@ -61,6 +61,7 @@ export const article00: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'html-tutorial-for-beginners',
     'modern-javascript-comprehensive-guide-es6-async',
     'modern-css-architecture-tailwind-container-queries',
     'react-19-architecture-server-components-advanced-hooks',
@@ -157,7 +158,7 @@ console.log(result);
 ### 1. تطوير واجهات المواقع (Front-End Development)
 
 لو بتحب التصميم وتفاعل المستخدمين، وعايز تعمل صفحات تفاعلية زي فيسبوك ويوتيوب، فده المسار الأنسب للمبتدئين:
-* **HTML:** علشان تبني هيكل الصفحة الأساسي.
+* **HTML:** علشان تبني هيكل الصفحة الأساسي (ابدأ بقراءة مقالنا الشامل [يعني إيه HTML؟ شرح للمبتدئين من الصفر بالأمثلة](/articles/html-tutorial-for-beginners)).
 * **CSS:** علشان تتحكم في الألوان والتنسيقات والتجاوب مع الموبايل (تقدر تطلع على [دليل Modern CSS و Tailwind CSS](/articles/modern-css-architecture-tailwind-container-queries)).
 * **JavaScript:** العقل المحرك اللي بيضيف التفاعل والوظائف الحية للصفحة (راجع [الدليل الشامل لـ JavaScript الحديثة](/articles/modern-javascript-comprehensive-guide-es6-async)).
 * **React.js:** بعد ما تتقن الأساسيات، تبدأ تتعلم مكتبة React لبناء واجهات احترافية ومشاريع متطورة (راجع [معمارية React 19 والـ Server Components](/articles/react-19-architecture-server-components-advanced-hooks)).
