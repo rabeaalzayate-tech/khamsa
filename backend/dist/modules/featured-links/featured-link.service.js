@@ -4,6 +4,7 @@ exports.FeaturedLinkService = void 0;
 const prisma_config_1 = require("../../config/prisma.config");
 const api_error_1 = require("../../utils/api-error");
 const pagination_1 = require("../../utils/pagination");
+const text_encoding_1 = require("../../utils/text-encoding");
 class FeaturedLinkService {
     /**
      * Public: Get all active featured links sorted by order ASC, then newest
@@ -13,7 +14,7 @@ class FeaturedLinkService {
             where: { isActive: true },
             orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
         });
-        return links;
+        return links.map(text_encoding_1.sanitizeFeaturedLink);
     }
     /**
      * Admin: Get all featured links with optional filtering and pagination
@@ -52,7 +53,7 @@ class FeaturedLinkService {
             }),
             prisma_config_1.prisma.featuredLink.count({ where }),
         ]);
-        return (0, pagination_1.createPaginatedResult)(items, total, page, limit);
+        return (0, pagination_1.createPaginatedResult)(items.map(text_encoding_1.sanitizeFeaturedLink), total, page, limit);
     }
     /**
      * Get a single featured link by ID
@@ -64,7 +65,7 @@ class FeaturedLinkService {
         if (!link) {
             throw api_error_1.ApiError.notFound('الرابط المميز غير موجود');
         }
-        return link;
+        return (0, text_encoding_1.sanitizeFeaturedLink)(link);
     }
     /**
      * Create a new featured link
@@ -72,17 +73,17 @@ class FeaturedLinkService {
     static async createFeaturedLink(data) {
         const link = await prisma_config_1.prisma.featuredLink.create({
             data: {
-                title: data.title,
-                image: data.image,
+                title: (0, text_encoding_1.fixMojibake)(data.title),
+                image: (0, text_encoding_1.resolveFeaturedImage)(data.image, data.url),
                 url: data.url,
-                badge: data.badge || '',
-                description: data.description || '',
-                ctaText: data.ctaText || '',
+                badge: data.badge ? (0, text_encoding_1.fixMojibake)(data.badge) : '',
+                description: data.description ? (0, text_encoding_1.fixMojibake)(data.description) : '',
+                ctaText: data.ctaText ? (0, text_encoding_1.fixMojibake)(data.ctaText) : '',
                 order: Number(data.order) || 0,
                 isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
             },
         });
-        return link;
+        return (0, text_encoding_1.sanitizeFeaturedLink)(link);
     }
     /**
      * Update an existing featured link
@@ -96,17 +97,17 @@ class FeaturedLinkService {
         }
         const updateData = {};
         if (data.title !== undefined)
-            updateData.title = data.title;
+            updateData.title = (0, text_encoding_1.fixMojibake)(data.title);
         if (data.image !== undefined)
-            updateData.image = data.image;
+            updateData.image = (0, text_encoding_1.resolveFeaturedImage)(data.image, data.url ?? link.url);
         if (data.url !== undefined)
             updateData.url = data.url;
         if (data.badge !== undefined)
-            updateData.badge = data.badge;
+            updateData.badge = (0, text_encoding_1.fixMojibake)(data.badge);
         if (data.description !== undefined)
-            updateData.description = data.description;
+            updateData.description = (0, text_encoding_1.fixMojibake)(data.description);
         if (data.ctaText !== undefined)
-            updateData.ctaText = data.ctaText;
+            updateData.ctaText = (0, text_encoding_1.fixMojibake)(data.ctaText);
         if (data.order !== undefined)
             updateData.order = Number(data.order);
         if (data.isActive !== undefined)
@@ -115,7 +116,7 @@ class FeaturedLinkService {
             where: { id },
             data: updateData,
         });
-        return updated;
+        return (0, text_encoding_1.sanitizeFeaturedLink)(updated);
     }
     /**
      * Toggle the active status of a featured link

@@ -16,10 +16,10 @@ import {
   TikTokIcon,
   FacebookIcon,
   WebsiteIcon,
-} from '@/components/shared/BrandIcons';
 import { linksConfig } from '@/data/links-config';
 import { usePublicFeaturedLinks } from '@/features/featured-links';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { fixMojibake, resolveFeaturedImage } from '@/lib/text-encoding';
 
 // 5 Main Essential Static Links as requested
 const ESSENTIAL_STATIC_LINKS = [
@@ -245,9 +245,11 @@ export default function LinksPage() {
             {/* Grid (1 col on mobile, 3 cols on desktop) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4" role="list">
               {dynamicFeaturedLinks.map(link => {
-                const badgeText = link.badge || 'منحة';
-                const ctaText = link.ctaText || 'اعرف التفاصيل';
-                const descriptionText = link.description || '';
+                const badgeText = fixMojibake(link.badge) || 'منحة';
+                const ctaText = fixMojibake(link.ctaText) || 'اعرف التفاصيل';
+                const descriptionText = fixMojibake(link.description) || '';
+                const cleanTitle = fixMojibake(link.title);
+                const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
                 return (
                   <div key={link._id} role="listitem">
@@ -256,7 +258,7 @@ export default function LinksPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group relative block w-full rounded-2xl p-3.5 sm:p-4 bg-[#0C0D12] border border-[#FFC107] shadow-[0_0_15px_rgba(255,193,7,0.18)] hover:shadow-[0_0_25px_rgba(255,193,7,0.32)] hover:-translate-y-1 transition-all duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFC107]"
-                      aria-label={`${link.title} - ${descriptionText}`}
+                      aria-label={`${cleanTitle} - ${descriptionText}`}
                     >
                       <div className="flex items-center justify-between gap-3 text-right h-full">
                         {/* 1. Left (In LTR) / Far Side: Mobile Circular Yellow Arrow Button */}
@@ -275,7 +277,7 @@ export default function LinksPage() {
 
                           {/* Title */}
                           <h3 className="font-extrabold text-sm sm:text-base text-white group-hover:text-[#FFC107] transition-colors line-clamp-1">
-                            {link.title}
+                            {cleanTitle}
                           </h3>
 
                           {/* Description */}
@@ -295,13 +297,17 @@ export default function LinksPage() {
                         </div>
 
                         {/* 3. Right: Rectangular Image Thumbnail */}
-                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-zinc-700/60 bg-[#07080B] shrink-0 shadow-md group-hover:scale-105 transition-transform duration-200">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-zinc-700/60 bg-[#07080B] shrink-0 shadow-md group-hover:scale-105 transition-transform duration-200 flex items-center justify-center">
                           <img
-                            src={link.image}
-                            alt={link.title}
+                            src={resolvedImage}
+                            alt={cleanTitle}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.target as HTMLElement).style.display = 'none';
+                              const target = e.currentTarget;
+                              if (target.src !== window.location.origin + '/logo.png') {
+                                target.src = '/logo.png';
+                                target.className = 'w-12 h-12 object-contain opacity-80';
+                              }
                             }}
                           />
                         </div>

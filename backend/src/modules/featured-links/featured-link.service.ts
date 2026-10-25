@@ -7,6 +7,7 @@ import {
 import { PaginatedResult } from '../../types/common.types';
 import { ApiError } from '../../utils/api-error';
 import { getPaginationOptions, createPaginatedResult } from '../../utils/pagination';
+import { sanitizeFeaturedLink, fixMojibake, resolveFeaturedImage } from '../../utils/text-encoding';
 
 export class FeaturedLinkService {
   /**
@@ -18,7 +19,7 @@ export class FeaturedLinkService {
       orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
     });
 
-    return links;
+    return links.map(sanitizeFeaturedLink);
   }
 
   /**
@@ -64,7 +65,7 @@ export class FeaturedLinkService {
       prisma.featuredLink.count({ where }),
     ]);
 
-    return createPaginatedResult(items, total, page, limit);
+    return createPaginatedResult(items.map(sanitizeFeaturedLink), total, page, limit);
   }
 
   /**
@@ -79,7 +80,7 @@ export class FeaturedLinkService {
       throw ApiError.notFound('الرابط المميز غير موجود');
     }
 
-    return link;
+    return sanitizeFeaturedLink(link);
   }
 
   /**
@@ -90,18 +91,18 @@ export class FeaturedLinkService {
   ): Promise<any> {
     const link = await prisma.featuredLink.create({
       data: {
-        title: data.title,
-        image: data.image,
+        title: fixMojibake(data.title),
+        image: resolveFeaturedImage(data.image, data.url),
         url: data.url,
-        badge: data.badge || '',
-        description: data.description || '',
-        ctaText: data.ctaText || '',
+        badge: data.badge ? fixMojibake(data.badge) : '',
+        description: data.description ? fixMojibake(data.description) : '',
+        ctaText: data.ctaText ? fixMojibake(data.ctaText) : '',
         order: Number(data.order) || 0,
         isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
       },
     });
 
-    return link;
+    return sanitizeFeaturedLink(link);
   }
 
   /**
@@ -120,12 +121,12 @@ export class FeaturedLinkService {
     }
 
     const updateData: any = {};
-    if (data.title !== undefined) updateData.title = data.title;
-    if (data.image !== undefined) updateData.image = data.image;
+    if (data.title !== undefined) updateData.title = fixMojibake(data.title);
+    if (data.image !== undefined) updateData.image = resolveFeaturedImage(data.image, data.url ?? link.url);
     if (data.url !== undefined) updateData.url = data.url;
-    if (data.badge !== undefined) updateData.badge = data.badge;
-    if (data.description !== undefined) updateData.description = data.description;
-    if (data.ctaText !== undefined) updateData.ctaText = data.ctaText;
+    if (data.badge !== undefined) updateData.badge = fixMojibake(data.badge);
+    if (data.description !== undefined) updateData.description = fixMojibake(data.description);
+    if (data.ctaText !== undefined) updateData.ctaText = fixMojibake(data.ctaText);
     if (data.order !== undefined) updateData.order = Number(data.order);
     if (data.isActive !== undefined) updateData.isActive = Boolean(data.isActive);
 
@@ -134,7 +135,7 @@ export class FeaturedLinkService {
       data: updateData,
     });
 
-    return updated;
+    return sanitizeFeaturedLink(updated);
   }
 
   /**

@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { fixMojibake, resolveFeaturedImage } from '@/lib/text-encoding';
 
 interface FeaturedLinksTableProps {
   links: FeaturedLink[];
@@ -101,36 +102,44 @@ export function FeaturedLinksTable({
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
-              {links.map(link => (
-                <tr
-                  key={link._id}
-                  className="hover:bg-surface-hover/50 transition-colors group"
-                >
-                  {/* Thumbnail */}
-                  <td className="py-3 px-4">
-                    <div className="w-14 h-14 rounded-xl overflow-hidden border border-border bg-surface shrink-0">
-                      <img
-                        src={link.image}
-                        alt={link.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  </td>
+                {links.map(link => {
+                  const cleanTitle = fixMojibake(link.title);
+                  const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
-                  {/* Title */}
-                  <td className="py-3 px-4 font-bold text-foreground max-w-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate">{link.title}</span>
-                      {link.isActive && (
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-amber-400/10 text-amber-400 border border-amber-400/20 text-[10px] font-bold shrink-0">
-                          مميز
-                        </span>
-                      )}
-                    </div>
-                  </td>
+                  return (
+                    <tr
+                      key={link._id}
+                      className="hover:bg-surface-hover/50 transition-colors group"
+                    >
+                      {/* Thumbnail */}
+                      <td className="py-3 px-4">
+                        <div className="w-14 h-14 rounded-xl overflow-hidden border border-border bg-surface shrink-0 flex items-center justify-center">
+                          <img
+                            src={resolvedImage}
+                            alt={cleanTitle}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (target.src !== window.location.origin + '/logo.png') {
+                                target.src = '/logo.png';
+                                target.className = 'w-8 h-8 object-contain opacity-70';
+                              }
+                            }}
+                          />
+                        </div>
+                      </td>
+
+                      {/* Title */}
+                      <td className="py-3 px-4 font-bold text-foreground max-w-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="truncate">{cleanTitle}</span>
+                          {link.isActive && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-amber-400/10 text-amber-400 border border-amber-400/20 text-[10px] font-bold shrink-0">
+                              مميز
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
                   {/* URL */}
                   <td className="py-3 px-4 font-mono text-muted-foreground max-w-xs">
@@ -207,25 +216,36 @@ export function FeaturedLinksTable({
 
       {/* Mobile Cards */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
-        {links.map(link => (
-          <div
-            key={link._id}
-            className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-card"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-16 h-16 rounded-xl overflow-hidden border border-border bg-surface shrink-0">
-                <img
-                  src={link.image}
-                  alt={link.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+        {links.map(link => {
+          const cleanTitle = fixMojibake(link.title);
+          const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
-              <div className="flex-1 min-w-0 space-y-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h4 className="font-bold text-xs text-foreground truncate">
-                    {link.title}
-                  </h4>
+          return (
+            <div
+              key={link._id}
+              className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-card"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-16 h-16 rounded-xl overflow-hidden border border-border bg-surface shrink-0 flex items-center justify-center">
+                  <img
+                    src={resolvedImage}
+                    alt={cleanTitle}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (target.src !== window.location.origin + '/logo.png') {
+                        target.src = '/logo.png';
+                        target.className = 'w-10 h-10 object-contain opacity-70';
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="font-bold text-xs text-foreground truncate">
+                      {cleanTitle}
+                    </h4>
                   <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-surface border border-border text-foreground font-bold shrink-0">
                     #{link.order ?? 0}
                   </span>

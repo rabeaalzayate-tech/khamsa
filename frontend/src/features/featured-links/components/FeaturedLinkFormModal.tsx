@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Switch } from '@/components/ui/Switch';
 import { mediaApi } from '@/lib/api/media.api';
+import { fixMojibake, resolveFeaturedImage } from '@/lib/text-encoding';
 
 interface FeaturedLinkFormModalProps {
   isOpen: boolean;
@@ -77,18 +78,19 @@ export function FeaturedLinkFormModal({
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
+        const resolvedImg = resolveFeaturedImage(initialData.image, initialData.url);
         reset({
-          title: initialData.title,
-          image: initialData.image,
+          title: fixMojibake(initialData.title),
+          image: resolvedImg,
           url: initialData.url,
-          badge: initialData.badge || '',
-          description: initialData.description || '',
-          ctaText: initialData.ctaText || '',
+          badge: fixMojibake(initialData.badge || ''),
+          description: fixMojibake(initialData.description || ''),
+          ctaText: fixMojibake(initialData.ctaText || ''),
           order: initialData.order ?? 0,
           isActive: initialData.isActive ?? true,
         });
-        setImagePreview(initialData.image);
-        setUrlInputVal(initialData.image || '');
+        setImagePreview(resolvedImg);
+        setUrlInputVal(resolvedImg || '');
       } else {
         reset({
           title: '',
