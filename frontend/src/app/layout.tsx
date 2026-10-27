@@ -5,6 +5,7 @@ import { Providers } from '@/providers';
 import { Settings } from '@/types/api';
 import { getSiteUrl } from '@/lib/seo/site-url';
 import { CookieConsent } from '@/components/shared/CookieConsent';
+import { Analytics } from '@vercel/analytics/next';
 
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
@@ -288,6 +289,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           {children}
           <CookieConsent />
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
