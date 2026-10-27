@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const articleJS01: StaticArticle = {
   id: 'static-art-js-01',
@@ -84,7 +84,7 @@ export const articleJS01: StaticArticle = {
       'التعامل مع DOM',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/javascript-tutorial-for-beginners',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/javascript-tutorial-for-beginners',
     ogTitle: 'شرح JavaScript للمبتدئين من الصفر بالأمثلة العملية',
     ogDescription: 'دليل عملي ومبسط بالبلدي لكل ما يخص لغة JavaScript: المتغيرات، الدوال، المصفوفات، الأحداث، والـ DOM مع مشروع عداد تفاعلي متكامل.',
   },

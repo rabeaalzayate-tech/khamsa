@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article12: StaticArticle = {
   id: 'static-art-12',
@@ -47,7 +47,7 @@ export const article12: StaticArticle = {
     title: 'هندسة الـ Frontend الحديثة: إدارة الحالة وتصميم المكونات',
     description: 'دليل احترافي لهندسة الواجهات الأمامية: مقارنة TanStack Query و Zustand، وتطبيق أنماط المكونات المتقدمة في React.',
     keywords: ['Frontend Architecture', 'React', 'Zustand', 'TanStack Query', 'Compound Components', 'State Management'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/modern-frontend-architecture-state-management-component-design',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/modern-frontend-architecture-state-management-component-design',
   },
   content: `## تعقيدات الـ Frontend في التطبيقات المؤسسية
 

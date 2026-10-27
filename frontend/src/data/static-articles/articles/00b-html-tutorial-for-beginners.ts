@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const articleHTML01: StaticArticle = {
   id: 'static-art-html-01',
@@ -79,7 +79,7 @@ export const articleHTML01: StaticArticle = {
       'تعلم تصميم المواقع',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/html-tutorial-for-beginners',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/html-tutorial-for-beginners',
     ogTitle: 'يعني إيه HTML؟ شرح HTML للمبتدئين من الصفر بالأمثلة',
     ogDescription: 'دليل عملي ومبسط بالبلدي لكل ما يخص لغة HTML: الهيكل، الوسوم، الخصائص، وبناء أول صفحة وموقع شخصي بنفسك.',
   },
@@ -310,7 +310,7 @@ name="value"
 ### أمثلة على الخصائص الشائعة:
 1. في الروابط: خاصية \`href\` بتحدد وجهة الرابط:
 \`\`\`html
-<a href="https://khamsa-web.vercel.app">زور منصة خمسة برمجة بالبلدي</a>
+<a href="https://www.khamsaprogramming.com">زور منصة خمسة برمجة بالبلدي</a>
 \`\`\`
 
 2. في الصور: خاصية \`src\` لمكان الصورة وخاصية \`alt\` للنص البديل:

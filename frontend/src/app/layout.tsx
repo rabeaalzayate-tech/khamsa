@@ -21,7 +21,7 @@ const gtmId =
   process.env.NEXT_PUBLIC_GTM_ID && process.env.NEXT_PUBLIC_GTM_ID !== 'GTM-MT8QVP4H'
     ? process.env.NEXT_PUBLIC_GTM_ID
     : 'GTM-PCT67FXD';
-const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9826583080450782';
+const adSenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-9549884730788063';
 
 function sanitizeArabicText(text: string | undefined, fallback: string): string {
   if (!text || typeof text !== 'string') return fallback;

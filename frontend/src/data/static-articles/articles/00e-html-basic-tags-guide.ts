@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const articleHTMLTags01: StaticArticle = {
   id: 'static-art-html-tags-01',
@@ -79,7 +79,7 @@ export const articleHTMLTags01: StaticArticle = {
       'HTML للمبتدئين',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/html-basic-tags-guide',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/html-basic-tags-guide',
     ogTitle: 'شرح جميع وسوم HTML الأساسية بالعامية المصرية من الصفر',
     ogDescription: 'دليل شامل لكل وسم في لغة HTML مع أمثلة كود عملية ووظيفة كل وسم وتطبيقه في صفحات الويب الحقيقية.',
   },

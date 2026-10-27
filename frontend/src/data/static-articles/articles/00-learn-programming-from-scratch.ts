@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article00: StaticArticle = {
   id: 'static-art-00',
@@ -80,7 +80,7 @@ export const article00: StaticArticle = {
       'خريطة تعلم البرمجة 2026',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/learn-programming-from-scratch',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/learn-programming-from-scratch',
     ogTitle: 'ازاي تتعلم البرمجة من الصفر في 2026؟ دليلك العملي خطوة بخطوة',
     ogDescription: 'عمرك فتحت كورس وتهت؟ في الدليل ده بنشرح لك بالبلدي خطة 90 يوم واضحة، وإزاي تبني مشاريع وتستخدم الذكاء الاصطناعي صح.',
   },

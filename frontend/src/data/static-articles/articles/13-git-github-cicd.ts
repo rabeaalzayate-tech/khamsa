@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article13: StaticArticle = {
   id: 'static-art-13',
@@ -47,7 +47,7 @@ export const article13: StaticArticle = {
     title: 'دليل Git و GitHub الاحترافي: Rebase و Branching و CI/CD',
     description: 'تعلم أسرار Git المتقدمة لفرق العمل: Rebase تفاعلي، استراتيجيات الفروع الحديثة، وأتمتة النشر السحابي مع GitHub Actions.',
     keywords: ['Git', 'GitHub', 'CI/CD', 'Git Rebase', 'Trunk Based Development', 'GitHub Actions'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/professional-git-github-branching-strategies-cicd',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/professional-git-github-branching-strategies-cicd',
   },
   content: `## البنية الداخلية لـ Git: الرسم البياني الموجه (DAG) والكائنات
 

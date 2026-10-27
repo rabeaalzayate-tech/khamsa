@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article11: StaticArticle = {
   id: 'static-art-11',
@@ -47,7 +47,7 @@ export const article11: StaticArticle = {
     title: 'الـ Caching المتقدم باستخدام Redis: استراتيجيات الإنتاج',
     description: 'دليل هندسي للتخزين المؤقت مع Redis: شرح أنماط Cache-Aside، هياكل البيانات، تجنب Cache Stampede، وبناء Rate Limiter مع أمثلة كود.',
     keywords: ['Redis', 'Caching', 'Cache Aside', 'TTL', 'Rate Limiting', 'Database Optimization'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/advanced-caching-redis-strategies-practical-patterns',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/advanced-caching-redis-strategies-practical-patterns',
   },
   content: `## لماذا Redis أسرع من قواعد البيانات التقليدية بـ 100 ضعف؟
 

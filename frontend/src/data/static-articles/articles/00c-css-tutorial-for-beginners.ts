@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const articleCSS01: StaticArticle = {
   id: 'static-art-css-01',
@@ -80,7 +80,7 @@ export const articleCSS01: StaticArticle = {
       'تعلم Flexbox',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/css-tutorial-for-beginners',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/css-tutorial-for-beginners',
     ogTitle: 'يعني إيه CSS؟ شرح CSS للمبتدئين من الصفر مع أمثلة عملية',
     ogDescription: 'اتعلم إزاي تحول صفحة الويب من هيكل بدائي لتصميم عصري جذاب ومتجاوب مع الموبايل باستخدام لغة CSS خطوة بخطوة.',
   },

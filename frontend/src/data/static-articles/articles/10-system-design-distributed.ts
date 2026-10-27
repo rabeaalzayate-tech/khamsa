@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article10: StaticArticle = {
   id: 'static-art-10',
@@ -49,7 +49,7 @@ export const article10: StaticArticle = {
     title: 'تصميم أنظمة الويب الموزعة: دليل System Design من الصفر للملايين',
     description: 'دليل شامل لـ System Design: موازنة الأحمال، تقسيم قواعد البيانات، طوابير الرسائل، ومقارنة Monolith vs Microservices مع رسوم توضيحية.',
     keywords: ['System Design', 'Scalability', 'Load Balancer', 'Microservices', 'Sharding', 'CAP Theorem', 'معمارية النظم'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/system-design-guide-monolith-to-distributed-scale',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/system-design-guide-monolith-to-distributed-scale',
   },
   content: `## التوسع الرأسي مقابل التوسع الأفقي
 

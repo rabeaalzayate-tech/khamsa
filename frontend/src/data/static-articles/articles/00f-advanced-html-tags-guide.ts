@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const articleHTMLAdvanced01: StaticArticle = {
   id: 'static-art-html-adv-01',
@@ -79,7 +79,7 @@ export const articleHTMLAdvanced01: StaticArticle = {
       'وسوم HTML التفاعلية',
       'برمجة بالبلدي',
     ],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/advanced-html-tags-guide',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/advanced-html-tags-guide',
     ogTitle: 'شرح وسوم HTML المتقدمة بالعامية المصرية من الصفر بالأمثلة العملية',
     ogDescription: 'دليل شامل لوسوم HTML المتقدمة: العناصر التفاعلية، الوسائط، الرسومات المتجهية، النماذج المتخصصة، والوسوم المهجورة التي يجب تجنبها.',
   },

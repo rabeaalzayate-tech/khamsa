@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article07: StaticArticle = {
   id: 'static-art-07',
@@ -48,7 +48,7 @@ export const article07: StaticArticle = {
     title: 'دليل MongoDB الشامل: الفهرسة و Aggregation Pipeline والأداء',
     description: 'دليل احترافي لـ MongoDB: نمذجة البيانات، الفهرسة المتقدمة، Aggregation Pipeline، وتفادي الـ COLLSCAN مع أمثلة عملية.',
     keywords: ['MongoDB', 'Indexing', 'Aggregation Pipeline', 'NoSQL', 'Database Optimization', 'هندسة البيانات'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/comprehensive-mongodb-guide-indexing-aggregation-performance',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/comprehensive-mongodb-guide-indexing-aggregation-performance',
   },
   content: `## نمذجة البيانات في NoSQL: التضمين مقابل الإشارة
 

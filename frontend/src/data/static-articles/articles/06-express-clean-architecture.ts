@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article06: StaticArticle = {
   id: 'static-art-06',
@@ -48,7 +48,7 @@ export const article06: StaticArticle = {
     title: 'بناء RESTful APIs احترافية: Express 5 و Clean Architecture',
     description: 'دليل شامل لبناء APIs احترافية مع Express 5 و TypeScript: هندسة الطبقات، معالجة الأخطاء المركزية، Zod Validation، واختبار البرمجيات.',
     keywords: ['Express', 'Clean Architecture', 'REST API', 'Node.js', 'Zod', 'Backend Engineering'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/building-production-restful-apis-express-clean-architecture',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/building-production-restful-apis-express-clean-architecture',
   },
   content: `## لماذا تفشل المشاريع بدون معمارية نظيفة؟
 
@@ -196,7 +196,7 @@ app.use(helmet());
 
 // 2. قيود الـ CORS المحددة
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'https://khamsa-web.vercel.app',
+  origin: process.env.CLIENT_ORIGIN || 'https://www.khamsaprogramming.com',
   credentials: true,
 }));
 

@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article14: StaticArticle = {
   id: 'static-art-14',
@@ -47,7 +47,7 @@ export const article14: StaticArticle = {
     title: 'الدليل العملي لـ Docker لمطوري الويب: Containers و Compose',
     description: 'تعلم Docker لمشاريع الويب خطوة بخطوة: كتابة Multi-stage Dockerfile لـ Next.js و Node.js، وضبط Docker Compose مع قواعد البيانات.',
     keywords: ['Docker', 'Containers', 'Docker Compose', 'Multi Stage Build', 'Node.js Docker', 'DevOps'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/practical-docker-containerization-guide-web-developers',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/practical-docker-containerization-guide-web-developers',
   },
   content: `## حل أزمة «شغال على جهازي ومش شغال على السيرفر!»
 

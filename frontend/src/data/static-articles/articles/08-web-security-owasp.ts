@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article08: StaticArticle = {
   id: 'static-art-08',
@@ -49,7 +49,7 @@ export const article08: StaticArticle = {
     title: 'أمان تطبيقات الويب: دليل الحماية الشامل ضد OWASP Top 10',
     description: 'تعلم تأمين تطبيقاتك ضد أشرس هجمات الويب: حماية من XSS، CSRF، NoSQL Injection، إعدادات CSP، وتشفير كلمات المرور بأحدث المعايير الدولية.',
     keywords: ['Web Security', 'OWASP Top 10', 'XSS', 'CSRF', 'NoSQL Injection', 'CSP', 'Argon2', 'أمن المعلومات'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/web-security-developer-guide-owasp-top-10',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/web-security-developer-guide-owasp-top-10',
   },
   content: `## عقلية الأمان: مبدأ انعدام الثقة (Zero-Trust Architecture)
 

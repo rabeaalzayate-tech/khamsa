@@ -1,4 +1,4 @@
-export interface StaticLinkItem {
+﻿export interface StaticLinkItem {
   id: string;
   title: string;
   subtitle: string;
@@ -51,7 +51,7 @@ export const linksConfig: LinksPageConfig = {
       id: 'official-website',
       title: 'موقع خمسة برمجة بالبلدي',
       subtitle: 'الموقع الرسمي',
-      url: 'https://khamsa-web.vercel.app/',
+      url: 'https://www.khamsaprogramming.com/',
       icon: 'globe',
       isExternal: false,
     },
@@ -113,7 +113,7 @@ export const linksConfig: LinksPageConfig = {
     },
     {
       name: 'Website',
-      url: 'https://khamsa-web.vercel.app/',
+      url: 'https://www.khamsaprogramming.com/',
       icon: 'globe',
       bg: 'bg-zinc-800 border border-zinc-700 text-white hover:border-zinc-500',
     },

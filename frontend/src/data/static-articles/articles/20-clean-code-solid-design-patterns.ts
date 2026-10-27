@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article20: StaticArticle = {
   id: 'static-art-20',
@@ -49,7 +49,7 @@ export const article20: StaticArticle = {
     title: 'دليل هندسة البرمجيات النظيفة: مبادئ SOLID و Design Patterns',
     description: 'شرح معماري لمبادئ SOLID الخمسة وأنماط التصميم (Strategy, Factory, Observer) بأمثلة كود TypeScript عملية من بيئات الإنتاج.',
     keywords: ['SOLID Principles', 'Clean Code', 'Design Patterns', 'TypeScript Architecture', 'Dependency Inversion', 'Strategy Pattern'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/clean-software-engineering-solid-principles-design-patterns',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/clean-software-engineering-solid-principles-design-patterns',
   },
   content: `## ما هو الكود النظيف؟ ولماذا ندفع ديناً تقنياً (Technical Debt) عندما نهمله؟
 

@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article05: StaticArticle = {
   id: 'static-art-05',
@@ -49,7 +49,7 @@ export const article05: StaticArticle = {
     title: 'هندسة Node.js المتقدمة: Event Loop و Streams و Worker Threads',
     description: 'شرح هندسي معماري لـ Node.js: تفكيك مكتبة Libuv، ومراحل الـ Event Loop، وهندسة الـ Streams والـ Backpressure مع تطبيقات عملية.',
     keywords: ['Node.js', 'Libuv', 'Event Loop', 'Node Streams', 'Worker Threads', 'Backend Architecture'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/advanced-nodejs-engineering-event-loop-streams-workers',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/advanced-nodejs-engineering-event-loop-streams-workers',
   },
   content: `## المعمارية الداخلية لـ Node.js: محرك V8 ومكتبة Libuv
 

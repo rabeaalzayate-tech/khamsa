@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article15: StaticArticle = {
   id: 'static-art-15',
@@ -48,7 +48,7 @@ export const article15: StaticArticle = {
     title: 'تحسين أداء الويب و Core Web Vitals: دليل السرعة الشامل',
     description: 'دليل مهندسي الويب للسرعة القصوى: حلول عملية لـ LCP و INP و CLS، تحسين الصور والخطوط، والوصول إلى 100% في مؤشرات Google.',
     keywords: ['Core Web Vitals', 'Web Performance', 'LCP', 'INP', 'CLS', 'Next.js Performance', 'تحسين محركات البحث'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/web-performance-core-web-vitals-speed-optimization',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/web-performance-core-web-vitals-speed-optimization',
   },
   content: `## لماذا الأداء ليس رفاهية بل معيار تصدر في محركات البحث؟
 

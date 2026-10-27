@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article09: StaticArticle = {
   id: 'static-art-09',
@@ -49,7 +49,7 @@ export const article09: StaticArticle = {
     title: 'دليل المصادقة والتفويض الشامل: JWT و Sessions و RBAC',
     description: 'شرح هندسي متكامل للمصادقة والتفويض: تدوير Refresh Tokens، مقارنة Sessions vs JWT، بروتوكول OAuth 2.0، ونظام RBAC مع أمثلة كود.',
     keywords: ['Authentication', 'JWT', 'Sessions', 'RBAC', 'OAuth2', 'أمان الويب', 'Node.js Auth'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/authentication-authorization-jwt-sessions-oauth2-rbac',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/authentication-authorization-jwt-sessions-oauth2-rbac',
   },
   content: `## الفرق الجوهري: Authentication مقابل Authorization
 

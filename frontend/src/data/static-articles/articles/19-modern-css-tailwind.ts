@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article19: StaticArticle = {
   id: 'static-art-19',
@@ -48,7 +48,7 @@ export const article19: StaticArticle = {
     title: 'إتقان CSS الحديث و Tailwind: الأنظمة التصميمية والـ Responsive UI',
     description: 'دليل متقدم لـ CSS و Tailwind: Container Queries، ومحدد :has()، وهندسة أنظمة التصميم مع دعم RTL والوضع الداكن بأسلوب احترافي.',
     keywords: ['CSS', 'Tailwind CSS', 'Container Queries', 'Has Selector', 'Design Systems', 'RTL Design'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/modern-css-mastery-tailwind-design-systems-responsive-ui',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/modern-css-mastery-tailwind-design-systems-responsive-ui',
   },
   content: `## عصر الـ CSS الذهبي: ميزات كانت مستحيلة في الماضي
 

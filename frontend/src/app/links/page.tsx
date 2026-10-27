@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -28,7 +28,7 @@ const ESSENTIAL_STATIC_LINKS = [
     id: 'official-website',
     title: 'موقع خمسة برمجة بالبلدي',
     subtitle: 'الموقع الرسمي',
-    url: 'https://khamsa-web.vercel.app/',
+    url: 'https://www.khamsaprogramming.com/',
     isExternal: false,
     iconBg: 'bg-zinc-800/90 text-zinc-300 border border-zinc-700/60',
     icon: <Globe className="h-5 w-5 text-zinc-200" />,
@@ -93,7 +93,7 @@ const SOCIAL_CIRCLES = [
   },
   {
     name: 'Website',
-    url: 'https://khamsa-web.vercel.app/',
+    url: 'https://www.khamsaprogramming.com/',
     bg: 'bg-zinc-800 border border-zinc-700 text-white hover:border-zinc-500',
     icon: <WebsiteIcon size={16} />,
   },

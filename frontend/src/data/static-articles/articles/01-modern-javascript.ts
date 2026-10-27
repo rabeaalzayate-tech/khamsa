@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article01: StaticArticle = {
   id: 'static-art-01',
@@ -56,7 +56,7 @@ export const article01: StaticArticle = {
     title: 'الدليل الشامل للـ JavaScript الحديثة: Event Loop و Closures والأداء',
     description: 'شرح هندسي عميق ومبسط باللغة العربية للغة JavaScript: المحرك V8، الـ Event Loop، إدارة الذاكرة، والبرمجة غير المتزامنة مع أمثلة كود حقيقية.',
     keywords: ['JavaScript', 'ES6', 'Event Loop', 'Closures', 'Promises', 'Async Await', 'V8 Engine', 'تعلم البرمجة'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/modern-javascript-comprehensive-guide-es6-async',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/modern-javascript-comprehensive-guide-es6-async',
   },
   content: `## مقدمة: ما الذي يجعل JavaScript فريدة في عالم البرمجيات؟
 

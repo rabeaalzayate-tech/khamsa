@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article18: StaticArticle = {
   id: 'static-art-18',
@@ -48,7 +48,7 @@ export const article18: StaticArticle = {
     title: 'معمارية قواعد البيانات: PostgreSQL مقابل MongoDB',
     description: 'مقارنة معمارية شاملة بين SQL و NoSQL: متى تختار Postgres ومتى تعتمد على MongoDB؟ شرح ACID، الفهارس، و Polyglot Persistence.',
     keywords: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL', 'ACID', 'JSONB', 'قواعد البيانات'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/database-architecture-sql-postgresql-vs-nosql-mongodb',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/database-architecture-sql-postgresql-vs-nosql-mongodb',
   },
   content: `## الأسس النظرية: ضمانات ACID مقابل فلسفة BASE
 

@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article02: StaticArticle = {
   id: 'static-art-02',
@@ -56,7 +56,7 @@ export const article02: StaticArticle = {
     title: 'الدليل الهندسي الشامل لـ TypeScript: Generics و Advanced Types',
     description: 'تعلم أسرار لغة TypeScript الحديثة: Generics، Mapped Types، Discriminated Unions، Utility Types، وإعدادات الإنتاج الصارمة مع أمثلة كود.',
     keywords: ['TypeScript', 'Generics', 'Type Safety', 'Advanced Types', 'TypeScript بالعربي', 'هندسة البرمجيات'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/comprehensive-typescript-guide-types-generics-patterns',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/comprehensive-typescript-guide-types-generics-patterns',
   },
   content: `## لماذا نحتاج TypeScript ولماذا ليست مجرد قيود كتابية؟
 

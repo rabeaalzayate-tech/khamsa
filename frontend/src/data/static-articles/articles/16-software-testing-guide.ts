@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article16: StaticArticle = {
   id: 'static-art-16',
@@ -48,7 +48,7 @@ export const article16: StaticArticle = {
     title: 'دليل اختبار البرمجيات الشامل: Unit و Integration و E2E',
     description: 'دليل شامل لاختبار تطبيقات الويب: Vitest، Supertest، React Testing Library، و Playwright مع كود تطبيقي وأفضل الممارسات.',
     keywords: ['Software Testing', 'Unit Testing', 'Integration Testing', 'Playwright', 'Vitest', 'Jest', 'React Testing'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/complete-software-testing-guide-unit-integration-e2e',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/complete-software-testing-guide-unit-integration-e2e',
   },
   content: `## لماذا نختبر؟ اقتصاديات البرمجيات وتكلفة الأخطاء
 

@@ -38,7 +38,10 @@ export function SocialLinks({
   const socialItems = [
     {
       name: 'YouTube',
-      url: links?.youtube || 'https://youtube.com/@5barmaga',
+      url:
+        links?.youtube && !links.youtube.includes('http', links.youtube.indexOf('http') + 1)
+          ? links.youtube
+          : 'https://www.youtube.com/@5programming.balady',
       icon: Youtube,
       color: 'hover:text-red-500 hover:border-red-500/30',
       label: 'يوتيوب',

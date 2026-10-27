@@ -25,6 +25,11 @@ import { article17 } from './articles/17-graphql-vs-rest';
 import { article18 } from './articles/18-database-architecture-sql-nosql';
 import { article19 } from './articles/19-modern-css-tailwind';
 import { article20 } from './articles/20-clean-code-solid-design-patterns';
+import { article21 } from './articles/21-react-hooks-beginners-guide';
+import { article22 } from './articles/22-javascript-debugging-errors-guide';
+import { article23 } from './articles/23-git-github-practical-guide';
+import { article24 } from './articles/24-build-rest-api-express-nodejs';
+import { article25 } from './articles/25-web-deployment-free-guide';
 
 export * from './types';
 
@@ -55,6 +60,11 @@ export const STATIC_ARTICLES: StaticArticle[] = [
   article18,
   article19,
   article20,
+  article21,
+  article22,
+  article23,
+  article24,
+  article25,
 ];
 
 export function getAllStaticArticles(): StaticArticle[] {

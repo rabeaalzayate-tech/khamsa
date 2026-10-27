@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article04: StaticArticle = {
   id: 'static-art-04',
@@ -49,7 +49,7 @@ export const article04: StaticArticle = {
     title: 'الدليل الهندسي لـ Next.js App Router: Caching و Server Actions و SEO',
     description: 'دليل متكامل لتطوير تطبيقات الإنتاج في Next.js: شرح الـ App Router، مستويات التخزين المؤقت، ISR، والـ Server Actions مع أمثلة كود عملية.',
     keywords: ['Next.js', 'App Router', 'Server Actions', 'Next.js Caching', 'SEO Next.js', 'هندسة الويب'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/nextjs-app-router-engineering-guide-production-performance',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/nextjs-app-router-engineering-guide-production-performance',
   },
   content: `## تشريح الـ Next.js App Router: كيف يعالج الطلبات؟
 
@@ -179,7 +179,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'المقال غير موجود | خمسة برمجة بالبلدي' };
   }
 
-  const siteUrl = 'https://khamsa-web.vercel.app';
+  const siteUrl = 'https://www.khamsaprogramming.com';
   const canonical = \`\\\${siteUrl}/articles/\\\${article.slug}\`;
 
   return {

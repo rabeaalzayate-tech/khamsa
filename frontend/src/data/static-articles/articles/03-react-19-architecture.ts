@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article03: StaticArticle = {
   id: 'static-art-03',
@@ -49,7 +49,7 @@ export const article03: StaticArticle = {
     title: 'معمارية React 19: Server Components و React Compiler و Actions',
     description: 'دليل مهندسي الويب لميزات ومعمارية React 19: شرح Server Components، React Compiler، useActionState، واستراتيجيات الأداء العالي مع أمثلة كود حقيقية.',
     keywords: ['React 19', 'Server Components', 'React Compiler', 'useOptimistic', 'React Hooks', 'تطوير الويب'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/react-19-architecture-server-components-advanced-hooks',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/react-19-architecture-server-components-advanced-hooks',
   },
   content: `## ثورة React 19: لماذا تغيرت طريقة بناء واجهات المستخدم؟
 

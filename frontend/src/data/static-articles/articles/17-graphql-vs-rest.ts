@@ -1,4 +1,4 @@
-import { StaticArticle, DEFAULT_AUTHOR } from '../types';
+﻿import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 
 export const article17: StaticArticle = {
   id: 'static-art-17',
@@ -49,7 +49,7 @@ export const article17: StaticArticle = {
     title: 'دليل GraphQL مقابل REST APIs: المقارنة المعمارية والإنتاج',
     description: 'مقارنة معمارية احترافية بين GraphQL و REST: حل مشكلة N+1 مع DataLoader، إدارة الـ Caching، والأمان مع أمثلة كود عملية.',
     keywords: ['GraphQL', 'REST API', 'DataLoader', 'N+1 Problem', 'Schema Definition', 'API Architecture'],
-    canonicalUrl: 'https://khamsa-web.vercel.app/articles/graphql-vs-rest-apis-architectural-comparison-practical-guide',
+    canonicalUrl: 'https://www.khamsaprogramming.com/articles/graphql-vs-rest-apis-architectural-comparison-practical-guide',
   },
   content: `## مقارنة المشاكل والحلول في معمارية الـ APIs
 
