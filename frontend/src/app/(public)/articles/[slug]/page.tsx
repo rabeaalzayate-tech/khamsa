@@ -36,47 +36,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const { slug } = await params;
   const siteUrl = getSiteUrl();
 
-  // 1. Check dynamic DB first
-  try {
-    const res = await articlesApi.getArticleBySlug(slug);
-    const article = res.data;
-
-    if (article) {
-      const title = article.seo?.title || article.title;
-      const description = article.seo?.description || article.excerpt;
-      const ogImage = article.seo?.ogImage || article.coverImage || '';
-      const canonical =
-        article.seo?.canonicalUrl ||
-        `${siteUrl}/articles/${encodeURIComponent(article.slug.trim())}`;
-
-      return {
-        title: `${title} | خمسة برمجة بالبلدي`,
-        description,
-        keywords: article.seo?.keywords || article.tags,
-        alternates: {
-          canonical,
-        },
-        openGraph: {
-          title: article.seo?.ogTitle || title,
-          description: article.seo?.ogDescription || description,
-          type: 'article',
-          publishedTime: article.publishedAt || article.createdAt,
-          authors: [article.author?.name || 'ربيع شعبان'],
-          images: ogImage ? [{ url: ogImage }] : [],
-        },
-        twitter: {
-          card: 'summary_large_image',
-          title: article.seo?.ogTitle || title,
-          description: article.seo?.ogDescription || description,
-          images: ogImage ? [ogImage] : [],
-        },
-      };
-    }
-  } catch {
-    // fallback to static
-  }
-
-  // 2. Check if it is a high-quality static article
+  // 1. Check if it is a curated static article first (Static-First)
   const staticArt = getStaticArticleBySlug(slug);
   if (staticArt) {
     const canonical =
@@ -117,6 +77,46 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     };
   }
 
+  // 2. Fallback to dynamic DB for admin-published articles
+  try {
+    const res = await articlesApi.getArticleBySlug(slug);
+    const article = res.data;
+
+    if (article) {
+      const title = article.seo?.title || article.title;
+      const description = article.seo?.description || article.excerpt;
+      const ogImage = article.seo?.ogImage || article.coverImage || '';
+      const canonical =
+        article.seo?.canonicalUrl ||
+        `${siteUrl}/articles/${encodeURIComponent(article.slug.trim())}`;
+
+      return {
+        title: `${title} | خمسة برمجة بالبلدي`,
+        description,
+        keywords: article.seo?.keywords || article.tags,
+        alternates: {
+          canonical,
+        },
+        openGraph: {
+          title: article.seo?.ogTitle || title,
+          description: article.seo?.ogDescription || description,
+          type: 'article',
+          publishedTime: article.publishedAt || article.createdAt,
+          authors: [article.author?.name || 'ربيع شعبان'],
+          images: ogImage ? [{ url: ogImage }] : [],
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title: article.seo?.ogTitle || title,
+          description: article.seo?.ogDescription || description,
+          images: ogImage ? [ogImage] : [],
+        },
+      };
+    }
+  } catch {
+    // ignore
+  }
+
   return {
     title: 'المقال غير موجود | خمسة برمجة بالبلدي',
   };
@@ -126,19 +126,21 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const siteUrl = getSiteUrl();
 
-  // 1. Try fetching from dynamic DB first
-  let article: Article | null = null;
-  try {
-    const res = await articlesApi.getArticleBySlug(slug);
-    if (res?.data) {
-      article = res.data;
-    }
-  } catch {
-    // ignore
-  }
+  // 1. Check curated static article first (Static-First)
+  const staticArt = getStaticArticleBySlug(slug);
 
-  // 2. Fallback to static article
-  const staticArt = !article ? getStaticArticleBySlug(slug) : null;
+  // 2. Fallback to dynamic DB if no static article found
+  let article: Article | null = null;
+  if (!staticArt) {
+    try {
+      const res = await articlesApi.getArticleBySlug(slug);
+      if (res?.data) {
+        article = res.data;
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   if (!article && !staticArt) {
     notFound();
@@ -148,25 +150,25 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   let staticRelated: StaticArticle[] = [];
   let dynamicRelated: Article[] = [];
 
-  // Fetch dynamic related articles from DB
-  try {
-    const relatedRes = await articlesApi.getArticles({
-      limit: 3,
-      category: currentCategory,
-      sort: 'latest',
-    });
-
-    if (relatedRes?.data?.items) {
-      dynamicRelated = relatedRes.data.items.filter(
-        (item: Article) => item.slug !== slug && item._id !== article?._id
-      );
-    }
-  } catch {
-    // ignore
-  }
-
   if (staticArt) {
     staticRelated = getRelatedStaticArticles(staticArt, 3);
+  } else {
+    // Fetch dynamic related articles from DB
+    try {
+      const relatedRes = await articlesApi.getArticles({
+        limit: 3,
+        category: currentCategory,
+        sort: 'latest',
+      });
+
+      if (relatedRes?.data?.items) {
+        dynamicRelated = relatedRes.data.items.filter(
+          (item: Article) => item.slug !== slug && item._id !== article?._id
+        );
+      }
+    } catch {
+      // ignore
+    }
   }
 
   const currentTitle = staticArt?.title || article?.title || '';
@@ -205,7 +207,10 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     Math.max(1, Math.ceil(contentText.split(/\s+/).filter(Boolean).length / 200)) ||
     15;
 
-  const articleUrl = `${siteUrl}/articles/${staticArt?.slug || article?.slug}`;
+  const articleCanonicalUrl =
+    staticArt?.seo?.canonicalUrl ||
+    article?.seo?.canonicalUrl ||
+    `${siteUrl}/articles/${encodeURIComponent((staticArt?.slug || article?.slug || slug).trim())}`;
 
   // Structured Article JSON-LD
   const articleJsonLd = {
@@ -213,7 +218,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     '@type': 'TechArticle',
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': articleUrl,
+      '@id': articleCanonicalUrl,
     },
     headline: currentTitle,
     description: currentExcerpt,
@@ -262,7 +267,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
         '@type': 'ListItem',
         position: 4,
         name: currentTitle,
-        item: articleUrl,
+        item: articleCanonicalUrl,
       },
     ],
   };
@@ -280,6 +285,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
 
       {/* Breadcrumb Navigation */}
       <ArticleBreadcrumb
+        disableJsonLd
         items={[
           { label: 'المقالات', href: '/articles' },
           { label: currentCategory, href: `/articles?category=${encodeURIComponent(currentCategory)}` },

@@ -30,6 +30,8 @@ import { article22 } from './articles/22-javascript-debugging-errors-guide';
 import { article23 } from './articles/23-git-github-practical-guide';
 import { article24 } from './articles/24-build-rest-api-express-nodejs';
 import { article25 } from './articles/25-web-deployment-free-guide';
+import { article26 } from './articles/26-information-systems-guide';
+import { article27 } from './articles/27-what-is-api-guide';
 
 export * from './types';
 
@@ -65,6 +67,8 @@ export const STATIC_ARTICLES: StaticArticle[] = [
   article23,
   article24,
   article25,
+  article26,
+  article27,
 ];
 
 export function getAllStaticArticles(): StaticArticle[] {

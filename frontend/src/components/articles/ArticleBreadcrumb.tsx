@@ -10,9 +10,10 @@ export interface BreadcrumbItem {
 
 interface ArticleBreadcrumbProps {
   items: BreadcrumbItem[];
+  disableJsonLd?: boolean;
 }
 
-export function ArticleBreadcrumb({ items }: ArticleBreadcrumbProps) {
+export function ArticleBreadcrumb({ items, disableJsonLd = false }: ArticleBreadcrumbProps) {
   const siteUrl = getSiteUrl();
 
   const fullItems: BreadcrumbItem[] = [
@@ -33,10 +34,12 @@ export function ArticleBreadcrumb({ items }: ArticleBreadcrumbProps) {
 
   return (
     <nav aria-label="مسار التنقل (Breadcrumb)" className="w-full">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {!disableJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <ol className="flex flex-wrap items-center gap-1.5 text-xs text-foreground-muted">
         {fullItems.map((item, idx) => {
           const isLast = idx === fullItems.length - 1;
