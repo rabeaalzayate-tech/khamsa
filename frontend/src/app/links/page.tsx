@@ -16,6 +16,7 @@ import {
   TikTokIcon,
   FacebookIcon,
   WebsiteIcon,
+} from '@/components/shared/BrandIcons';
 import { linksConfig } from '@/data/links-config';
 import { usePublicFeaturedLinks } from '@/features/featured-links';
 import { Skeleton } from '@/components/ui/Skeleton';

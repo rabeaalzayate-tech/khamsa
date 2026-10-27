@@ -92,9 +92,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: siteDescription,
     keywords,
-    alternates: {
-      canonical: siteUrl,
-    },
     authors: [{ name: ownerName, url: `${siteUrl}/about` }],
     creator: ownerName,
     publisher: siteName,

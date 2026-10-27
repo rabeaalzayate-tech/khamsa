@@ -2,11 +2,17 @@ import React from 'react';
 import { Metadata } from 'next';
 import { Cookie, Settings2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
+import { getSiteUrl } from '@/lib/seo/site-url';
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'سياسة ملفات تعريف الارتباط (Cookie Policy) | خمسة برمجة بالبلدي',
   description:
     'تعرف على كيفية استخدام منصة خمسة برمجة بالبلدي لملفات تعريف الارتباط (Cookies)، أنواعها، وكيفية التحكم بها في متصفحك.',
+  alternates: {
+    canonical: `${siteUrl}/cookie-policy`,
+  },
 };
 
 export default function CookiePolicyPage() {

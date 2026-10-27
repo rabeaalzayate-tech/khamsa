@@ -208,7 +208,8 @@ export function FeaturedLinksTable({
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>
@@ -305,7 +306,8 @@ export function FeaturedLinksTable({
               </div>
             </div>
           </div>
-        ))}
+        );
+      })}
       </div>
     </div>
   );

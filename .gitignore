@@ -40,3 +40,5 @@ backups/
 *.json.gz
 *.tsbuildinfo
 
+# GSC CLI Local Config
+.gsccli.json

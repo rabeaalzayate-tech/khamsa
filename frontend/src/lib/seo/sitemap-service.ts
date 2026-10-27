@@ -30,7 +30,7 @@ export function getStaticSitemapEntries(siteUrl: string): SitemapEntry[] {
     changeFrequency: SitemapEntry['changeFrequency'];
     priority: number;
   }> = [
-    { path: '', changeFrequency: 'daily', priority: 1.0 },
+    { path: '/', changeFrequency: 'daily', priority: 1.0 },
     { path: '/articles', changeFrequency: 'daily', priority: 0.9 },
     { path: '/videos', changeFrequency: 'daily', priority: 0.9 },
     { path: '/about', changeFrequency: 'monthly', priority: 0.8 },

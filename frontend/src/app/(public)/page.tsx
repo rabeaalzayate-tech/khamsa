@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description:
     'خمسة برمجة بالبلدي منصة عربية لتبسيط البرمجة والتكنولوجيا من خلال المقالات والفيديوهات والمحتوى العملي.',
   alternates: {
-    canonical: siteUrl,
+    canonical: `${siteUrl}/`,
   },
   openGraph: {
     title: 'خمسة برمجة بالبلدي | افهمها بالبلدي.. اكتبها بالكود',

@@ -2,11 +2,17 @@ import React from 'react';
 import { Metadata } from 'next';
 import { Shield, Lock, Eye, Cookie, FileText, CheckCircle2 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
+import { getSiteUrl } from '@/lib/seo/site-url';
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'سياسة الخصوصية | خمسة برمجة بالبلدي',
   description:
     'سياسة الخصوصية لمنصة خمسة برمجة بالبلدي: كيف نقوم بجمع، واستخدام، وحماية بياناتك الشخصية، وإعلانات Google AdSense وملفات تعريف الارتباط.',
+  alternates: {
+    canonical: `${siteUrl}/privacy-policy`,
+  },
 };
 
 export default function PrivacyPolicyPage() {

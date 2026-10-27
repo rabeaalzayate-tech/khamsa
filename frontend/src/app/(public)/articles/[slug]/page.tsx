@@ -45,7 +45,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       const title = article.seo?.title || article.title;
       const description = article.seo?.description || article.excerpt;
       const ogImage = article.seo?.ogImage || article.coverImage || '';
-      const canonical = article.seo?.canonicalUrl || `${siteUrl}/articles/${article.slug}`;
+      const canonical =
+        article.seo?.canonicalUrl ||
+        `${siteUrl}/articles/${encodeURIComponent(article.slug.trim())}`;
 
       return {
         title: `${title} | خمسة برمجة بالبلدي`,
@@ -77,7 +79,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   // 2. Check if it is a high-quality static article
   const staticArt = getStaticArticleBySlug(slug);
   if (staticArt) {
-    const canonical = staticArt.seo.canonicalUrl || `${siteUrl}/articles/${staticArt.slug}`;
+    const canonical =
+      staticArt.seo.canonicalUrl ||
+      `${siteUrl}/articles/${encodeURIComponent(staticArt.slug.trim())}`;
 
     return {
       title: `${staticArt.seo.title || staticArt.title} | خمسة برمجة بالبلدي`,

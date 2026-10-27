@@ -2,11 +2,17 @@ import React from 'react';
 import { Metadata } from 'next';
 import { AlertCircle, Code, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
+import { getSiteUrl } from '@/lib/seo/site-url';
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'إخلاء المسؤولية التقنية (Disclaimer) | خمسة برمجة بالبلدي',
   description:
     'إخلاء المسؤولية القانونية والتقنية لمنصة خمسة برمجة بالبلدي حول الأمثلة البرمجية، الشروحات، والأكواد التعليمية.',
+  alternates: {
+    canonical: `${siteUrl}/disclaimer`,
+  },
 };
 
 export default function DisclaimerPage() {
