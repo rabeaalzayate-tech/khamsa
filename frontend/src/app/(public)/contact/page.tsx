@@ -220,10 +220,10 @@ export default function ContactPage() {
                     info@khamsaprogramming.com
                   </a>
                   <a
-                    href="mailto:r.shaban.2016@gmail.com"
+                    href="mailto:rabea.elzayate@gmail.com"
                     className="block text-xs font-medium text-foreground-muted hover:text-primary transition-colors font-mono"
                   >
-                    r.shaban.2016@gmail.com
+                    rabea.elzayate@gmail.com
                   </a>
                 </div>
               </div>
