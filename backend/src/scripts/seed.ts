@@ -40,10 +40,13 @@ const seedDatabase = async (): Promise<void> => {
           siteName: 'خمسة برمجة بالبلدي',
           siteDescription: 'منصة لتبسيط البرمجة وعلوم الحاسب باللغة العربية البسيطة',
           socialLinks: {
-            tiktok: 'https://www.tiktok.com/@5barmaga',
-            youtube: 'https://www.youtube.com/@5barmaga',
-            facebook: 'https://www.facebook.com/5barmaga',
+            tiktok: 'https://www.tiktok.com/@5programming.balady',
+            youtube: 'https://www.youtube.com/@5programming.balady',
+            facebook: 'https://www.facebook.com/5programming.balady/',
             github: 'https://github.com/5barmaga',
+          },
+          contact: {
+            email: 'info@khamsaprogramming.com',
           },
           defaultSeo: {
             title: 'خمسة برمجة بالبلدي - تعلم البرمجة من الصفر',

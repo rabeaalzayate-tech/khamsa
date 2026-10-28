@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import {
   Link as LinkIcon,
   User,
   ExternalLink,
+  Mail,
 } from 'lucide-react';
 import {
   YouTubeIcon,
@@ -96,6 +97,12 @@ const SOCIAL_CIRCLES = [
     url: 'https://www.khamsaprogramming.com/',
     bg: 'bg-zinc-800 border border-zinc-700 text-white hover:border-zinc-500',
     icon: <WebsiteIcon size={16} />,
+  },
+  {
+    name: 'Email',
+    url: 'mailto:info@khamsaprogramming.com',
+    bg: 'bg-amber-600/90 border border-amber-500/70 text-white hover:bg-amber-500',
+    icon: <Mail className="h-4 w-4" />,
   },
 ];
 

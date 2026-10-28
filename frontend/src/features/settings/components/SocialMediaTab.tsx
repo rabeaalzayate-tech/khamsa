@@ -40,7 +40,7 @@ export function SocialMediaTab({ register, errors, watch }: SocialMediaTabProps)
       label: 'صفحة Facebook الرسمية',
       icon: Facebook,
       color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
-      placeholder: 'https://facebook.com/5programming.balady',
+      placeholder: 'https://www.facebook.com/5programming.balady/',
       fieldError: errors.socialLinks?.facebook,
       currentValue: watch('socialLinks.facebook'),
     },

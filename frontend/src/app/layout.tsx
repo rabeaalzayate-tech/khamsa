@@ -193,9 +193,17 @@ export default async function RootLayout({
     sameAs: [
       'https://github.com/rabea-shaban',
       'https://linkedin.com/in/rabea-shaban',
-      'https://youtube.com/@5prog_bldy',
-      'https://facebook.com/5prog.bldy',
+      'https://www.youtube.com/@5programming.balady',
+      'https://www.facebook.com/5programming.balady/',
+      'https://www.tiktok.com/@5programming.balady',
+      'https://www.khamsaprogramming.com/links',
     ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'info@khamsaprogramming.com',
+      contactType: 'customer support',
+      url: `${siteUrl}/contact`,
+    },
   };
 
   const websiteJsonLd = {

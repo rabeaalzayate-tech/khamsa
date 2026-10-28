@@ -39,7 +39,7 @@ export function SocialLinks({
     {
       name: 'YouTube',
       url:
-        links?.youtube && !links.youtube.includes('http', links.youtube.indexOf('http') + 1)
+        links?.youtube?.trim() && !links.youtube.includes('http', links.youtube.indexOf('http') + 1)
           ? links.youtube
           : 'https://www.youtube.com/@5programming.balady',
       icon: Youtube,
@@ -48,21 +48,21 @@ export function SocialLinks({
     },
     {
       name: 'TikTok',
-      url: links?.tiktok || 'https://tiktok.com/@5barmaga',
+      url: links?.tiktok?.trim() || 'https://www.tiktok.com/@5programming.balady',
       icon: TikTokIcon,
       color: 'hover:text-cyan-400 hover:border-cyan-400/30',
       label: 'تيك توك',
     },
     {
       name: 'Facebook',
-      url: links?.facebook || 'https://facebook.com/5barmaga',
+      url: links?.facebook?.trim() || 'https://www.facebook.com/5programming.balady/',
       icon: Facebook,
       color: 'hover:text-blue-500 hover:border-blue-500/30',
       label: 'فيسبوك',
     },
     {
       name: 'GitHub',
-      url: links?.github || 'https://github.com/5barmaga',
+      url: links?.github?.trim() || 'https://github.com/rabea-shaban',
       icon: Github,
       color: 'hover:text-slate-100 hover:border-slate-400/30',
       label: 'جيت هب',

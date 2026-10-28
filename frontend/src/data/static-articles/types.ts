@@ -77,6 +77,6 @@ export const DEFAULT_AUTHOR: ArticleAuthor = {
     facebook: 'https://www.facebook.com/Rabea.Sh.ELZayat/',
     tiktok: 'https://www.tiktok.com/@rabea.sh.elzayat',
     github: 'https://github.com/rabea-shaban',
-    youtube: 'https://youtube.com/@5prog_bldy',
+    youtube: 'https://www.youtube.com/@5programming.balady',
   },
 };

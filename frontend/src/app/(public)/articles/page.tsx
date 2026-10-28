@@ -79,7 +79,7 @@ export default function ArticlesPage() {
       author: {
         _id: 'author-rabie',
         name: s.author.name,
-        email: 'contact@khamsa.dev',
+        email: 'info@khamsaprogramming.com',
         avatar: s.author.avatar,
       },
       status: ContentStatus.PUBLISHED,

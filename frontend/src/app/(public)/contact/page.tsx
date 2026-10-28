@@ -29,6 +29,7 @@ import {
   GitHubIcon,
   MostaqlIcon,
   WebsiteIcon,
+  YouTubeIcon,
 } from '@/components/shared/BrandIcons';
 import { contactApi } from '@/lib/api/contact.api';
 import { cn } from '@/lib/utils/cn';
@@ -159,16 +160,16 @@ export default function ContactPage() {
 
         {/* Email Card */}
         <a
-          href="mailto:r.shaban.2016@gmail.com"
+          href="mailto:info@khamsaprogramming.com"
           className="group flex items-center gap-4 p-5 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-lg transition-all sm:col-span-2 lg:col-span-1"
         >
           <div className="p-3 rounded-xl bg-sky-500/10 text-sky-500 border border-sky-500/20 group-hover:scale-110 transition-transform">
             <Mail className="h-5 w-5" />
           </div>
           <div className="space-y-0.5">
-            <span className="text-xs font-bold text-foreground-muted">البريد الإلكتروني</span>
-            <p className="text-xs font-black text-foreground font-mono truncate max-w-[180px]" dir="ltr">
-              r.shaban.2016@gmail.com
+            <span className="text-xs font-bold text-foreground-muted">البريد الإلكتروني الرسمي</span>
+            <p className="text-xs font-black text-foreground font-mono truncate max-w-[200px]" dir="ltr">
+              info@khamsaprogramming.com
             </p>
             <span className="text-[11px] text-sky-500 font-semibold">استفسارات وشراكات رسمية</span>
           </div>
@@ -211,19 +212,35 @@ export default function ContactPage() {
                   <Mail className="h-4 w-4" />
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-foreground-muted text-xs font-semibold">البريد الإلكتروني:</span>
+                  <span className="block text-foreground-muted text-xs font-semibold">البريد الإلكتروني الرسمي:</span>
+                  <a
+                    href="mailto:info@khamsaprogramming.com"
+                    className="block font-bold text-foreground hover:text-primary transition-colors font-mono text-xs"
+                  >
+                    info@khamsaprogramming.com
+                  </a>
                   <a
                     href="mailto:r.shaban.2016@gmail.com"
-                    className="block font-bold text-foreground hover:text-primary transition-colors font-mono text-xs"
+                    className="block text-xs font-medium text-foreground-muted hover:text-primary transition-colors font-mono"
                   >
                     r.shaban.2016@gmail.com
                   </a>
-                  <a
-                    href="mailto:rabea.elzayate@gmail.com"
-                    className="block text-xs font-medium text-foreground-muted hover:text-primary transition-colors font-mono"
+                </div>
+              </div>
+
+              {/* Quick Links Directory */}
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="block text-foreground-muted text-xs font-semibold">دليل المنصات والروابط:</span>
+                  <Link
+                    href="/links"
+                    className="font-bold text-foreground hover:text-primary transition-colors font-mono text-xs"
                   >
-                    rabea.elzayate@gmail.com
-                  </a>
+                    khamsaprogramming.com/links
+                  </Link>
                 </div>
               </div>
 
@@ -233,7 +250,7 @@ export default function ContactPage() {
                   <Globe className="h-4 w-4" />
                 </div>
                 <div>
-                  <span className="block text-foreground-muted text-xs font-semibold">الموقع الشخصي:</span>
+                  <span className="block text-foreground-muted text-xs font-semibold">الموقع الشخصي للمؤسس:</span>
                   <a
                     href="https://rabea-shaban.com"
                     target="_blank"
@@ -272,8 +289,35 @@ export default function ContactPage() {
 
             {/* Official Social Accounts */}
             <div className="pt-5 border-t border-border space-y-3">
-              <span className="block text-xs font-bold text-foreground">حسابات التواصل والشبكات المهنية:</span>
+              <span className="block text-xs font-bold text-foreground">قنوات المنصة وحسابات التواصل:</span>
               <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="https://www.youtube.com/@5programming.balady"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-xl bg-surface border border-border text-red-500 hover:scale-110 hover:border-red-500 transition-all"
+                  title="قناة YouTube الرسمية"
+                >
+                  <YouTubeIcon size={16} />
+                </a>
+                <a
+                  href="https://www.facebook.com/5programming.balady/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-xl bg-surface border border-border text-blue-500 hover:scale-110 hover:border-blue-500 transition-all"
+                  title="صفحة Facebook الرسمية"
+                >
+                  <FacebookIcon size={16} />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@5programming.balady"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2.5 rounded-xl bg-surface border border-border text-pink-500 hover:scale-110 hover:border-pink-500 transition-all"
+                  title="حساب TikTok الرسمي"
+                >
+                  <TikTokIcon size={16} />
+                </a>
                 <a
                   href="https://wa.me/201554087543"
                   target="_blank"
@@ -291,33 +335,6 @@ export default function ContactPage() {
                   title="LinkedIn"
                 >
                   <LinkedInIcon size={16} />
-                </a>
-                <a
-                  href="https://mostaql.com/u/rabea_elzayat"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-surface border border-border text-amber-500 hover:scale-110 hover:border-amber-500 transition-all"
-                  title="Mostaql"
-                >
-                  <MostaqlIcon size={16} />
-                </a>
-                <a
-                  href="https://www.facebook.com/Rabea.Sh.ELZayat/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-surface border border-border text-blue-500 hover:scale-110 hover:border-blue-500 transition-all"
-                  title="Facebook"
-                >
-                  <FacebookIcon size={16} />
-                </a>
-                <a
-                  href="https://www.tiktok.com/@rabea.sh.elzayat"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2.5 rounded-xl bg-surface border border-border text-pink-500 hover:scale-110 hover:border-pink-500 transition-all"
-                  title="TikTok"
-                >
-                  <TikTokIcon size={16} />
                 </a>
                 <a
                   href="https://github.com/rabea-shaban"

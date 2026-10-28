@@ -38,7 +38,7 @@ export function ContactSettingsTab({ register, errors }: ContactSettingsTabProps
               </label>
               <Input
                 {...register('contact.email')}
-                placeholder="contact@khamsa.dev"
+                placeholder="info@khamsaprogramming.com"
                 dir="ltr"
                 className={cn(
                   'h-11 text-xs font-mono text-left',

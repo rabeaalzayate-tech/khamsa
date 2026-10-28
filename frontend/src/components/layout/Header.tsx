@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Home, BookOpen, Video, Info, Mail, Sparkles, Layers } from 'lucide-react';
+import { Menu, X, Home, BookOpen, Video, Info, Mail, Sparkles, Layers, Link2 } from 'lucide-react';
 import { Logo } from '../shared/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import {
@@ -58,6 +58,7 @@ export function Header() {
     { label: 'الرئيسية', href: '/', icon: Home },
     { label: 'المقالات', href: '/articles', icon: BookOpen },
     { label: 'الفيديوهات', href: '/videos', icon: Video },
+    { label: 'دليل الروابط', href: '/links', icon: Link2 },
     { label: 'عن المنصة', href: '/about', icon: Info },
     { label: 'تواصل معنا', href: '/contact', icon: Mail },
   ];
@@ -230,6 +231,33 @@ export function Header() {
               {/* Social Channels */}
               <div className="flex items-center justify-center gap-2 pt-1 border-t border-border/40">
                 <a
+                  href="https://www.youtube.com/@5programming.balady"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="p-2 rounded-xl bg-surface border border-border text-red-500 hover:scale-110 transition-transform"
+                >
+                  <YouTubeIcon size={14} />
+                </a>
+                <a
+                  href="https://www.facebook.com/5programming.balady/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="p-2 rounded-xl bg-surface border border-border text-blue-500 hover:scale-110 transition-transform"
+                >
+                  <FacebookIcon size={14} />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@5programming.balady"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="p-2 rounded-xl bg-surface border border-border text-pink-500 hover:scale-110 transition-transform"
+                >
+                  <TikTokIcon size={14} />
+                </a>
+                <a
                   href="https://wa.me/201554087543"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -239,40 +267,11 @@ export function Header() {
                   <WhatsAppIcon size={14} />
                 </a>
                 <a
-                  href="https://www.linkedin.com/in/rabea-sh-elzayat"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="p-2 rounded-xl bg-surface border border-border text-sky-500 hover:scale-110 transition-transform"
+                  href="mailto:info@khamsaprogramming.com"
+                  aria-label="Email"
+                  className="p-2 rounded-xl bg-surface border border-border text-amber-500 hover:scale-110 transition-transform"
                 >
-                  <LinkedInIcon size={14} />
-                </a>
-                <a
-                  href="https://www.facebook.com/Rabea.Sh.ELZayat/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="p-2 rounded-xl bg-surface border border-border text-blue-500 hover:scale-110 transition-transform"
-                >
-                  <FacebookIcon size={14} />
-                </a>
-                <a
-                  href="https://www.tiktok.com/@rabea.sh.elzayat"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="TikTok"
-                  className="p-2 rounded-xl bg-surface border border-border text-pink-500 hover:scale-110 transition-transform"
-                >
-                  <TikTokIcon size={14} />
-                </a>
-                <a
-                  href="https://rabea-shaban.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Portfolio"
-                  className="p-2 rounded-xl bg-surface border border-border text-foreground hover:scale-110 transition-transform"
-                >
-                  <GitHubIcon size={14} />
+                  <Mail className="h-3.5 w-3.5" />
                 </a>
               </div>
             </div>

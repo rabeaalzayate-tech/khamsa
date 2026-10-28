@@ -1,4 +1,4 @@
-﻿export interface StaticLinkItem {
+export interface StaticLinkItem {
   id: string;
   title: string;
   subtitle: string;
@@ -10,7 +10,7 @@
 export interface SocialIconItem {
   name: string;
   url: string;
-  icon: 'youtube' | 'tiktok' | 'facebook' | 'globe';
+  icon: 'youtube' | 'tiktok' | 'facebook' | 'globe' | 'email';
   bg: string;
 }
 
@@ -116,6 +116,12 @@ export const linksConfig: LinksPageConfig = {
       url: 'https://www.khamsaprogramming.com/',
       icon: 'globe',
       bg: 'bg-zinc-800 border border-zinc-700 text-white hover:border-zinc-500',
+    },
+    {
+      name: 'Email',
+      url: 'mailto:info@khamsaprogramming.com',
+      icon: 'email',
+      bg: 'bg-amber-600 border border-amber-500 text-white hover:bg-amber-500',
     },
   ],
 

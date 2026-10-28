@@ -103,8 +103,8 @@ export default function PrivacyPolicyPage() {
           </h2>
           <p>
             يحق لك في أي وقت طلب تعديل أو حذف بياناتك أو الاستفسار عن أي بند في سياسة الخصوصية من خلال التواصل المباشر مع إدارة المنصة عبر البريد الإلكتروني:{' '}
-            <a href="mailto:contact@khamsa.dev" className="text-primary font-bold font-mono">
-              contact@khamsa.dev
+            <a href="mailto:info@khamsaprogramming.com" className="text-primary font-bold font-mono">
+              info@khamsaprogramming.com
             </a>
           </p>
         </section>

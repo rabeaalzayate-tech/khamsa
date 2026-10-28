@@ -66,6 +66,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/links" className="hover:text-primary transition-colors">
+                  دليل الروابط السريعة
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-primary transition-colors">
                   من نحن وقصتنا
                 </Link>
@@ -118,10 +123,10 @@ export function Footer() {
               للاستفسارات والتعاون البرمجي:
             </p>
             <a
-              href="mailto:contact@khamsa.dev"
+              href={`mailto:${settings?.contact?.email || 'info@khamsaprogramming.com'}`}
               className="inline-block text-xs font-mono font-bold text-primary hover:underline"
             >
-              contact@khamsa.dev
+              {settings?.contact?.email || 'info@khamsaprogramming.com'}
             </a>
           </div>
         </div>

@@ -551,7 +551,7 @@ export default function ProfileDashboardPage() {
                         type="url"
                         dir="ltr"
                         {...registerProfile('socials.youtube')}
-                        placeholder="https://youtube.com/@5prog_bldy"
+                        placeholder="https://youtube.com/@5programming.balady"
                         className={cn(
                           'w-full px-3.5 py-2.5 rounded-xl border bg-background text-xs text-foreground text-left placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all font-mono',
                           profileErrors.socials?.youtube ? 'border-destructive' : 'border-border',
