@@ -32,6 +32,7 @@ import { article24 } from './articles/24-build-rest-api-express-nodejs';
 import { article25 } from './articles/25-web-deployment-free-guide';
 import { article26 } from './articles/26-information-systems-guide';
 import { article27 } from './articles/27-what-is-api-guide';
+import { article28 } from './articles/28-claude-code-guide';
 
 export * from './types';
 
@@ -69,6 +70,7 @@ export const STATIC_ARTICLES: StaticArticle[] = [
   article25,
   article26,
   article27,
+  article28,
 ];
 
 export function getAllStaticArticles(): StaticArticle[] {
