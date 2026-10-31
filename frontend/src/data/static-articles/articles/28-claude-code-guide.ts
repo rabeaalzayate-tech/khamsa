@@ -75,6 +75,8 @@ export const article28: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'deepseek-for-developers-guide',
+    'n8n-automation-beginners-guide',
     'will-ai-replace-programmers-2027',
     'modern-frontend-architecture-scale-micro-frontends-design-systems',
     'building-production-restful-apis-express-clean-architecture',
@@ -423,6 +425,10 @@ my-project/
 | **GitHub Copilot** | إضافة مساعدة داخل المحررات تدعم بيئات مختلفة | اقتراحات فورية للكود أثناء الكتابة (Autocomplete) وإجابات سريعة على الأسئلة اليومية |
 
 الجدول ده مقارنة عامة لطبيعة الأدوات، وليس تقييماً نهائياً لأدائها أو أسعارها؛ فالميزات وخطط الأسعار تتطور باستمرار، لذا راجع المواقع الرسمية لكل أداة قبل اتخاذ قرار الشراء.
+
+> 💡 **ترشيحات إضافية لأدوات الذكاء الاصطناعي للمطورين:**  
+> * لو عايز تستخدم نماذج اقتصادية عالية الكفاءة مع تطبيقاتك وتتحكم في التكلفة، اقرأ [دليل DeepSeek للمبرمجين وربط الـ API بـ Node.js](/articles/deepseek-for-developers-guide).  
+> * ولو حابب تربط أدوات الذكاء الاصطناعي بخدماتك وتلجرام والـ Webhooks بدون كود معقد، شوف [شرح n8n وأتمتة مسارات العمل بالذكاء الاصطناعي بالبلدي](/articles/n8n-automation-beginners-guide).
 
 ---
 

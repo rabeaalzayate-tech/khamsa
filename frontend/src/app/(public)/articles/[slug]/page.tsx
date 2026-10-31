@@ -14,10 +14,12 @@ import { AuthorBox } from '@/components/articles/AuthorBox';
 import { ArticleFaq } from '@/components/articles/ArticleFaq';
 import { TableOfContents } from '@/components/articles/TableOfContents';
 import { AdSlot } from '@/components/ads/AdSlot';
+import { slugifyHeading } from '@/components/shared/TiptapRenderer';
 import {
   getStaticArticleBySlug,
   getStaticArticleSlugs,
   getRelatedStaticArticles,
+  getAllStaticArticles,
   StaticArticle,
 } from '@/data/static-articles';
 import { DEFAULT_AUTHOR, ArticleAuthor } from '@/data/static-articles/types';
@@ -122,6 +124,68 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
+function getWordCount(content: any): number {
+  if (!content) return 0;
+  if (typeof content === 'string') {
+    return content.trim().split(/\s+/).filter(Boolean).length;
+  }
+  if (typeof content === 'object') {
+    let str = '';
+    function traverse(node: any) {
+      if (!node) return;
+      if (node.text) str += ' ' + node.text;
+      if (Array.isArray(node.content)) node.content.forEach(traverse);
+    }
+    traverse(content);
+    return str.trim().split(/\s+/).filter(Boolean).length;
+  }
+  return 0;
+}
+
+function extractTocFromContent(content: any): Array<{ id: string; title: string; level: 2 | 3 }> {
+  if (!content) return [];
+  const items: Array<{ id: string; title: string; level: 2 | 3 }> = [];
+
+  if (typeof content === 'object') {
+    function traverse(node: any) {
+      if (!node) return;
+      if (node.type === 'heading' && (node.attrs?.level === 2 || node.attrs?.level === 3)) {
+        const text = (node.content || [])
+          .map((c: any) => c.text || '')
+          .join('')
+          .trim();
+        if (text) {
+          items.push({
+            id: slugifyHeading(text),
+            title: text,
+            level: node.attrs.level as 2 | 3,
+          });
+        }
+      }
+      if (Array.isArray(node.content)) {
+        node.content.forEach(traverse);
+      }
+    }
+    traverse(content);
+  } else if (typeof content === 'string') {
+    const lines = content.split('\n');
+    for (const line of lines) {
+      const match = line.trim().match(/^(#{2,3})\s+(.*)$/);
+      if (match) {
+        const level = match[1].length as 2 | 3;
+        const text = match[2].trim();
+        items.push({
+          id: slugifyHeading(text),
+          title: text,
+          level,
+        });
+      }
+    }
+  }
+
+  return items;
+}
+
 export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const siteUrl = getSiteUrl();
@@ -151,12 +215,12 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   let dynamicRelated: Article[] = [];
 
   if (staticArt) {
-    staticRelated = getRelatedStaticArticles(staticArt, 3);
+    staticRelated = getRelatedStaticArticles(staticArt, 4);
   } else {
     // Fetch dynamic related articles from DB
     try {
       const relatedRes = await articlesApi.getArticles({
-        limit: 3,
+        limit: 4,
         category: currentCategory,
         sort: 'latest',
       });
@@ -168,6 +232,15 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
       }
     } catch {
       // ignore
+    }
+
+    // Blend with top static articles if dynamic related has fewer than 2 items
+    if (dynamicRelated.length < 2) {
+      const allStatic = getAllStaticArticles();
+      const needed = 4 - dynamicRelated.length;
+      staticRelated = allStatic
+        .filter(s => s.slug !== slug)
+        .slice(0, needed);
     }
   }
 
@@ -201,11 +274,16 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
       })
     : '';
 
-  const contentText = typeof currentContent === 'string' ? currentContent : '';
+  const words = getWordCount(currentContent);
   const readTime =
     staticArt?.readTimeMinutes ||
-    Math.max(1, Math.ceil(contentText.split(/\s+/).filter(Boolean).length / 200)) ||
-    15;
+    Math.max(1, Math.ceil(words / 200)) ||
+    10;
+
+  const tableOfContents =
+    staticArt?.tableOfContents && staticArt.tableOfContents.length > 0
+      ? staticArt.tableOfContents
+      : extractTocFromContent(currentContent);
 
   const articleCanonicalUrl =
     staticArt?.seo?.canonicalUrl ||
@@ -376,8 +454,8 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
       )}
 
       {/* Table of Contents for Long Form Articles */}
-      {staticArt?.tableOfContents && (
-        <TableOfContents items={staticArt.tableOfContents} />
+      {tableOfContents && tableOfContents.length > 0 && (
+        <TableOfContents items={tableOfContents} />
       )}
 
       {/* Safe Ad Placement: After Introduction */}
@@ -385,7 +463,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
 
       {/* Main Structured Content Area */}
       <main className="py-4">
-        <TiptapRenderer content={currentContent} tocItems={staticArt?.tableOfContents} />
+        <TiptapRenderer content={currentContent} tocItems={tableOfContents} />
       </main>
 
       {/* Safe Ad Placement: Before FAQ and Related Articles */}

@@ -30,6 +30,40 @@ export interface TiptapRendererProps {
   className?: string;
 }
 
+export function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[`*#_[\]()]/g, '')
+    .replace(/[^\w\u0600-\u06FF]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+export function detectCodeLanguage(code: string, explicitLang?: string): string {
+  if (explicitLang && explicitLang.trim() && explicitLang.trim().toLowerCase() !== 'code') {
+    return explicitLang.trim();
+  }
+  const trimmed = code.trim();
+  if (/^(def\s+|import\s+sys|import\s+os|from\s+\w+\s+import|print\(|elif\s+|if\s+__name__)/m.test(trimmed)) return 'python';
+  if (/^(import\s+|export\s+|const\s+|let\s+|function\s+|console\.log|app\.(get|post|use)|async\s+function|require\()/m.test(trimmed)) return 'javascript';
+  if (/^(npm\s+|npx\s+|docker\s+|pnpm\s+|yarn\s+|curl\s+|cd\s+|git\s+|node\s+|pip\s+|sudo\s+)/m.test(trimmed)) return 'bash';
+  if (/^(\{|\[)/.test(trimmed) && /(\}|\])$/.test(trimmed)) {
+    try { JSON.parse(trimmed); return 'json'; } catch {}
+  }
+  if (/^<(!DOCTYPE|html|div|span|p|head|body|svg)/i.test(trimmed)) return 'html';
+  if (/^(SELECT|INSERT|UPDATE|DELETE|CREATE TABLE|ALTER TABLE)/i.test(trimmed)) return 'sql';
+  return 'code';
+}
+
+function getNodeText(node?: TiptapNode): string {
+  if (!node) return '';
+  if (node.text) return node.text;
+  if (node.content && Array.isArray(node.content)) {
+    return node.content.map(getNodeText).join('');
+  }
+  return '';
+}
+
 function CodeBlockRenderer({
   code,
   language,
@@ -38,6 +72,7 @@ function CodeBlockRenderer({
   language?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const displayLanguage = detectCodeLanguage(code, language);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -64,7 +99,7 @@ function CodeBlockRenderer({
             <span className="h-3 w-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
           </div>
           <span className="ml-2 px-2 py-0.5 rounded bg-surface-elevated text-[11px] font-bold text-primary uppercase tracking-wider border border-border">
-            {language || 'code'}
+            {displayLanguage}
           </span>
         </div>
 
@@ -150,12 +185,13 @@ function renderTextNode(node: TiptapNode, key: React.Key): React.ReactNode {
           break;
         case 'link': {
           const href = (mark.attrs?.href as string) || '#';
+          const isExternal = href.startsWith('http://') || href.startsWith('https://');
           element = (
             <Link
               key={markIndex}
               href={href}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
               className="text-primary font-bold underline underline-offset-4 hover:text-primary-hover transition-colors"
             >
               {element}
@@ -201,21 +237,23 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
 
     case 'heading': {
       const level = (node.attrs?.level as number) || 2;
+      const plainText = getNodeText(node);
+      const headingId = slugifyHeading(plainText);
       const headingContent = node.content?.map((child, idx) =>
         child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
       );
 
       switch (level) {
         case 1:
-          return <h1 key={key} className="text-2xl sm:text-4xl font-extrabold text-foreground mt-8 mb-4 tracking-tight leading-tight">{headingContent}</h1>;
+          return <h1 id={headingId} key={key} className="text-2xl sm:text-4xl font-extrabold text-foreground mt-8 mb-4 tracking-tight leading-tight">{headingContent}</h1>;
         case 2:
-          return <h2 key={key} className="text-xl sm:text-2xl font-bold text-foreground mt-8 mb-3 border-r-4 border-primary pr-3 tracking-tight">{headingContent}</h2>;
+          return <h2 id={headingId} key={key} className="text-xl sm:text-2xl font-bold text-foreground mt-8 mb-3 border-r-4 border-primary pr-3 tracking-tight">{headingContent}</h2>;
         case 3:
-          return <h3 key={key} className="text-lg sm:text-xl font-bold text-foreground mt-6 mb-2 tracking-tight">{headingContent}</h3>;
+          return <h3 id={headingId} key={key} className="text-lg sm:text-xl font-bold text-foreground mt-6 mb-2 tracking-tight">{headingContent}</h3>;
         case 4:
-          return <h4 key={key} className="text-base sm:text-lg font-bold text-foreground mt-4 mb-2">{headingContent}</h4>;
+          return <h4 id={headingId} key={key} className="text-base sm:text-lg font-bold text-foreground mt-4 mb-2">{headingContent}</h4>;
         default:
-          return <h5 key={key} className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2">{headingContent}</h5>;
+          return <h5 id={headingId} key={key} className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2">{headingContent}</h5>;
       }
     }
 
@@ -431,15 +469,6 @@ function normalizeTitleForMatch(title: string): string {
     .replace(/[^\w\u0600-\u06FF]/g, '')
     .toLowerCase()
     .trim();
-}
-
-function slugifyHeading(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[`*#_[\]()]/g, '')
-    .replace(/[^\w\u0600-\u06FF]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 function parseMarkdownToBlocks(rawContent: string, tocItems?: TocItem[]): MarkdownBlock[] {

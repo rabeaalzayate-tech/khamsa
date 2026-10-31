@@ -3,7 +3,7 @@ import { StaticArticle, DEFAULT_AUTHOR } from '../types';
 export const article26: StaticArticle = {
   id: 'static-art-26',
   slug: 'information-systems-guide',
-  title: 'تخصص نظم المعلومات (IS) بالبلدي: ما هي دراسته ومجالات عمله والفرق بينه وبين CS؟',
+  title: 'تخصص نظم المعلومات (IS) بالبلدي: دراسته ومواده ومجالات عمله (دليل 2026/2027)',
   excerpt:
     'محتار تدخل تخصص نظم المعلومات؟ في هذا الدليل بنشرح لك بالبلدي كل ما يخص تخصص Information Systems: مواده، مجالات عمله، هل يشتغل مبرمج، والفرق بينه وبين علوم الحاسب وهندسة البرمجيات.',
   description:
@@ -103,7 +103,7 @@ export const article26: StaticArticle = {
 تتنوع الخطة الدراسية بحسب الكلية (سواء كانت كلية حاسبات ومعلومات أو كلية تجارة BIS)، لكن الهيكل العام يرتكز على 4 أعمدة رئيسية:
 
 ### 1. الأساس البرمجي وتطوير التطبيقات
-* لغات البرمجة الشائعة مثل **Python** أو **JavaScript** أو **Java/C#**.
+* لغات البرمجة الشائعة مثل **Python** (راجع مقالنا الميداني: [تعلم Python من الصفر بالبلدي دليل المبتدئين](/articles/learn-python-from-scratch-beginners)) أو **JavaScript** أو **Java/C#**.
 * تطوير تطبيقات الويب الحديثة (Frontend و Backend).
 * مفاهيم البرمجة الكائنية (OOP) والتعامل مع واجهات برمجة التطبيقات (APIs).
 
@@ -114,8 +114,9 @@ export const article26: StaticArticle = {
 
 ### 3. تحليل وتصميم النظم (Systems Analysis & Design)
 * كيفية الجلوس مع العميل وفهم المشكلة وتحويلها إلى متطلبات تقنية (Requirements Gathering).
-* رسم مخططات سير العمل والـ UML Diagrams.
+* رسم مخططات سير العمل والـ UML Diagrams ومخططات تدفق البيانات (DFD ومخططات الكيانات ERD).
 * دراسة الجدوى وتخطيط المشاريع بنهج Agile و Scrum.
+* 💡 **دليلك العملي المتكامل:** اقرأ شرحنا التفصيلي بالأمثلة العملية: [تحليل وتصميم نظم المعلومات بالبلدي \| شرح SDLC وDFD وERD](/articles/systems-analysis-and-design-guide).
 
 ### 4. أنظمة المؤسسات والأعمال (Enterprise Systems)
 * أنظمة تخطيط موارد المؤسسات (ERP Systems) مثل SAP و Odoo و Oracle.
@@ -203,13 +204,14 @@ export const article26: StaticArticle = {
     },
   ],
   relatedSlugs: [
+    'systems-analysis-and-design-guide',
+    'learn-python-from-scratch-beginners',
     'learn-programming-from-scratch',
     'database-architecture-sql-postgresql-vs-nosql-mongodb',
     'build-rest-api-express-nodejs',
-    'git-github-practical-guide',
   ],
   seo: {
-    title: 'تخصص نظم المعلومات (IS) بالبلدي: دراسته ومجالات عمله والفرق بينه وبين CS',
+    title: 'تخصص نظم المعلومات (IS) بالبلدي: دراسته ومواده ومجالات عمله (دليل 2026/2027)',
     description:
       'دليل شامل ومبسط لتخصص نظم المعلومات (Information Systems): ما هو تخصص IS؟ ما هي مواده ومجالات عمله والفرق الجوهري بينه وبين علوم الحاسب وهندسة البرمجيات.',
     keywords: [
