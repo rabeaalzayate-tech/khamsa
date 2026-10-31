@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Copy, Check, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { slugifyHeading } from '@/lib/utils/slugify';
 
 interface TiptapMark {
   type: string;
@@ -30,14 +31,7 @@ export interface TiptapRendererProps {
   className?: string;
 }
 
-export function slugifyHeading(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[`*#_[\]()]/g, '')
-    .replace(/[^\w\u0600-\u06FF]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+export { slugifyHeading };
 
 export function detectCodeLanguage(code: string, explicitLang?: string): string {
   if (explicitLang && explicitLang.trim() && explicitLang.trim().toLowerCase() !== 'code') {

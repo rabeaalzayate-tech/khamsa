@@ -14,7 +14,7 @@ import { AuthorBox } from '@/components/articles/AuthorBox';
 import { ArticleFaq } from '@/components/articles/ArticleFaq';
 import { TableOfContents } from '@/components/articles/TableOfContents';
 import { AdSlot } from '@/components/ads/AdSlot';
-import { slugifyHeading } from '@/components/shared/TiptapRenderer';
+import { slugifyHeading } from '@/lib/utils/slugify';
 import {
   getStaticArticleBySlug,
   getStaticArticleSlugs,
