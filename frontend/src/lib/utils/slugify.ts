@@ -6,3 +6,4 @@ export function slugifyHeading(text: string): string {
     .replace(/[^\w\u0600-\u06FF]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+

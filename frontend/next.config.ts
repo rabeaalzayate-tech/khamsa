@@ -41,6 +41,17 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'khamsa-web.vercel.app',
+          },
+        ],
+        destination: 'https://www.khamsaprogramming.com/:path*',
+        permanent: true,
+      },
+      {
         source: '/admin',
         destination: '/login',
         permanent: false,
