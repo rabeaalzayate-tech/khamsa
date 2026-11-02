@@ -21,7 +21,8 @@ declare global {
  * Safe AdSense Slot Component
  * - Guarantees Zero Cumulative Layout Shift (CLS)
  * - Renders nothing if NEXT_PUBLIC_ADSENSE_CLIENT is not configured (no empty boxes, no broken UI)
- * - Complies strictly with Google AdSense Publisher Policies
+ * - Complies strictly with Google AdSense Publisher Policies:
+ *   Does NOT render unfilled blank containers or invalid non-numeric slot IDs during review.
  */
 export function AdSlot({
   slot,
@@ -33,8 +34,14 @@ export function AdSlot({
   const adClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
   const isPushed = useRef(false);
 
+  // AdSense manual slots MUST have a valid numeric slot ID (e.g. '1234567890').
+  // Non-numeric string placeholders (like 'article-mid-content') cause AdSense rejection (blank ad spaces / under construction).
+  const isNumericSlot = /^\d+$/.test(slot?.trim() || '');
+  const manualAdsEnabled = process.env.NEXT_PUBLIC_ADSENSE_MANUAL_ADS === 'true';
+  const shouldRender = Boolean(adClient && manualAdsEnabled && isNumericSlot);
+
   useEffect(() => {
-    if (!adClient || isPushed.current) return;
+    if (!shouldRender || isPushed.current) return;
 
     try {
       if (typeof window !== 'undefined') {
@@ -43,13 +50,12 @@ export function AdSlot({
         isPushed.current = true;
       }
     } catch (err) {
-      // Gracefully handle ad blocker or script loading errors
       console.warn('[AdSense] AdSlot failed to initialize:', err);
     }
-  }, [adClient]);
+  }, [shouldRender]);
 
-  // If no AdSense client is set, do not render any DOM element or empty placeholder
-  if (!adClient) {
+  // If no AdSense client, or manual ads are disabled during pre-approval, render nothing to avoid blank boxes
+  if (!shouldRender) {
     return null;
   }
 
@@ -60,7 +66,7 @@ export function AdSlot({
         className
       )}
       style={{ minHeight: `${minHeight}px` }}
-      aria-label="إعلان برعاية"
+      aria-label="إعلان"
     >
       <div className="w-full text-center mb-1">
         <span className="text-[10px] uppercase font-mono tracking-wider text-foreground-muted/60 select-none">

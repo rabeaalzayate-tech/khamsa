@@ -4,14 +4,14 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'المقالات والشروحات التقنية | خمسة برمجة بالبلدي',
+  title: 'المقالات والشروحات التقنية والهندسية',
   description:
     'شروحات ومقالات تقنية عميقة ومبسطة في تطوير الويب، هندسة البرمجيات، جافاسكريبت، وتايب سكريبت من الألف إلى الياء.',
   alternates: {
     canonical: `${siteUrl}/articles`,
   },
   openGraph: {
-    title: 'المقالات والشروحات التقنية | خمسة برمجة بالبلدي',
+    title: 'المقالات والشروحات التقنية والهندسية | خمسة برمجة بالبلدي',
     description:
       'شروحات ومقالات تقنية عميقة ومبسطة في تطوير الويب، هندسة البرمجيات، وجافاسكريبت بأسلوب عملي.',
     url: `${siteUrl}/articles`,

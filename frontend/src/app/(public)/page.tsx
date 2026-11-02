@@ -29,7 +29,9 @@ export const revalidate = 60; // ISR 60 seconds
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'خمسة برمجة بالبلدي | افهمها بالبلدي.. اكتبها بالكود',
+  title: {
+    absolute: 'خمسة برمجة بالبلدي | افهمها بالبلدي.. اكتبها بالكود',
+  },
   description:
     'خمسة برمجة بالبلدي منصة عربية لتبسيط البرمجة والتكنولوجيا من خلال المقالات والفيديوهات والمحتوى العملي.',
   alternates: {

@@ -4,7 +4,7 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'تواصل معنا | خمسة برمجة بالبلدي',
+  title: 'تواصل معنا',
   description:
     'تواصل مع منصة خمسة برمجة بالبلدي وفريق العمل للاستفسارات، الاقتراحات، طلبات الاستشارات، أو الشراكات البرمجية والتقنية.',
   alternates: {

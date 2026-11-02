@@ -7,11 +7,18 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'إخلاء المسؤولية التقنية (Disclaimer) | خمسة برمجة بالبلدي',
+  title: 'إخلاء المسؤولية التقنية (Disclaimer)',
   description:
     'إخلاء المسؤولية القانونية والتقنية لمنصة خمسة برمجة بالبلدي حول الأمثلة البرمجية، الشروحات، والأكواد التعليمية.',
   alternates: {
     canonical: `${siteUrl}/disclaimer`,
+  },
+  openGraph: {
+    title: 'إخلاء المسؤولية التقنية | خمسة برمجة بالبلدي',
+    description:
+      'إخلاء المسؤولية القانونية والتقنية لمنصة خمسة برمجة بالبلدي حول الأمثلة البرمجية، الشروحات، والأكواد التعليمية.',
+    url: `${siteUrl}/disclaimer`,
+    type: 'website',
   },
 };
 
@@ -29,7 +36,7 @@ export default function DisclaimerPage() {
           إخلاء المسؤولية التقنية
         </h1>
         <p className="text-xs text-foreground-muted font-mono">
-          آخر تحديث: 20 سبتمبر 2026
+          آخر تحديث: 2 نوفمبر 2026
         </p>
       </header>
 

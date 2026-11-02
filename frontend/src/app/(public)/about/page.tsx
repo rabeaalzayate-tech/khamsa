@@ -27,7 +27,7 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'من نحن | خمسة برمجة بالبلدي',
+  title: 'عن المنصة ورؤيتنا',
   description:
     'تعرف على قصة، ورؤية، ورسالة، وفلسفة منصة خمسة برمجة بالبلدي ومؤسسها ربيع شعبان لتبسيط علوم البرمجة للمطور العربي.',
   alternates: {

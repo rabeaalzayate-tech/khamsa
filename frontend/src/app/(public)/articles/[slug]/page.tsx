@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       `${siteUrl}/articles/${encodeURIComponent(staticArt.slug.trim())}`;
 
     return {
-      title: `${staticArt.seo.title || staticArt.title} | خمسة برمجة بالبلدي`,
+      title: staticArt.seo.title || staticArt.title,
       description: staticArt.seo.description || staticArt.excerpt,
       keywords: staticArt.seo.keywords || staticArt.tags,
       alternates: {
@@ -93,7 +93,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
         `${siteUrl}/articles/${encodeURIComponent(article.slug.trim())}`;
 
       return {
-        title: `${title} | خمسة برمجة بالبلدي`,
+        title: title,
         description,
         keywords: article.seo?.keywords || article.tags,
         alternates: {

@@ -7,11 +7,18 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'سياسة ملفات تعريف الارتباط (Cookie Policy) | خمسة برمجة بالبلدي',
+  title: 'سياسة ملفات تعريف الارتباط (Cookie Policy)',
   description:
     'تعرف على كيفية استخدام منصة خمسة برمجة بالبلدي لملفات تعريف الارتباط (Cookies)، أنواعها، وكيفية التحكم بها في متصفحك.',
   alternates: {
     canonical: `${siteUrl}/cookie-policy`,
+  },
+  openGraph: {
+    title: 'سياسة ملفات تعريف الارتباط | خمسة برمجة بالبلدي',
+    description:
+      'تعرف على كيفية استخدام منصة خمسة برمجة بالبلدي لملفات تعريف الارتباط (Cookies)، أنواعها، وكيفية التحكم بها في متصفحك.',
+    url: `${siteUrl}/cookie-policy`,
+    type: 'website',
   },
 };
 
@@ -29,7 +36,7 @@ export default function CookiePolicyPage() {
           سياسة ملفات تعريف الارتباط
         </h1>
         <p className="text-xs text-foreground-muted font-mono">
-          آخر تحديث: 20 سبتمبر 2026
+          آخر تحديث: 2 نوفمبر 2026
         </p>
       </header>
 
@@ -70,7 +77,7 @@ export default function CookiePolicyPage() {
                 ملفات الإعلانات والتخصيص (Advertising)
               </span>
               <p className="text-xs text-foreground-muted leading-relaxed">
-                تستخدم بواسطة شركاء الإعلانات المعتمدين مثل Google AdSense لعرض إعلانات تقنية ذات صلة باهتماماتك.
+                تستخدم بواسطة شركاء الإعلانات المعتمدين مثل Google AdSense لعرض إعلانات تقنية ذات صلة باهتماماتك، وتخضع لسياسات الخصوصية المعتمدة من Google.
               </p>
             </div>
           </div>

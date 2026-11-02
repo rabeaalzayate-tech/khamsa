@@ -7,11 +7,18 @@ import { getSiteUrl } from '@/lib/seo/site-url';
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
-  title: 'شروط الاستخدام (Terms of Use) | خمسة برمجة بالبلدي',
+  title: 'شروط الاستخدام (Terms of Use)',
   description:
     'شروط وأحكام استخدام منصة خمسة برمجة بالبلدي، حقوق الملكية الفكرية، وسياسة الاستخدام العادل للمحتوى البرمجي والتعليمي.',
   alternates: {
     canonical: `${siteUrl}/terms`,
+  },
+  openGraph: {
+    title: 'شروط الاستخدام | خمسة برمجة بالبلدي',
+    description:
+      'شروط وأحكام استخدام منصة خمسة برمجة بالبلدي، حقوق الملكية الفكرية، وسياسة الاستخدام العادل للمحتوى البرمجي والتعليمي.',
+    url: `${siteUrl}/terms`,
+    type: 'website',
   },
 };
 
@@ -29,7 +36,7 @@ export default function TermsPage() {
           شروط الاستخدام
         </h1>
         <p className="text-xs text-foreground-muted font-mono">
-          آخر تحديث: 20 سبتمبر 2026
+          آخر تحديث: 2 نوفمبر 2026
         </p>
       </header>
 
