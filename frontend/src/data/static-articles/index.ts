@@ -33,6 +33,7 @@ import { article25 } from './articles/25-web-deployment-free-guide';
 import { article26 } from './articles/26-information-systems-guide';
 import { article27 } from './articles/27-what-is-api-guide';
 import { article28 } from './articles/28-claude-code-guide';
+import { article29 } from './articles/29-difference-between-cs-is-se-guide';
 
 export * from './types';
 
@@ -71,6 +72,7 @@ export const STATIC_ARTICLES: StaticArticle[] = [
   article26,
   article27,
   article28,
+  article29,
 ];
 
 export function getAllStaticArticles(): StaticArticle[] {
