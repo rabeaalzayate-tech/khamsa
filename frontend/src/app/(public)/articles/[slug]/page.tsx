@@ -227,7 +227,9 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
 
       if (relatedRes?.data?.items) {
         dynamicRelated = relatedRes.data.items.filter(
-          (item: Article) => item.slug !== slug && item._id !== article?._id
+          (item: Article) =>
+            item.slug !== slug &&
+            (item.id || item._id) !== (article?.id || article?._id),
         );
       }
     } catch {
@@ -251,7 +253,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   const currentCoverAlt = staticArt?.coverAlt || currentTitle;
   const currentContent = staticArt?.content || article?.content || '';
   const currentAuthor: ArticleAuthor = {
-    id: article?.author?._id || staticArt?.author?.id || DEFAULT_AUTHOR.id,
+    id: article?.author?.id || article?.author?._id || staticArt?.author?.id || DEFAULT_AUTHOR.id,
     name: article?.author?.name || staticArt?.author?.name || DEFAULT_AUTHOR.name,
     email: article?.author?.email || staticArt?.author?.email || DEFAULT_AUTHOR.email,
     role: staticArt?.author?.role || DEFAULT_AUTHOR.role,
@@ -538,7 +540,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
               />
             ))}
             {dynamicRelated.map((rel: Article) => (
-              <ArticleCard key={rel._id} article={rel} />
+              <ArticleCard key={rel.id || rel._id || rel.slug} article={rel} />
             ))}
           </div>
         </section>

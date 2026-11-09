@@ -64,16 +64,18 @@ export default function ArticlesDashboardPage() {
   const unpublishMutation = useUnpublishArticle();
 
   const handleTogglePublish = async (article: Article) => {
+    const articleId = (article.id || article._id) as string;
     if (article.status === ContentStatus.PUBLISHED) {
-      await unpublishMutation.mutateAsync(article._id);
+      await unpublishMutation.mutateAsync(articleId);
     } else {
-      await publishMutation.mutateAsync(article._id);
+      await publishMutation.mutateAsync(articleId);
     }
   };
 
   const confirmDelete = async () => {
     if (!articleToDelete) return;
-    await deleteMutation.mutateAsync(articleToDelete._id);
+    const articleId = (articleToDelete.id || articleToDelete._id) as string;
+    await deleteMutation.mutateAsync(articleId);
     setArticleToDelete(null);
   };
 

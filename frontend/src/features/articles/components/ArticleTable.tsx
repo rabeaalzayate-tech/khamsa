@@ -51,13 +51,14 @@ export function ArticleTable({
             </thead>
             <tbody className="divide-y divide-border/60">
               {articles.map(article => {
+                const articleId = (article.id || article._id) as string;
                 const isPublished = article.status === ContentStatus.PUBLISHED;
-                const isItemPublishing = publishingId === article._id;
-                const isItemDeleting = deletingId === article._id;
+                const isItemPublishing = publishingId === articleId;
+                const isItemDeleting = deletingId === articleId;
 
                 return (
                   <tr
-                    key={article._id}
+                    key={articleId}
                     className="hover:bg-surface-hover/60 transition-colors group"
                   >
                     {/* Cover Thumbnail */}
@@ -79,7 +80,7 @@ export function ArticleTable({
                     <td className="py-3 px-4">
                       <div className="space-y-0.5 max-w-md">
                         <Link
-                          href={`/dashboard/articles/${article._id}/edit`}
+                          href={`/dashboard/articles/${articleId}/edit`}
                           className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1"
                         >
                           {article.title}
@@ -141,7 +142,7 @@ export function ArticleTable({
 
                         {/* Preview */}
                         <Link
-                          href={`/dashboard/articles/${article._id}/preview`}
+                          href={`/dashboard/articles/${articleId}/preview`}
                           title="معاينة المقال"
                           className="p-1.5 rounded-lg text-foreground-muted hover:text-primary hover:bg-surface-hover transition-colors"
                         >
@@ -150,7 +151,7 @@ export function ArticleTable({
 
                         {/* Edit */}
                         <Link
-                          href={`/dashboard/articles/${article._id}/edit`}
+                          href={`/dashboard/articles/${articleId}/edit`}
                           title="تعديل المقال"
                           className="p-1.5 rounded-lg text-foreground-muted hover:text-primary hover:bg-surface-hover transition-colors"
                         >
@@ -184,13 +185,14 @@ export function ArticleTable({
       {/* Mobile Card List View */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
         {articles.map(article => {
+          const articleId = (article.id || article._id) as string;
           const isPublished = article.status === ContentStatus.PUBLISHED;
-          const isItemPublishing = publishingId === article._id;
-          const isItemDeleting = deletingId === article._id;
+          const isItemPublishing = publishingId === articleId;
+          const isItemDeleting = deletingId === articleId;
 
           return (
             <div
-              key={article._id}
+              key={articleId}
               className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-card"
             >
               <div className="flex items-start gap-3">
@@ -215,7 +217,7 @@ export function ArticleTable({
                   </div>
 
                   <Link
-                    href={`/dashboard/articles/${article._id}/edit`}
+                    href={`/dashboard/articles/${articleId}/edit`}
                     className="font-bold text-sm text-foreground hover:text-primary line-clamp-1"
                   >
                     {article.title}
@@ -254,13 +256,13 @@ export function ArticleTable({
                     )}
                   </Button>
 
-                  <Link href={`/dashboard/articles/${article._id}/preview`}>
+                  <Link href={`/dashboard/articles/${articleId}/preview`}>
                     <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
                       معاينة
                     </Button>
                   </Link>
 
-                  <Link href={`/dashboard/articles/${article._id}/edit`}>
+                  <Link href={`/dashboard/articles/${articleId}/edit`}>
                     <Button variant="outline" size="sm" className="h-7 px-2 text-xs text-primary">
                       تعديل
                     </Button>

@@ -134,7 +134,7 @@ export default function VideosPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video: Video) => (
               <VideoCard
-                key={video._id}
+                key={video.id || video._id || video.url}
                 video={video}
                 onPlay={v => setActiveVideo(v)}
               />

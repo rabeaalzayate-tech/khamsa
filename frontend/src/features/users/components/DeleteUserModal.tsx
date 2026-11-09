@@ -68,7 +68,7 @@ export function DeleteUserModal({
           <Button
             type="button"
             size="sm"
-            onClick={() => onConfirm(user._id)}
+            onClick={() => onConfirm((user.id || user._id) as string)}
             disabled={isLoading}
             className="gap-2 text-xs font-bold bg-destructive hover:bg-destructive/90 text-white shadow-card px-5"
           >

@@ -105,7 +105,7 @@ export function UserDetailsModal({
               المعرف الفريد (ID)
             </span>
             <p className="font-mono text-[11px] text-foreground pt-0.5 truncate" dir="ltr">
-              {user._id}
+              {user.id || user._id}
             </p>
           </div>
         </div>

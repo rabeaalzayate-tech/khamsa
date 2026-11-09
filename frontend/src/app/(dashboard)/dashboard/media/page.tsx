@@ -140,7 +140,7 @@ export default function MediaDashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {filteredItems.map((media: Media) => (
               <MediaCard
-                key={media._id}
+                key={media.id || media._id}
                 media={media}
                 onPreview={m => setPreviewMedia(m)}
                 onDelete={m => setDeleteMedia(m)}

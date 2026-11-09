@@ -67,7 +67,7 @@ export function ToggleStatusModal({
           <Button
             type="button"
             size="sm"
-            onClick={() => onConfirm(user._id)}
+            onClick={() => onConfirm((user.id || user._id) as string)}
             disabled={isLoading}
             className={`gap-2 text-xs font-bold shadow-card px-5 ${
               willActivate

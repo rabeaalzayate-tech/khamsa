@@ -53,7 +53,7 @@ export default function ArticlePreviewPage() {
 
         <div className="flex items-center gap-3">
           <ArticleStatusBadge status={article.status} />
-          <Link href={`/dashboard/articles/${article._id}/edit`}>
+          <Link href={`/dashboard/articles/${article.id || article._id}/edit`}>
             <Button size="sm" className="gap-1.5 text-xs font-bold">
               <Edit3 className="h-3.5 w-3.5" />
               تعديل المقال

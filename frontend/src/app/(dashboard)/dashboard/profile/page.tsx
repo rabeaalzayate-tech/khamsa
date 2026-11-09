@@ -183,13 +183,14 @@ export default function ProfileDashboardPage() {
 
   // Submit Profile Info
   const onProfileSubmit = async (data: ProfileInfoFormValues) => {
-    if (!user?._id) return;
+    const userId = user?.id || user?._id;
+    if (!userId) return;
     try {
       setIsSavingProfile(true);
       setProfileErrorMsg(null);
       setProfileSuccessMsg(null);
 
-      const res = await usersApi.updateUser(user._id, {
+      const res = await usersApi.updateUser(userId, {
         name: data.name,
         email: data.email,
         avatar: data.avatar || null,
@@ -214,13 +215,14 @@ export default function ProfileDashboardPage() {
 
   // Submit Password Change
   const onPasswordSubmit = async (data: PasswordChangeFormValues) => {
-    if (!user?._id) return;
+    const userId = user?.id || user?._id;
+    if (!userId) return;
     try {
       setIsSavingPassword(true);
       setPasswordErrorMsg(null);
       setPasswordSuccessMsg(null);
 
-      const res = await usersApi.changePassword(user._id, data.password);
+      const res = await usersApi.changePassword(userId, data.password);
 
       if (res.success) {
         resetPassword({ password: '', confirmPassword: '' });

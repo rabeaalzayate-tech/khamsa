@@ -111,7 +111,7 @@ export function ArticlesExplorer({ initialArticles, categories }: ArticlesExplor
         <div className="space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedArticles.map((article: Article) => (
-              <ArticleCard key={article._id || article.slug} article={article} />
+              <ArticleCard key={article.id || article._id || article.slug} article={article} />
             ))}
           </div>
 

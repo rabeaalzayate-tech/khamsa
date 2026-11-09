@@ -42,3 +42,4 @@ backups/
 
 # GSC CLI Local Config
 .gsccli.json
+.playwright-mcp/

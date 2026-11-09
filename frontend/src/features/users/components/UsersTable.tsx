@@ -116,11 +116,12 @@ export function UsersTable({
           </thead>
           <tbody className="divide-y divide-border text-xs">
             {users.map(user => {
-              const isSelf = currentUserId === user._id;
+              const userId = (user.id || user._id) as string;
+              const isSelf = currentUserId === userId;
 
               return (
                 <tr
-                  key={user._id}
+                  key={userId}
                   className="hover:bg-secondary/30 transition-colors group"
                 >
                   {/* User Name + Avatar */}
@@ -239,11 +240,12 @@ export function UsersTable({
       {/* Mobile Cards View */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 md:hidden">
         {users.map(user => {
-          const isSelf = currentUserId === user._id;
+          const userId = (user.id || user._id) as string;
+          const isSelf = currentUserId === userId;
 
           return (
             <Card
-              key={user._id}
+              key={userId}
               className="border border-border bg-card shadow-card p-4 space-y-4"
             >
               <CardContent className="p-0 space-y-3">

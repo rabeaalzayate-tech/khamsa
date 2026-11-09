@@ -21,7 +21,7 @@ export function MediaDeleteModal({ media, isOpen, onClose, onSuccess }: MediaDel
 
   const handleDelete = async () => {
     try {
-      await deleteMutation.mutateAsync(media._id);
+      await deleteMutation.mutateAsync((media.id || media._id) as string);
       onSuccess?.();
       onClose();
     } catch (error) {

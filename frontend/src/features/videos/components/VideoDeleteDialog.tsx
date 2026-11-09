@@ -50,7 +50,7 @@ export function VideoDeleteDialog({
         {/* Video Card Details */}
         <div className="p-4 rounded-xl bg-secondary/60 border border-border space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono text-muted-foreground">ID: {video._id.slice(-6)}</span>
+            <span className="text-[11px] font-mono text-muted-foreground">ID: {(video.id || video._id || '').slice(-6)}</span>
             <VideoPlatformBadge platform={video.platform} size="sm" />
           </div>
           <p className="text-sm font-bold text-foreground line-clamp-2">{video.title}</p>

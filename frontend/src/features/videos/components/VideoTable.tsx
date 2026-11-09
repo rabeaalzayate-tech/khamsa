@@ -35,17 +35,19 @@ export function VideoTable({ videos }: VideoTableProps) {
   const deleteMutation = useDeleteVideo();
 
   const handleTogglePublish = async (video: Video) => {
+    const videoId = (video.id || video._id) as string;
     if (video.status === ContentStatus.PUBLISHED) {
-      await unpublishMutation.mutateAsync(video._id);
+      await unpublishMutation.mutateAsync(videoId);
     } else {
-      await publishMutation.mutateAsync(video._id);
+      await publishMutation.mutateAsync(videoId);
     }
   };
 
   const handleDeleteConfirm = async () => {
     if (!deleteVideoTarget) return;
+    const videoId = (deleteVideoTarget.id || deleteVideoTarget._id) as string;
     try {
-      await deleteMutation.mutateAsync(deleteVideoTarget._id);
+      await deleteMutation.mutateAsync(videoId);
       setDeleteVideoTarget(null);
     } catch {
       // Handled by react query
@@ -73,6 +75,7 @@ export function VideoTable({ videos }: VideoTableProps) {
             </thead>
             <tbody className="divide-y divide-border">
               {videos.map(video => {
+                const videoId = (video.id || video._id) as string;
                 const isPublished = video.status === ContentStatus.PUBLISHED;
                 const formattedDate = video.publishedAt
                   ? new Date(video.publishedAt).toLocaleDateString('ar-EG', {
@@ -88,7 +91,7 @@ export function VideoTable({ videos }: VideoTableProps) {
 
                 return (
                   <tr
-                    key={video._id}
+                    key={videoId}
                     className="hover:bg-secondary/30 transition-colors group"
                   >
                     {/* Thumbnail */}
@@ -137,11 +140,11 @@ export function VideoTable({ videos }: VideoTableProps) {
                       <button
                         type="button"
                         onClick={() => handleTogglePublish(video)}
-                        disabled={isTogglingId(video._id)}
+                        disabled={isTogglingId(videoId)}
                         className="focus:outline-none"
                         title="اضغط لتغيير حالة النشر"
                       >
-                        {isTogglingId(video._id) ? (
+                        {isTogglingId(videoId) ? (
                           <Badge variant="secondary" className="gap-1 text-[11px]">
                             <Loader2 className="h-3 w-3 animate-spin" />
                             <span>جاري التحديث...</span>
@@ -187,7 +190,7 @@ export function VideoTable({ videos }: VideoTableProps) {
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
 
-                        <Link href={`/dashboard/videos/${video._id}/edit`}>
+                        <Link href={`/dashboard/videos/${videoId}/edit`}>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -235,6 +238,7 @@ export function VideoTable({ videos }: VideoTableProps) {
       {/* Mobile Cards View (Visible on mobile screens) */}
       <div className="md:hidden space-y-4">
         {videos.map(video => {
+          const videoId = (video.id || video._id) as string;
           const isPublished = video.status === ContentStatus.PUBLISHED;
           const formattedDate = video.publishedAt
             ? new Date(video.publishedAt).toLocaleDateString('ar-EG', {
@@ -250,7 +254,7 @@ export function VideoTable({ videos }: VideoTableProps) {
 
           return (
             <Card
-              key={video._id}
+              key={videoId}
               className="p-4 border border-border bg-card shadow-card space-y-3"
             >
               <div className="flex items-start justify-between gap-3">
@@ -280,7 +284,7 @@ export function VideoTable({ videos }: VideoTableProps) {
                     <button
                       type="button"
                       onClick={() => handleTogglePublish(video)}
-                      disabled={isTogglingId(video._id)}
+                      disabled={isTogglingId(videoId)}
                     >
                       {isPublished ? (
                         <Badge variant="primary" className="text-[10px]">
@@ -317,7 +321,7 @@ export function VideoTable({ videos }: VideoTableProps) {
                   >
                     <Eye className="h-3.5 w-3.5" />
                   </Button>
-                  <Link href={`/dashboard/videos/${video._id}/edit`}>
+                  <Link href={`/dashboard/videos/${videoId}/edit`}>
                     <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
                       <Edit className="h-3.5 w-3.5" />
                     </Button>

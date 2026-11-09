@@ -44,7 +44,7 @@ export function ChangePasswordModal({
   if (!user) return null;
 
   const handleFormSubmit = async (data: ChangePasswordFormValues) => {
-    await onSubmit(user._id, data.password);
+    await onSubmit((user.id || user._id) as string, data.password);
     reset();
   };
 

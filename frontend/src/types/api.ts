@@ -61,6 +61,7 @@ export interface UserSocials {
 
 export interface User {
   _id: string;
+  id?: string;
   name: string;
   email: string;
   role: UserRole;
@@ -85,6 +86,7 @@ export interface ArticleSeo {
 
 export interface Article {
   _id: string;
+  id?: string;
   title: string;
   slug: string;
   excerpt: string;
@@ -94,6 +96,7 @@ export interface Article {
   tags: string[];
   author: {
     _id: string;
+    id?: string;
     name: string;
     email?: string;
     avatar?: string | null;
@@ -110,6 +113,7 @@ export interface Article {
 
 export interface Video {
   _id: string;
+  id?: string;
   title: string;
   description: string;
   platform: VideoPlatform;
@@ -118,6 +122,7 @@ export interface Video {
   status: ContentStatus;
   author: {
     _id: string;
+    id?: string;
     name: string;
     email?: string;
     avatar?: string | null;
@@ -130,6 +135,7 @@ export interface Video {
 
 export interface Media {
   _id: string;
+  id?: string;
   filename: string;
   originalName: string;
   mimeType: string;
@@ -140,6 +146,7 @@ export interface Media {
   key: string;
   uploadedBy: {
     _id: string;
+    id?: string;
     name: string;
     avatar?: string | null;
   };
@@ -249,6 +256,7 @@ export interface Settings {
 // ============================================
 export interface FeaturedLink {
   _id: string;
+  id?: string;
   title: string;
   image: string;
   url: string;

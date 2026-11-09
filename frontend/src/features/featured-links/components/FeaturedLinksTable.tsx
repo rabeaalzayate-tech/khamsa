@@ -103,12 +103,13 @@ export function FeaturedLinksTable({
             </thead>
             <tbody className="divide-y divide-border/60">
                 {links.map(link => {
+                  const linkId = (link.id || link._id) as string;
                   const cleanTitle = fixMojibake(link.title);
                   const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
                   return (
                     <tr
-                      key={link._id}
+                      key={linkId}
                       className="hover:bg-surface-hover/50 transition-colors group"
                     >
                       {/* Thumbnail */}
@@ -167,7 +168,7 @@ export function FeaturedLinksTable({
                     <div className="inline-flex items-center gap-2">
                       <Switch
                         checked={link.isActive}
-                        onCheckedChange={() => onToggleActive(link._id)}
+                        onCheckedChange={() => onToggleActive(linkId)}
                         aria-label={`تغيير حالة ${link.title}`}
                       />
                       <span
@@ -218,12 +219,13 @@ export function FeaturedLinksTable({
       {/* Mobile Cards */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
         {links.map(link => {
+          const linkId = (link.id || link._id) as string;
           const cleanTitle = fixMojibake(link.title);
           const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
           return (
             <div
-              key={link._id}
+              key={linkId}
               className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-card"
             >
               <div className="flex items-start gap-3">
@@ -270,7 +272,7 @@ export function FeaturedLinksTable({
               <div className="flex items-center gap-2">
                 <Switch
                   checked={link.isActive}
-                  onCheckedChange={() => onToggleActive(link._id)}
+                  onCheckedChange={() => onToggleActive(linkId)}
                 />
                 <span
                   className={`text-xs font-bold ${

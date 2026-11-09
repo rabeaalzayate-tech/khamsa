@@ -260,7 +260,7 @@ export default function LinksPage() {
                 const resolvedImage = resolveFeaturedImage(link.image, link.url);
 
                 return (
-                  <div key={link._id} role="listitem">
+                  <div key={link.id || link._id} role="listitem">
                     <a
                       href={link.url}
                       target="_blank"

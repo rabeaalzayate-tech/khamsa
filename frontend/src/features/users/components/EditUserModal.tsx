@@ -30,7 +30,7 @@ export function EditUserModal({
   isLoading,
   serverError,
 }: EditUserModalProps) {
-  const isSelf = currentUserId === user?._id;
+  const isSelf = currentUserId === (user?.id || user?._id);
 
   const {
     register,
@@ -61,7 +61,7 @@ export function EditUserModal({
   if (!user) return null;
 
   const handleFormSubmit = async (data: EditUserFormValues) => {
-    await onSubmit(user._id, data);
+    await onSubmit((user.id || user._id) as string, data);
   };
 
   return (

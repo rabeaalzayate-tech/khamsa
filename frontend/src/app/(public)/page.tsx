@@ -189,7 +189,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {articles.map((article: Article, index: number) => (
                 <ArticleCard
-                  key={article._id}
+                  key={article.id || article._id || article.slug}
                   article={article}
                   featured={index === 0 && articles.length >= 3}
                 />
@@ -231,7 +231,7 @@ export default async function HomePage() {
           {videos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.map((video: Video) => (
-                <VideoCard key={video._id} video={video} />
+                <VideoCard key={video.id || video._id || video.url} video={video} />
               ))}
             </div>
           ) : (

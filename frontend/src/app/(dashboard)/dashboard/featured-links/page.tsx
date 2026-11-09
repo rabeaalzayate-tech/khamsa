@@ -111,7 +111,7 @@ export default function FeaturedLinksDashboardPage() {
       setFormServerError(null);
       if (selectedLinkForEdit) {
         await updateMutation.mutateAsync({
-          id: selectedLinkForEdit._id,
+          id: (selectedLinkForEdit.id || selectedLinkForEdit._id) as string,
           data: formData,
         });
         setIsFormOpen(false);
@@ -134,7 +134,7 @@ export default function FeaturedLinksDashboardPage() {
   // Toggle Active Handler
   const handleToggleActive = async (id: string) => {
     try {
-      const targetLink = links.find(l => l._id === id);
+      const targetLink = links.find(l => (l.id || l._id) === id);
       const isCurrentlyActive = targetLink?.isActive;
       await toggleMutation.mutateAsync(id);
       if (isCurrentlyActive) {

@@ -11,8 +11,54 @@ export const apiClient = axios.create({
   withCredentials: true, // Enables HTTPOnly cookie transmission
 });
 
+/**
+ * Normalizes IDs across all API responses:
+ * Ensures any entity with `id` also has `_id` mirrored, and vice-versa,
+ * safeguarding against MongoDB <-> Prisma/MySQL migration discrepancies.
+ */
+function normalizeDataIds(data: unknown): unknown {
+  if (!data || typeof data !== 'object') return data;
+
+  if (
+    (typeof FormData !== 'undefined' && data instanceof FormData) ||
+    (typeof Blob !== 'undefined' && data instanceof Blob) ||
+    (typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer)
+  ) {
+    return data;
+  }
+
+  if (Array.isArray(data)) {
+    for (let i = 0; i < data.length; i++) {
+      normalizeDataIds(data[i]);
+    }
+    return data;
+  }
+
+  const record = data as Record<string, unknown>;
+
+  if (record.id && !record._id) {
+    record._id = record.id;
+  } else if (record._id && !record.id) {
+    record.id = record._id;
+  }
+
+  for (const key of Object.keys(record)) {
+    const val = record[key];
+    if (val && typeof val === 'object') {
+      normalizeDataIds(val);
+    }
+  }
+
+  return data;
+}
+
 apiClient.interceptors.response.use(
-  response => response,
+  response => {
+    if (response?.data) {
+      normalizeDataIds(response.data);
+    }
+    return response;
+  },
   async error => {
     const originalRequest = error.config;
 

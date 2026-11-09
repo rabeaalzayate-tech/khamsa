@@ -273,7 +273,7 @@ export default function UsersDashboardPage() {
       {/* Table / Cards List */}
       <UsersTable
         users={users}
-        currentUserId={currentUser?._id}
+        currentUserId={currentUser?.id || currentUser?._id}
         isLoading={isUsersLoading}
         onView={setSelectedUserForView}
         onEdit={u => {
@@ -316,7 +316,7 @@ export default function UsersDashboardPage() {
       <EditUserModal
         isOpen={!!selectedUserForEdit}
         user={selectedUserForEdit}
-        currentUserId={currentUser?._id}
+        currentUserId={currentUser?.id || currentUser?._id}
         onClose={() => setSelectedUserForEdit(null)}
         onSubmit={handleEditSubmit}
         isLoading={updateMutation.isPending}
