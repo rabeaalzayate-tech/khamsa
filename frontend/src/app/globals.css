@@ -21,6 +21,13 @@
     direction: rtl;
     text-align: right;
     font-family: var(--font-cairo), 'Cairo', system-ui, sans-serif;
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  article {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   /* Text Selection with Gold Accent */

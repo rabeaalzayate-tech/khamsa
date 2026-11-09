@@ -351,7 +351,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10 py-4 sm:py-8">
+    <div className="max-w-4xl mx-auto w-full min-w-0 space-y-10 py-4 sm:py-8 overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
@@ -462,7 +462,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
       <AdSlot slot="article-after-intro" />
 
       {/* Main Structured Content Area */}
-      <main className="py-4">
+      <main className="py-4 w-full min-w-0 overflow-hidden">
         <TiptapRenderer content={currentContent} tocItems={tableOfContents} />
       </main>
 

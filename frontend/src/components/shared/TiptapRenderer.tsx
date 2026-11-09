@@ -77,7 +77,7 @@ function CodeBlockRenderer({
   return (
     <div
       dir="ltr"
-      className="relative my-6 rounded-2xl border border-border bg-[#080b11] overflow-hidden group shadow-card text-left"
+      className="relative my-6 rounded-2xl border border-border bg-[#080b11] overflow-hidden group shadow-card text-left w-full max-w-full min-w-0"
       style={{ direction: 'ltr', textAlign: 'left' }}
     >
       {/* Code Header Bar */}
@@ -120,7 +120,7 @@ function CodeBlockRenderer({
       {/* Code Content */}
       <pre
         dir="ltr"
-        className="p-4 sm:p-5 text-xs sm:text-sm font-mono leading-relaxed text-slate-100 overflow-x-auto selection:bg-primary/30"
+        className="p-4 sm:p-5 text-xs sm:text-sm font-mono leading-relaxed text-slate-100 overflow-x-auto max-w-full selection:bg-primary/30"
         style={{
           direction: 'ltr',
           textAlign: 'left',
@@ -171,7 +171,7 @@ function renderTextNode(node: TiptapNode, key: React.Key): React.ReactNode {
           element = (
             <code
               key={markIndex}
-              className="px-2 py-0.5 rounded-md bg-surface text-primary border border-border/80 font-mono text-xs sm:text-sm dir-ltr inline-block mx-1 font-semibold"
+              className="px-2 py-0.5 rounded-md bg-surface text-primary border border-border/80 font-mono text-xs sm:text-sm dir-ltr inline-block mx-1 font-semibold max-w-full break-all"
             >
               {element}
             </code>
@@ -186,7 +186,7 @@ function renderTextNode(node: TiptapNode, key: React.Key): React.ReactNode {
               href={href}
               target={isExternal ? '_blank' : undefined}
               rel={isExternal ? 'noopener noreferrer' : undefined}
-              className="text-primary font-bold underline underline-offset-4 hover:text-primary-hover transition-colors"
+              className="text-primary font-bold underline underline-offset-4 hover:text-primary-hover transition-colors break-all"
             >
               {element}
             </Link>
@@ -215,14 +215,14 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
   switch (node.type) {
     case 'doc':
       return (
-        <div key={key} className="space-y-4">
+        <div key={key} className="space-y-4 w-full min-w-0">
           {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
         </div>
       );
 
     case 'paragraph':
       return (
-        <p key={key} className="text-base sm:text-lg leading-relaxed text-foreground-secondary mb-4">
+        <p key={key} className="text-base sm:text-lg leading-relaxed text-foreground-secondary mb-4 break-words [overflow-wrap:anywhere]">
           {node.content?.map((child, idx) =>
             child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
           )}
@@ -239,15 +239,15 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
 
       switch (level) {
         case 1:
-          return <h1 id={headingId} key={key} className="text-2xl sm:text-4xl font-extrabold text-foreground mt-8 mb-4 tracking-tight leading-tight">{headingContent}</h1>;
+          return <h1 id={headingId} key={key} className="text-2xl sm:text-4xl font-extrabold text-foreground mt-8 mb-4 tracking-tight leading-tight break-words [overflow-wrap:anywhere]">{headingContent}</h1>;
         case 2:
-          return <h2 id={headingId} key={key} className="text-xl sm:text-2xl font-bold text-foreground mt-8 mb-3 border-r-4 border-primary pr-3 tracking-tight">{headingContent}</h2>;
+          return <h2 id={headingId} key={key} className="text-xl sm:text-2xl font-bold text-foreground mt-8 mb-3 border-r-4 border-primary pr-3 tracking-tight break-words [overflow-wrap:anywhere]">{headingContent}</h2>;
         case 3:
-          return <h3 id={headingId} key={key} className="text-lg sm:text-xl font-bold text-foreground mt-6 mb-2 tracking-tight">{headingContent}</h3>;
+          return <h3 id={headingId} key={key} className="text-lg sm:text-xl font-bold text-foreground mt-6 mb-2 tracking-tight break-words [overflow-wrap:anywhere]">{headingContent}</h3>;
         case 4:
-          return <h4 id={headingId} key={key} className="text-base sm:text-lg font-bold text-foreground mt-4 mb-2">{headingContent}</h4>;
+          return <h4 id={headingId} key={key} className="text-base sm:text-lg font-bold text-foreground mt-4 mb-2 break-words [overflow-wrap:anywhere]">{headingContent}</h4>;
         default:
-          return <h5 id={headingId} key={key} className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2">{headingContent}</h5>;
+          return <h5 id={headingId} key={key} className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2 break-words [overflow-wrap:anywhere]">{headingContent}</h5>;
       }
     }
 
@@ -267,7 +267,7 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
 
     case 'listItem':
       return (
-        <li key={key} className="leading-relaxed">
+        <li key={key} className="leading-relaxed break-words [overflow-wrap:anywhere]">
           {node.content?.map((child, idx) =>
             child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
           )}
@@ -278,7 +278,7 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
       return (
         <blockquote
           key={key}
-          className="my-6 border-r-4 border-primary bg-surface/70 p-4 sm:p-5 rounded-l-2xl text-foreground-secondary italic text-base leading-relaxed"
+          className="my-6 border-r-4 border-primary bg-surface/70 p-4 sm:p-5 rounded-l-2xl text-foreground-secondary italic text-base leading-relaxed break-words [overflow-wrap:anywhere]"
         >
           {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
         </blockquote>
@@ -843,7 +843,7 @@ export function TiptapRenderer({ content, tocItems, className }: TiptapRendererP
   if (typeof content === 'object') {
     const docNode = content as unknown as TiptapNode;
     return (
-      <article className={cn('max-w-none text-right space-y-2', className)}>
+      <article className={cn('max-w-none text-right space-y-2 w-full min-w-0 break-words [overflow-wrap:anywhere]', className)}>
         {renderTiptapNode(docNode, 'root-doc')}
       </article>
     );
@@ -855,7 +855,7 @@ export function TiptapRenderer({ content, tocItems, className }: TiptapRendererP
       const parsed = JSON.parse(content) as TiptapNode;
       if (parsed && typeof parsed === 'object' && parsed.type === 'doc') {
         return (
-          <article className={cn('max-w-none text-right space-y-2', className)}>
+          <article className={cn('max-w-none text-right space-y-2 w-full min-w-0 break-words [overflow-wrap:anywhere]', className)}>
             {renderTiptapNode(parsed, 'root-doc')}
           </article>
         );
@@ -867,7 +867,7 @@ export function TiptapRenderer({ content, tocItems, className }: TiptapRendererP
     // Robust Markdown rendering
     const blocks = parseMarkdownToBlocks(content, tocItems);
     return (
-      <article className={cn('max-w-none text-right space-y-2', className)}>
+      <article className={cn('max-w-none text-right space-y-2 w-full min-w-0 break-words [overflow-wrap:anywhere]', className)}>
         {blocks.map((block, idx) => renderMarkdownBlock(block, idx))}
       </article>
     );
