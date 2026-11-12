@@ -313,6 +313,26 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
       );
     }
 
+    case 'video': {
+      const src = (node.attrs?.src as string) || '';
+      const title = (node.attrs?.title as string) || '';
+
+      if (!src) return null;
+
+      return (
+        <figure key={key} className="my-8 space-y-2 text-center">
+          <video
+            src={src}
+            controls
+            playsInline
+            preload="metadata"
+            className="w-full max-h-[500px] rounded-2xl border border-border shadow-card bg-black"
+          />
+          {title && <figcaption className="text-xs text-foreground-muted">{title}</figcaption>}
+        </figure>
+      );
+    }
+
     case 'hardBreak':
       return <br key={key} />;
 

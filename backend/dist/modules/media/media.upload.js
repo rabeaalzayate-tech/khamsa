@@ -11,8 +11,13 @@ const ALLOWED_MIME_TYPES = [
     'image/png',
     'image/webp',
     'image/avif',
+    'image/gif',
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
 ];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 MB
 exports.upload = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
     limits: {
@@ -23,7 +28,7 @@ exports.upload = (0, multer_1.default)({
             cb(null, true);
         }
         else {
-            cb(api_error_1.ApiError.badRequest(`Invalid file type: ${file.mimetype}. Allowed types: JPEG, PNG, WEBP, AVIF.`));
+            cb(api_error_1.ApiError.badRequest(`Invalid file type: ${file.mimetype}. Allowed types: JPEG, PNG, WEBP, AVIF, GIF, MP4, WEBM, OGG, MOV.`));
         }
     },
 });

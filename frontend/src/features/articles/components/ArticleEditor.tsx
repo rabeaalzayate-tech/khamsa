@@ -7,6 +7,7 @@ import Image from '@tiptap/extension-image';
 import Placeholder from '@tiptap/extension-placeholder';
 import { AlertTriangle } from 'lucide-react';
 import { EditorToolbar } from './EditorToolbar';
+import { Video } from './VideoExtension';
 import { cn } from '@/lib/utils/cn';
 
 interface ArticleEditorProps {
@@ -44,6 +45,7 @@ export function ArticleEditor({
           class: 'rounded-2xl max-h-[500px] w-full object-cover border border-border shadow-xl my-6 mx-auto',
         },
       }),
+      Video,
       Placeholder.configure({
         placeholder: 'ابدأ كتابة محتوى المقال والدروس البرمجية هنا بالتفصيل...',
       }),
@@ -75,13 +77,13 @@ export function ArticleEditor({
   return (
     <div
       className={cn(
-        'w-full rounded-2xl border border-border bg-card shadow-xl transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 overflow-hidden',
+        'w-full rounded-2xl border border-border bg-card shadow-xl transition-all focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 overflow-visible',
         error && 'border-destructive focus-within:ring-destructive/20',
         className,
       )}
     >
       <EditorToolbar editor={editor} />
-      <div className="bg-card/40">
+      <div className="bg-card/40 rounded-b-2xl">
         <EditorContent editor={editor} />
       </div>
       {error && (

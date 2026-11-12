@@ -34,6 +34,14 @@ interface EditorToolbarProps {
   editor: Editor | null;
 }
 
+const ACCEPTED_MEDIA_TYPES =
+  'image/jpeg,image/png,image/webp,image/avif,image/gif,video/mp4,video/webm,video/ogg,video/quicktime';
+
+const isVideoUrl = (url: string): boolean => {
+  const cleanUrl = url.split(/[?#]/)[0].toLowerCase();
+  return /\.(mp4|webm|ogg|mov|m4v)$/.test(cleanUrl);
+};
+
 export function EditorToolbar({ editor }: EditorToolbarProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
@@ -72,11 +80,22 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
       const res = await mediaApi.uploadFile(formData);
       if (res.data?.url) {
-        editor.chain().focus().setImage({ src: res.data.url, alt: file.name }).run();
+        const isVideo =
+          file.type.startsWith('video/') ||
+          res.data.mimeType?.startsWith('video/');
+
+        if (isVideo) {
+          editor.chain().focus().setVideo({ src: res.data.url, title: file.name }).run();
+        } else {
+          editor.chain().focus().setImage({ src: res.data.url, alt: file.name }).run();
+        }
       }
-    } catch (err) {
-      console.error('Failed to upload image:', err);
-      alert('حدث خطأ أثناء رفع الصورة.');
+    } catch (err: unknown) {
+      console.error('Failed to upload media:', err);
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        'حدث خطأ أثناء رفع الملف.';
+      alert(message);
     } finally {
       setIsUploading(false);
       setShowImageDialog(false);
@@ -87,8 +106,15 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   };
 
   const handleUrlInsert = () => {
-    if (!imageUrl.trim()) return;
-    editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
+    const trimmedUrl = imageUrl.trim();
+    if (!trimmedUrl) return;
+
+    if (isVideoUrl(trimmedUrl)) {
+      editor.chain().focus().setVideo({ src: trimmedUrl }).run();
+    } else {
+      editor.chain().focus().setImage({ src: trimmedUrl }).run();
+    }
+
     setImageUrl('');
     setShowImageDialog(false);
   };
@@ -183,7 +209,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       disabled: !editor.isActive('link'),
     },
     {
-      label: 'إدراج صورة',
+      label: 'إدراج صورة أو فيديو',
       icon: ImagePlus,
       action: () => setShowImageDialog(!showImageDialog),
       isActive: showImageDialog,
@@ -209,7 +235,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   ];
 
   return (
-    <div className="relative border-b border-border bg-card/60 backdrop-blur-md p-2 rounded-t-2xl">
+    <div className="relative z-30 border-b border-border bg-card/90 backdrop-blur-md p-2 rounded-t-2xl">
       <div className="flex flex-wrap items-center gap-1">
         {tools.map((tool, idx) => {
           if ('divider' in tool) {
@@ -239,13 +265,13 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
         })}
       </div>
 
-      {/* Image Insert/Upload Popover Modal */}
+      {/* Media Insert/Upload Popover Modal */}
       {showImageDialog && (
-        <div className="absolute top-full right-4 mt-2 w-84 p-4 rounded-2xl bg-card border border-border shadow-2xl z-30 space-y-3.5 text-right backdrop-blur-xl">
+        <div className="absolute top-full right-4 mt-2 w-80 p-4 rounded-2xl bg-card border border-border shadow-2xl z-50 space-y-3.5 text-right">
           <div className="flex items-center justify-between pb-2 border-b border-border">
             <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
               <ImageIcon className="h-3.5 w-3.5 text-primary" />
-              إدراج صورة داخل المقال
+              إدراج صورة أو فيديو داخل المقال
             </span>
             <button
               type="button"
@@ -259,19 +285,19 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
           {/* Upload directly */}
           <div className="space-y-1.5">
             <span className="text-[11px] font-semibold text-foreground/80 block">
-              رفع صورة من الجهاز:
+              رفع صورة أو فيديو من الجهاز:
             </span>
             <input
               type="file"
               ref={fileInputRef}
-              accept="image/jpeg,image/png,image/webp,image/avif"
+              accept={ACCEPTED_MEDIA_TYPES}
               onChange={handleFileUpload}
               className="hidden"
-              id="tiptap-image-upload"
+              id="tiptap-media-upload"
               disabled={isUploading}
             />
             <label
-              htmlFor="tiptap-image-upload"
+              htmlFor="tiptap-media-upload"
               className={cn(
                 'w-full flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 text-primary text-xs font-bold cursor-pointer hover:bg-primary/10 transition-colors',
                 isUploading && 'pointer-events-none opacity-60',
@@ -280,12 +306,12 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
               {isUploading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  <span>جارٍ رفع الصورة...</span>
+                  <span>جارٍ رفع الملف...</span>
                 </>
               ) : (
                 <>
                   <UploadCloud className="h-4 w-4" />
-                  <span>اختر صورة من جهازك</span>
+                  <span>اختر صورة أو فيديو من جهازك</span>
                 </>
               )}
             </label>
@@ -306,7 +332,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
               <input
                 type="url"
                 dir="ltr"
-                placeholder="https://example.com/image.webp"
+                placeholder="https://example.com/media.webp"
                 value={imageUrl}
                 onChange={e => setImageUrl(e.target.value)}
                 className="flex-1 px-3 py-1.5 text-xs rounded-xl border border-input bg-background text-foreground focus:outline-none focus:border-primary font-mono"

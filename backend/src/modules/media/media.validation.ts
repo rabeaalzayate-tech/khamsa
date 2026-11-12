@@ -14,6 +14,11 @@ export const presignedUrlSchema = z.object({
     'image/png',
     'image/webp',
     'image/avif',
+    'image/gif',
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
   ]),
   folder: z.enum(['articles', 'videos', 'general', 'settings']).default('general'),
 });

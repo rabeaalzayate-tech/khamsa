@@ -3,7 +3,16 @@ import { ApiResponse, PaginatedResult, Media } from '@/types/api';
 
 export interface PresignedUrlPayload {
   filename: string;
-  contentType: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/avif';
+  contentType:
+    | 'image/jpeg'
+    | 'image/png'
+    | 'image/webp'
+    | 'image/avif'
+    | 'image/gif'
+    | 'video/mp4'
+    | 'video/webm'
+    | 'video/ogg'
+    | 'video/quicktime';
   folder?: 'articles' | 'videos' | 'general' | 'settings';
 }
 
