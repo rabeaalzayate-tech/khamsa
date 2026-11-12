@@ -333,6 +333,33 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
       );
     }
 
+    case 'iframe': {
+      const src = (node.attrs?.src as string) || '';
+      const title = (node.attrs?.title as string) || 'محتوى مضمن';
+      const allow =
+        (node.attrs?.allow as string) ||
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+
+      if (!src) return null;
+
+      return (
+        <div
+          key={key}
+          className="my-8 aspect-video w-full overflow-hidden rounded-2xl border border-border shadow-card bg-black"
+        >
+          <iframe
+            src={src}
+            title={title}
+            allow={allow}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-full border-0"
+          />
+        </div>
+      );
+    }
+
     case 'hardBreak':
       return <br key={key} />;
 

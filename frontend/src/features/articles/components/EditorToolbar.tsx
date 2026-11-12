@@ -26,12 +26,16 @@ import {
   Loader2,
   X,
   Image as ImageIcon,
+  Code2,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { mediaApi } from '@/lib/api/media.api';
 
 interface EditorToolbarProps {
   editor: Editor | null;
+  isCodeMode?: boolean;
+  onToggleCodeMode?: () => void;
 }
 
 const ACCEPTED_MEDIA_TYPES =
@@ -42,7 +46,11 @@ const isVideoUrl = (url: string): boolean => {
   return /\.(mp4|webm|ogg|mov|m4v)$/.test(cleanUrl);
 };
 
-export function EditorToolbar({ editor }: EditorToolbarProps) {
+export function EditorToolbar({
+  editor,
+  isCodeMode = false,
+  onToggleCodeMode,
+}: EditorToolbarProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
@@ -236,37 +244,69 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
   return (
     <div className="relative z-30 border-b border-border bg-card/90 backdrop-blur-md p-2 rounded-t-2xl">
-      <div className="flex flex-wrap items-center gap-1">
-        {tools.map((tool, idx) => {
-          if ('divider' in tool) {
-            return <div key={idx} className="h-5 w-px bg-border mx-1.5" />;
-          }
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1">
+          {tools.map((tool, idx) => {
+            if ('divider' in tool) {
+              return <div key={idx} className="h-5 w-px bg-border mx-1.5" />;
+            }
 
-          const Icon = tool.icon;
-          return (
-            <button
-              key={idx}
-              type="button"
-              onClick={tool.action}
-              disabled={tool.disabled}
-              title={tool.label}
-              aria-label={tool.label}
-              className={cn(
-                'p-2 rounded-xl text-xs transition-all flex items-center justify-center font-medium',
-                tool.isActive
-                  ? 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/20 scale-105'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
-                tool.disabled && 'opacity-30 cursor-not-allowed hover:bg-transparent hover:text-muted-foreground',
-              )}
-            >
-              <Icon className="h-4 w-4" />
-            </button>
-          );
-        })}
+            const Icon = tool.icon;
+            const isDisabled = isCodeMode || tool.disabled;
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={tool.action}
+                disabled={isDisabled}
+                title={tool.label}
+                aria-label={tool.label}
+                className={cn(
+                  'p-2 rounded-xl text-xs transition-all flex items-center justify-center font-medium',
+                  !isCodeMode && tool.isActive
+                    ? 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/20 scale-105'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+                  isDisabled && 'opacity-30 cursor-not-allowed hover:bg-transparent hover:text-muted-foreground',
+                )}
+              >
+                <Icon className="h-4 w-4" />
+              </button>
+            );
+          })}
+        </div>
+
+        {onToggleCodeMode && (
+          <button
+            type="button"
+            onClick={() => {
+              setShowImageDialog(false);
+              onToggleCodeMode();
+            }}
+            title={isCodeMode ? 'العودة إلى وضع النص المرئي' : 'التبديل إلى وضع كود HTML (لإضافة iframe أو HTML)'}
+            className={cn(
+              'px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shrink-0',
+              isCodeMode
+                ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                : 'bg-secondary/60 text-foreground border-border hover:bg-secondary',
+            )}
+          >
+            {isCodeMode ? (
+              <>
+                <Eye className="h-3.5 w-3.5" />
+                <span>وضع النص</span>
+              </>
+            ) : (
+              <>
+                <Code2 className="h-3.5 w-3.5 text-primary" />
+                <span>كود HTML</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Media Insert/Upload Popover Modal */}
-      {showImageDialog && (
+      {showImageDialog && !isCodeMode && (
         <div className="absolute top-full right-4 mt-2 w-80 p-4 rounded-2xl bg-card border border-border shadow-2xl z-50 space-y-3.5 text-right">
           <div className="flex items-center justify-between pb-2 border-b border-border">
             <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
