@@ -35,7 +35,7 @@ export const validate = (validators: RequestValidators) => {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        const errorDetails: ErrorDetail[] = error.errors.map(err => ({
+        const errorDetails: ErrorDetail[] = error.issues.map(err => ({
           field: err.path.join('.'),
           message: err.message,
         }));

@@ -31,7 +31,7 @@ const validate = (validators) => {
         }
         catch (error) {
             if (error instanceof zod_1.ZodError) {
-                const errorDetails = error.errors.map(err => ({
+                const errorDetails = error.issues.map(err => ({
                     field: err.path.join('.'),
                     message: err.message,
                 }));

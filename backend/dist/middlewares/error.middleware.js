@@ -22,7 +22,7 @@ _next) => {
     else if (err instanceof zod_1.ZodError) {
         statusCode = 400;
         message = 'Validation failed';
-        errors = err.errors.map(e => ({
+        errors = err.issues.map(e => ({
             field: e.path.join('.'),
             message: e.message,
         }));
