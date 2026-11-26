@@ -10,13 +10,11 @@ import {
   Cpu,
   CheckCircle2,
   Sparkles,
-  Compass,
-  Rocket,
-  Gauge,
 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { FrontendRoadmapTree } from '@/components/frontend/FrontendRoadmapTree';
 import { getSiteUrl } from '@/lib/seo/site-url';
 import { REACT_DOCS_CURRICULUM } from '@/data/react-docs-curriculum';
 
@@ -43,95 +41,6 @@ function ReactAtomSvg({ className = 'w-8 h-8' }: { className?: string }) {
     </svg>
   );
 }
-
-const FRONTEND_ROADMAP_STAGES = [
-  {
-    step: '01',
-    role: 'Frontend Developer',
-    arabicTitle: 'المرحلة الأولى: مطوّر واجهات (التأسيس الصلب)',
-    duration: '6 – 8 أسابيع',
-    summary:
-      'المرحلة دي بتبني فيها عضلات الويب الأساسية قبل ما تلمس أي Framework. أي اختصار هنا هيتعبك قدام في React و Next.js.',
-    skills: [
-      'Semantic HTML5، النماذج (Forms)، وأساسيات SEO و Accessibility',
-      'CSS3 الحديثة: Flexbox و CSS Grid والتصميم المتجاوب لكل الشاشات',
-      'Tailwind CSS لبناء واجهات احترافية بسرعة ونظام ألوان موحد',
-      'JavaScript (ES6+): DOM، Events، Fetch API، Promises، و Event Loop',
-      'Git & GitHub لإدارة الكود ورفع المشاريع الاحترافية',
-    ],
-    links: [
-      { label: 'دليل HTML للمبتدئين', href: '/articles/html-tutorial-for-beginners' },
-      { label: 'دليل CSS للمبتدئين', href: '/articles/css-tutorial-for-beginners' },
-      { label: 'JavaScript الحديثة ES6+', href: '/articles/modern-javascript-comprehensive-guide-es6-async' },
-      { label: 'دليل Git و GitHub العملي', href: '/articles/git-github-practical-guide' },
-    ],
-    icon: Terminal,
-  },
-  {
-    step: '02',
-    role: 'React Engineer',
-    arabicTitle: 'المرحلة الثانية: مهندس React.js',
-    duration: '6 – 8 أسابيع',
-    summary:
-      'هنا بتتحول من مجرد كتابة صفحات ثابتة لبناء تطبيقات ويب تفاعلية كاملة باستخدام React.js و TypeScript وإدارة البيانات.',
-    skills: [
-      'TypeScript: Interfaces، Union Types، Generics، وكتابة Components بدون أخطاء',
-      'توثيق React.js الكامل (10 فصول): JSX، Props، State، Hooks، و Lifecycle',
-      'إدارة الحالة العامة بـ Context API و Zustand، والنماذج بـ React Hook Form + Zod',
-      'التوجيه بـ React Router وإدارة بيانات السيرفر بـ TanStack Query',
-      'كتابة اختبارات للمكونات بـ Vitest و React Testing Library',
-    ],
-    links: [
-      { label: 'توثيق React.js الكامل (10 فصول)', href: '/frontend/react' },
-      { label: 'دليل TypeScript الشامل', href: '/articles/comprehensive-typescript-guide-types-generics-patterns' },
-      { label: 'دليل الاختبارات (Testing)', href: '/articles/complete-software-testing-guide-unit-integration-e2e' },
-    ],
-    icon: Code2,
-  },
-  {
-    step: '03',
-    role: 'Next.js Engineer',
-    arabicTitle: 'المرحلة الثالثة: مهندس Next.js والإنتاج',
-    duration: '4 – 6 أسابيع',
-    summary:
-      'المعيار الأساسي لشركات مصر والخليج حالياً. بتتعلم إزاي تبني تطبيقات سريعة متوافقة مع محركات البحث (SEO) وجاهزة للإنتاج.',
-    skills: [
-      'App Router: الفرق الحقيقي بين Server Components و Client Components',
-      'أنماط الرندر: SSR و SSG و ISR و Streaming لتسريع الموقع',
-      'Server Actions و Route Handlers وربط قواعد البيانات (Prisma / API)',
-      'التحقق والحماية (JWT و HttpOnly Cookies) و Dynamic Metadata & Sitemap',
-      'نشر المشاريع على Vercel وضبط متغيرات البيئة',
-    ],
-    links: [
-      { label: 'دليل Next.js App Router للإنتاج', href: '/articles/nextjs-app-router-engineering-guide-production-performance' },
-      { label: 'تخزين JWT: Cookies أم LocalStorage', href: '/articles/jwt-storage-localstorage-vs-httponly-cookies' },
-      { label: 'نشر المواقع مجاناً خطوة بخطوة', href: '/articles/web-deployment-free-guide' },
-    ],
-    icon: Rocket,
-  },
-  {
-    step: '04',
-    role: 'Frontend Engineer',
-    arabicTitle: 'المرحلة الرابعة: مهندس برمجيات واجهات (Senior Mindset)',
-    duration: 'مستمر مع المشاريع',
-    summary:
-      'الفرق بين المبرمج العادي والـ Frontend Engineer هو القدرة على تصميم معمارية نظيفة، قياس الأداء، وتأمين التطبيق على مستوى الشركات.',
-    skills: [
-      'المعمارية النظيفة: Feature-Based Structure و Design Systems و Clean Code',
-      'تحسين الأداء و Core Web Vitals (LCP، CLS، INP، Code Splitting، Profiler)',
-      'أمان الواجهات الأمامية: الحماية من XSS و CSRF و CSP و OWASP Top 10',
-      'CI/CD، Docker، ومراجعة الكود باحترافية (مع توظيف أدوات AI بذكاء)',
-      'التحضير لمقابلات العمل في مصر والخليج وبناء Portfolio عملي قوي',
-    ],
-    links: [
-      { label: 'معمارية الفرونت إند الحديثة', href: '/articles/modern-frontend-architecture-state-management-component-design' },
-      { label: 'تحسين الأداء و Core Web Vitals', href: '/articles/web-performance-core-web-vitals-speed-optimization' },
-      { label: 'أمان الويب OWASP Top 10', href: '/articles/web-security-developer-guide-owasp-top-10' },
-      { label: 'أسئلة انترفيو مصر والخليج 2027', href: '/articles/programming-interview-questions-egypt-gulf-2027' },
-    ],
-    icon: Gauge,
-  },
-];
 
 const FRONTEND_TRACKS = [
   {
@@ -284,90 +193,8 @@ export default function FrontendHubPage() {
         </div>
       </section>
 
-      {/* Career Roadmap Section: Frontend Developer -> React -> Next.js -> Frontend Engineer */}
-      <section id="roadmap" className="space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border pb-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-primary">
-              <Compass className="h-4 w-4" />
-              <span>خارطة الطريق الكاملة لسوق العمل</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">
-              خريطة طريق الفرونت إند (من المبتدئ لمهندس واجهات)
-            </h2>
-            <p className="text-xs sm:text-sm text-foreground-muted">
-              4 مراحل واضحة ومرتبة تحوّلك من Frontend Developer إلى React Engineer ثم Next.js Engineer وصولاً لمستوى Frontend Engineer
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {FRONTEND_ROADMAP_STAGES.map(stage => {
-            const Icon = stage.icon;
-            return (
-              <div
-                key={stage.step}
-                className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-card flex flex-col justify-between gap-6 hover:border-primary/40 transition-colors"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-2xl bg-primary/10 border border-primary/25 text-primary flex items-center justify-center shrink-0">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <span className="text-[11px] font-mono font-bold text-primary uppercase tracking-wider block">
-                          {stage.step} — {stage.role}
-                        </span>
-                        <h3 className="text-base sm:text-lg font-black text-foreground">
-                          {stage.arabicTitle}
-                        </h3>
-                      </div>
-                    </div>
-                    <Badge variant="secondary" className="text-[11px] font-bold shrink-0">
-                      {stage.duration}
-                    </Badge>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed">
-                    {stage.summary}
-                  </p>
-
-                  <ul className="space-y-2 pt-1">
-                    {stage.skills.map(skill => (
-                      <li
-                        key={skill}
-                        className="flex items-start gap-2 text-xs text-foreground-secondary leading-relaxed"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                        <span>{skill}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pt-4 border-t border-border/70 space-y-2">
-                  <span className="text-[11px] font-bold text-foreground-muted block">
-                    مصادر المذاكرة في المنصة:
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {stage.links.map(link => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary/10 border border-border hover:border-primary/40 text-xs font-bold text-foreground hover:text-primary transition-colors"
-                      >
-                        <span>{link.label}</span>
-                        <ArrowLeft className="h-3 w-3" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+      {/* Interactive Visual Roadmap Tree */}
+      <FrontendRoadmapTree />
 
       {/* Supporting Frontend Tracks */}
       <section className="space-y-6">
