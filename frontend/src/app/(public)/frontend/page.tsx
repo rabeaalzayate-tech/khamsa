@@ -10,11 +10,11 @@ import {
   Cpu,
   CheckCircle2,
   Sparkles,
+  GitBranch,
 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { FrontendRoadmapTree } from '@/components/frontend/FrontendRoadmapTree';
 import { getSiteUrl } from '@/lib/seo/site-url';
 import { REACT_DOCS_CURRICULUM } from '@/data/react-docs-curriculum';
 
@@ -104,8 +104,14 @@ export default function FrontendHubPage() {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
+            <Link href="/frontend/roadmap">
+              <Button variant="outline" className="gap-2 font-bold border-primary/40 hover:border-primary">
+                <GitBranch className="h-4 w-4 text-primary" />
+                <span>خريطة الطريق الكاملة (Roadmap)</span>
+              </Button>
+            </Link>
             <Link href="/articles?category=Frontend">
-              <Button variant="outline" className="gap-2 font-bold">
+              <Button variant="ghost" className="gap-2 font-bold">
                 <BookOpen className="h-4 w-4" />
                 <span>كل مقالات الفرونت إند</span>
               </Button>
@@ -193,8 +199,33 @@ export default function FrontendHubPage() {
         </div>
       </section>
 
-      {/* Interactive Visual Roadmap Tree */}
-      <FrontendRoadmapTree />
+      {/* Dedicated Frontend Roadmap Banner Card */}
+      <section className="rounded-3xl border border-primary/30 bg-gradient-to-br from-card via-card to-primary/5 p-6 sm:p-8 shadow-card">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-primary">
+              <GitBranch className="h-4 w-4" />
+              <span>مسار كامل بفروع تفصيلية</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black text-foreground">
+              خريطة طريق الفرونت إند: من ما قبل البرمجة إلى Frontend Engineer
+            </h2>
+            <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed">
+              مسار شجري تفاعلي في صفحة مستقلة يبدأ من أساسيات الإنترنت و Git، مروراً بـ
+              Frontend Developer ثم React Engineer و Next.js Engineer وصولاً لمستوى Frontend Engineer
+              مع روابط كل درس في المنصة.
+            </p>
+          </div>
+
+          <Link href="/frontend/roadmap" className="shrink-0">
+            <Button size="lg" variant="outline" className="w-full lg:w-auto gap-2 font-bold border-primary/50 hover:bg-primary/10">
+              <GitBranch className="h-4 w-4 text-primary" />
+              <span>افتح خريطة الطريق الكاملة</span>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       {/* Supporting Frontend Tracks */}
       <section className="space-y-6">
