@@ -81,7 +81,10 @@ const ROADMAP_MILESTONES: RoadmapMilestone[] = [
           'رفع مشاريعك على GitHub وكتابة README احترافية',
         ],
         links: [
-          { label: 'دليل Git و GitHub العملي', href: '/articles/git-github-practical-guide' },
+          { label: '1. إعداد VS Code باحتراف', href: '/articles/tooling-docs-01-vscode-setup-extensions-shortcuts' },
+          { label: '2. احتراف الـ Terminal و CLI', href: '/articles/tooling-docs-02-terminal-cli-essentials' },
+          { label: '3. توثيق Git الكامل', href: '/articles/tooling-docs-03-git-fundamentals-branching-merging' },
+          { label: '4. GitHub و PRs و README', href: '/articles/tooling-docs-04-github-pull-requests-readme' },
         ],
       },
     ],
