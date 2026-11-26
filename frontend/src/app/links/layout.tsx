@@ -8,6 +8,10 @@ export const metadata: Metadata = {
     absolute: 'خمسة برمجة بالبلدي | جميع الروابط',
   },
   description: 'جميع روابط خمسة برمجة بالبلدي من كورسات وشروحات ومواقع التواصل في مكان واحد.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: `${siteUrl}/links`,
   },

@@ -119,9 +119,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     // ignore
   }
 
-  return {
-    title: 'المقال غير موجود | خمسة برمجة بالبلدي',
-  };
+  notFound();
 }
 
 function getWordCount(content: any): number {

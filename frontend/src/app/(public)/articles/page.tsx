@@ -39,13 +39,13 @@ export default async function ArticlesPage() {
     // Graceful fallback to static articles if API is unreachable during build/SSR
   }
 
-  // Convert static articles to standard Article interface
+  // Convert static articles to standard Article interface (omit full body content to keep archive HTML lightweight)
   const staticMapped: Article[] = STATIC_ARTICLES.map(s => ({
     _id: s.id,
     title: s.title,
     slug: s.slug,
     excerpt: s.excerpt,
-    content: s.content,
+    content: '',
     coverImage: s.coverImage,
     category: s.category,
     tags: s.tags,
@@ -71,7 +71,7 @@ export default async function ArticlesPage() {
   for (const art of dynamicItems) {
     if (art.slug && !seenSlugs.has(art.slug.toLowerCase())) {
       seenSlugs.add(art.slug.toLowerCase());
-      mergedArticles.push(art);
+      mergedArticles.push({ ...art, content: '' });
     }
   }
 
