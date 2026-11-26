@@ -5,6 +5,7 @@ import { Article, ContentStatus } from '@/types/api';
 import { STATIC_ARTICLES } from '@/data/static-articles';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
 import { ArticlesExplorer } from '@/components/articles/ArticlesExplorer';
+import { isDocsArticleSlug } from '@/lib/docs-filter';
 
 export const revalidate = 60; // Revalidate every 60 seconds (ISR)
 
@@ -67,9 +68,13 @@ export default async function ArticlesPage() {
   const seenSlugs = new Set<string>();
   const mergedArticles: Article[] = [];
 
-  // Prioritize dynamic DB articles if any exist
+  // Prioritize dynamic DB articles if any exist (exclude structured Frontend Docs series)
   for (const art of dynamicItems) {
-    if (art.slug && !seenSlugs.has(art.slug.toLowerCase())) {
+    if (
+      art.slug &&
+      !isDocsArticleSlug(art.slug) &&
+      !seenSlugs.has(art.slug.toLowerCase())
+    ) {
       seenSlugs.add(art.slug.toLowerCase());
       mergedArticles.push({ ...art, content: '' });
     }

@@ -23,6 +23,7 @@ import {
   FinalCtaSection,
 } from '@/components/sections';
 import { getSiteUrl } from '@/lib/seo/site-url';
+import { isDocsArticleSlug } from '@/lib/docs-filter';
 
 export const revalidate = 60; // ISR 60 seconds
 
@@ -78,7 +79,7 @@ export default async function HomePage() {
 
   try {
     const [articlesRes, videosRes, settingsRes] = await Promise.allSettled([
-      articlesApi.getArticles({ limit: 6, sort: 'latest' }),
+      articlesApi.getArticles({ limit: 50, sort: 'latest' }),
       videosApi.getVideos({ limit: 3, sort: 'latest' }),
       settingsApi.getPublicSettings(),
     ]);
@@ -95,13 +96,13 @@ export default async function HomePage() {
       settings = settingsRes.value.data;
     }
 
-    // Map static articles
+    // Map static articles (omit full body content on homepage cards)
     const staticMapped: Article[] = STATIC_ARTICLES.map(s => ({
       _id: s.id,
       title: s.title,
       slug: s.slug,
       excerpt: s.excerpt,
-      content: s.content,
+      content: '',
       coverImage: s.coverImage,
       category: s.category,
       tags: s.tags,
@@ -119,14 +120,18 @@ export default async function HomePage() {
       seo: s.seo,
     }));
 
-    // Merge: Dynamic articles created by admin ALWAYS come FIRST
+    // Merge: Dynamic articles created by admin ALWAYS come FIRST (excluding structured Docs series)
     const seenSlugs = new Set<string>();
     const merged: Article[] = [];
 
     for (const art of dynamicArticles) {
-      if (art.slug && !seenSlugs.has(art.slug.toLowerCase())) {
+      if (
+        art.slug &&
+        !isDocsArticleSlug(art.slug) &&
+        !seenSlugs.has(art.slug.toLowerCase())
+      ) {
         seenSlugs.add(art.slug.toLowerCase());
-        merged.push(art);
+        merged.push({ ...art, content: '' });
       }
     }
 
