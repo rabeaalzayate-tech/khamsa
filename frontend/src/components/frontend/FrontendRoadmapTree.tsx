@@ -62,8 +62,10 @@ const ROADMAP_MILESTONES: RoadmapMilestone[] = [
           'مفهوم الـ Client vs Server والـ APIs',
         ],
         links: [
-          { label: 'مقدمة البرمجة من الصفر', href: '/articles/learn-programming-from-scratch' },
-          { label: 'يعني إيه API بالبلدي؟', href: '/articles/what-is-api-guide' },
+          { label: '1. DNS و IP و Domain', href: '/articles/web-docs-01-how-internet-dns-ip-domain-works' },
+          { label: '2. HTTP/HTTPS و Status Codes', href: '/articles/web-docs-02-http-https-tls-status-codes' },
+          { label: '3. DOM و CSSOM ورسم الصفحة', href: '/articles/web-docs-03-browser-rendering-dom-cssom-critical-path' },
+          { label: '4. Client vs Server و APIs', href: '/articles/web-docs-04-client-vs-server-and-apis-architecture' },
         ],
       },
       {
