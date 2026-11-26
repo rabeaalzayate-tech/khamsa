@@ -107,8 +107,7 @@ const ROADMAP_MILESTONES: RoadmapMilestone[] = [
           'Tailwind CSS لبناء تصاميم عصرية وسريعة بنظام Design Tokens',
         ],
         links: [
-          { label: 'دليل HTML للمبتدئين', href: '/articles/html-tutorial-for-beginners' },
-          { label: 'وسوم HTML المتقدمة', href: '/articles/advanced-html-tags-guide' },
+          { label: 'توثيق HTML5 الكامل (6 دروس)', href: '/frontend/html' },
           { label: 'دليل CSS للمبتدئين', href: '/articles/css-tutorial-for-beginners' },
           { label: 'احتراف Tailwind CSS', href: '/articles/modern-css-mastery-tailwind-design-systems-responsive-ui' },
         ],

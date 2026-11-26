@@ -44,10 +44,10 @@ function ReactAtomSvg({ className = 'w-8 h-8' }: { className?: string }) {
 
 const FRONTEND_TRACKS = [
   {
-    title: 'أساسيات HTML5 وبناء الهيكل',
-    description: 'الوسوم الأساسية والمتقدمة، Semantic HTML، والنماذج وإمكانية الوصول.',
-    href: '/articles/html-tutorial-for-beginners',
-    badge: 'التأسيس',
+    title: 'توثيق HTML5 الكامل (6 دروس)',
+    description: 'توثيق شامل بالعربي من الصفر: DOM، الوسوم الدلالية، الصور المتجاوبة، النماذج، و A11y و SEO.',
+    href: '/frontend/html',
+    badge: 'التوثيق الكامل',
     icon: Terminal,
   },
   {
