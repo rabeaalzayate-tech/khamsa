@@ -2,6 +2,7 @@ export const DOCS_SLUG_PREFIXES = [
   'web-docs-',
   'tooling-docs-',
   'html-docs-',
+  'css-docs-',
   'react-docs-',
 ] as const;
 

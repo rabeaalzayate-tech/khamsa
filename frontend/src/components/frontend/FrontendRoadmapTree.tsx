@@ -113,7 +113,7 @@ const ROADMAP_MILESTONES: RoadmapMilestone[] = [
         ],
         links: [
           { label: 'توثيق HTML5 الكامل (6 دروس)', href: '/frontend/html' },
-          { label: 'دليل CSS للمبتدئين', href: '/articles/css-tutorial-for-beginners' },
+          { label: 'توثيق CSS3 الكامل (8 دروس)', href: '/frontend/css' },
           { label: 'احتراف Tailwind CSS', href: '/articles/modern-css-mastery-tailwind-design-systems-responsive-ui' },
         ],
       },

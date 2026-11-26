@@ -93,10 +93,10 @@ const TOOLING_GIT_LESSONS = [
 
 const STYLING_JS_TRACKS = [
   {
-    title: 'CSS3 الحديثة و Tailwind CSS',
-    description: 'Flexbox و Grid والتصميم المتجاوب وبناء أنظمة تصميم سريعة وعملية.',
-    href: '/articles/css-tutorial-for-beginners',
-    badge: 'التنسيق',
+    title: 'توثيق CSS3 النقية الكامل (8 دروس)',
+    description: 'من الصفر للاحتراف بدون مكتبات: Box Model، Flexbox، CSS Grid، Responsive، Variables، و Animations.',
+    href: '/frontend/css',
+    badge: 'Pure CSS3 Docs',
     icon: Layers,
   },
   {

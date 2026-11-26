@@ -34,6 +34,7 @@ export function getStaticSitemapEntries(siteUrl: string): SitemapEntry[] {
     { path: '/frontend', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/frontend/roadmap', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/frontend/html', changeFrequency: 'weekly', priority: 0.9 },
+    { path: '/frontend/css', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/frontend/react', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/articles', changeFrequency: 'daily', priority: 0.9 },
     { path: '/videos', changeFrequency: 'daily', priority: 0.9 },
