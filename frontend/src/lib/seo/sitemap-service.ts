@@ -31,6 +31,8 @@ export function getStaticSitemapEntries(siteUrl: string): SitemapEntry[] {
     priority: number;
   }> = [
     { path: '/', changeFrequency: 'daily', priority: 1.0 },
+    { path: '/frontend', changeFrequency: 'weekly', priority: 0.9 },
+    { path: '/frontend/react', changeFrequency: 'weekly', priority: 0.9 },
     { path: '/articles', changeFrequency: 'daily', priority: 0.9 },
     { path: '/videos', changeFrequency: 'daily', priority: 0.9 },
     { path: '/about', changeFrequency: 'monthly', priority: 0.8 },

@@ -56,6 +56,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/frontend" className="hover:text-primary transition-colors">
+                  قسم الفرونت إند و React
+                </Link>
+              </li>
+              <li>
                 <Link href="/articles" className="hover:text-primary transition-colors">
                   المقالات والشروحات
                 </Link>

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Home, BookOpen, Video, Info, Mail, Sparkles, Layers, Link2 } from 'lucide-react';
+import { Menu, X, Home, BookOpen, Video, Info, Mail, Sparkles, Layers, Link2, Code2 } from 'lucide-react';
 import { Logo } from '../shared/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import {
@@ -56,6 +56,7 @@ export function Header() {
 
   const navLinks = [
     { label: 'الرئيسية', href: '/', icon: Home },
+    { label: 'الفرونت إند', href: '/frontend', icon: Code2 },
     { label: 'المقالات', href: '/articles', icon: BookOpen },
     { label: 'الفيديوهات', href: '/videos', icon: Video },
     { label: 'دليل الروابط', href: '/links', icon: Link2 },
