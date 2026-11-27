@@ -925,6 +925,16 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   47: { status: 'completed', actualWordCount: 7541, readTimeMinutes: 38 },
   48: { status: 'completed', actualWordCount: 10123, readTimeMinutes: 51 },
   49: { status: 'completed', actualWordCount: 12295, readTimeMinutes: 61 },
+  50: { status: 'completed', actualWordCount: 9458, readTimeMinutes: 47 },
+  51: { status: 'completed', actualWordCount: 8508, readTimeMinutes: 43 },
+  52: { status: 'completed', actualWordCount: 10977, readTimeMinutes: 55 },
+  53: { status: 'completed', actualWordCount: 8385, readTimeMinutes: 42 },
+  54: { status: 'completed', actualWordCount: 13866, readTimeMinutes: 69 },
+  55: { status: 'completed', actualWordCount: 13793, readTimeMinutes: 69 },
+  56: { status: 'completed', actualWordCount: 11010, readTimeMinutes: 55 },
+  57: { status: 'completed', actualWordCount: 11536, readTimeMinutes: 58 },
+  58: { status: 'completed', actualWordCount: 13850, readTimeMinutes: 69 },
+  59: { status: 'completed', actualWordCount: 11105, readTimeMinutes: 56 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
@@ -980,7 +990,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'تطبيق اختبارات تفاعلي (Quiz App)',
     description: 'مؤقت زمني، حساب النتيجة النهائية، وعرض الأسئلة ديناميكيًا من مصفوفة كائنات.',
     concepts: ['Objects & Arrays', 'Timers', 'Array Methods', 'UI State'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/quiz',
   },
   {
     number: 5,
