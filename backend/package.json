@@ -17,6 +17,7 @@
     "backup": "tsx src/scripts/backup.ts",
     "restore": "tsx src/scripts/restore.ts",
     "migrate:data": "tsx src/scripts/migrate-mongo-to-mysql.ts",
+    "import:js-docs": "tsx src/scripts/import-js-docs.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio"

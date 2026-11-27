@@ -565,6 +565,82 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
     case 'hardBreak':
       return <br key={key} />;
 
+    case 'table':
+      return (
+        <div
+          key={key}
+          className="overflow-x-auto my-6 rounded-2xl border border-border/80 bg-surface/40 shadow-card w-full max-w-full"
+        >
+          <table className="w-full text-right text-sm border-collapse">
+            <tbody>
+              {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
+            </tbody>
+          </table>
+        </div>
+      );
+
+    case 'tableRow':
+      return (
+        <tr
+          key={key}
+          className="border-b border-border/50 hover:bg-surface-hover/50 transition-colors"
+        >
+          {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
+        </tr>
+      );
+
+    case 'tableHeader': {
+      const colSpan = (node.attrs?.colspan as number) || undefined;
+      const rowSpan = (node.attrs?.rowspan as number) || undefined;
+      return (
+        <th
+          key={key}
+          colSpan={colSpan}
+          rowSpan={rowSpan}
+          className="py-3 px-4 text-xs sm:text-sm bg-surface text-foreground font-bold border-b border-border text-right leading-relaxed"
+        >
+          {node.content?.map((child, idx) => {
+            if (child.type === 'paragraph') {
+              return (
+                <div key={idx} className="my-0.5">
+                  {child.content?.map((c, cIdx) =>
+                    c.type === 'text' ? renderTextNode(c, cIdx) : renderTiptapNode(c, cIdx)
+                  )}
+                </div>
+              );
+            }
+            return child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx);
+          })}
+        </th>
+      );
+    }
+
+    case 'tableCell': {
+      const colSpan = (node.attrs?.colspan as number) || undefined;
+      const rowSpan = (node.attrs?.rowspan as number) || undefined;
+      return (
+        <td
+          key={key}
+          colSpan={colSpan}
+          rowSpan={rowSpan}
+          className="py-3 px-4 text-xs sm:text-sm text-foreground-secondary leading-relaxed text-right break-words [overflow-wrap:anywhere]"
+        >
+          {node.content?.map((child, idx) => {
+            if (child.type === 'paragraph') {
+              return (
+                <div key={idx} className="my-0.5">
+                  {child.content?.map((c, cIdx) =>
+                    c.type === 'text' ? renderTextNode(c, cIdx) : renderTiptapNode(c, cIdx)
+                  )}
+                </div>
+              );
+            }
+            return child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx);
+          })}
+        </td>
+      );
+    }
+
     case 'text':
       return renderTextNode(node, key);
 
