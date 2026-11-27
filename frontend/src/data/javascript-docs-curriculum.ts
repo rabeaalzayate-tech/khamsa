@@ -893,6 +893,13 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   15: { status: 'completed', actualWordCount: 5460, readTimeMinutes: 27 },
   16: { status: 'completed', actualWordCount: 5404, readTimeMinutes: 27 },
   17: { status: 'completed', actualWordCount: 5332, readTimeMinutes: 27 },
+  18: { status: 'completed', actualWordCount: 9153, readTimeMinutes: 46 },
+  19: { status: 'completed', actualWordCount: 8228, readTimeMinutes: 41 },
+  20: { status: 'completed', actualWordCount: 9228, readTimeMinutes: 46 },
+  21: { status: 'completed', actualWordCount: 10740, readTimeMinutes: 54 },
+  22: { status: 'completed', actualWordCount: 12478, readTimeMinutes: 62 },
+  23: { status: 'completed', actualWordCount: 9862, readTimeMinutes: 49 },
+  24: { status: 'completed', actualWordCount: 8221, readTimeMinutes: 41 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
