@@ -2,7 +2,15 @@ import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Calendar, User as UserIcon, Tag, ArrowRight, Share2, Zap, Clock } from 'lucide-react';
+import {
+  Calendar,
+  User as UserIcon,
+  Tag,
+  ArrowRight,
+  Share2,
+  Zap,
+  Clock,
+} from 'lucide-react';
 import { articlesApi } from '@/lib/api/articles.api';
 import { Article, ContentStatus } from '@/types/api';
 import { Badge } from '@/components/ui/Badge';
@@ -12,7 +20,10 @@ import { ArticleCard } from '@/components/articles/ArticleCard';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
 import { AuthorBox } from '@/components/articles/AuthorBox';
 import { ArticleFaq } from '@/components/articles/ArticleFaq';
-import { TableOfContents } from '@/components/articles/TableOfContents';
+import { type TocItem } from '@/components/articles/TableOfContents';
+import { ReadingProgressBar } from '@/components/articles/ReadingProgressBar';
+import { LessonNavigationCards } from '@/components/articles/LessonNavigationCards';
+import { ArticleDocumentationLayout } from '@/components/articles/ArticleDocumentationLayout';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { slugifyHeading } from '@/lib/utils/slugify';
 import {
@@ -24,6 +35,7 @@ import {
 } from '@/data/static-articles';
 import { DEFAULT_AUTHOR, ArticleAuthor } from '@/data/static-articles/types';
 import { getSiteUrl } from '@/lib/seo/site-url';
+import { getCurriculumContextBySlug } from '@/lib/docs/curriculum-lookup';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -122,17 +134,26 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   notFound();
 }
 
-function getWordCount(content: any): number {
+interface TipTapContentNode {
+  type?: string;
+  text?: string;
+  attrs?: { level?: number; [key: string]: unknown };
+  content?: TipTapContentNode[];
+  [key: string]: unknown;
+}
+
+function getWordCount(content: unknown): number {
   if (!content) return 0;
   if (typeof content === 'string') {
     return content.trim().split(/\s+/).filter(Boolean).length;
   }
   if (typeof content === 'object') {
     let str = '';
-    function traverse(node: any) {
-      if (!node) return;
-      if (node.text) str += ' ' + node.text;
-      if (Array.isArray(node.content)) node.content.forEach(traverse);
+    function traverse(node: TipTapContentNode | unknown) {
+      if (!node || typeof node !== 'object') return;
+      const n = node as TipTapContentNode;
+      if (n.text) str += ' ' + n.text;
+      if (Array.isArray(n.content)) n.content.forEach(traverse);
     }
     traverse(content);
     return str.trim().split(/\s+/).filter(Boolean).length;
@@ -140,28 +161,29 @@ function getWordCount(content: any): number {
   return 0;
 }
 
-function extractTocFromContent(content: any): Array<{ id: string; title: string; level: 2 | 3 }> {
+function extractTocFromContent(content: unknown): TocItem[] {
   if (!content) return [];
-  const items: Array<{ id: string; title: string; level: 2 | 3 }> = [];
+  const items: TocItem[] = [];
 
   if (typeof content === 'object') {
-    function traverse(node: any) {
-      if (!node) return;
-      if (node.type === 'heading' && (node.attrs?.level === 2 || node.attrs?.level === 3)) {
-        const text = (node.content || [])
-          .map((c: any) => c.text || '')
+    function traverse(node: TipTapContentNode | unknown) {
+      if (!node || typeof node !== 'object') return;
+      const n = node as TipTapContentNode;
+      if (n.type === 'heading' && (n.attrs?.level === 2 || n.attrs?.level === 3)) {
+        const text = (n.content || [])
+          .map((c: TipTapContentNode) => c.text || '')
           .join('')
           .trim();
         if (text) {
           items.push({
             id: slugifyHeading(text),
             title: text,
-            level: node.attrs.level as 2 | 3,
+            level: n.attrs?.level as 2 | 3,
           });
         }
       }
-      if (Array.isArray(node.content)) {
-        node.content.forEach(traverse);
+      if (Array.isArray(n.content)) {
+        n.content.forEach(traverse);
       }
     }
     traverse(content);
@@ -188,10 +210,13 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const siteUrl = getSiteUrl();
 
-  // 1. Check curated static article first (Static-First)
+  // 1. Detect curriculum context (JavaScript, React, HTML, CSS, or Static Series)
+  const curriculum = getCurriculumContextBySlug(slug);
+
+  // 2. Check curated static article first (Static-First)
   const staticArt = getStaticArticleBySlug(slug);
 
-  // 2. Fallback to dynamic DB if no static article found
+  // 3. Fallback to dynamic DB if no static article found
   let article: Article | null = null;
   if (!staticArt) {
     try {
@@ -208,7 +233,8 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const currentCategory = staticArt?.category || article?.category || '';
+  const currentCategory =
+    curriculum?.trackTitle || staticArt?.category || article?.category || '';
   let staticRelated: StaticArticle[] = [];
   let dynamicRelated: Article[] = [];
 
@@ -219,7 +245,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     try {
       const relatedRes = await articlesApi.getArticles({
         limit: 4,
-        category: currentCategory,
+        category: article?.category || '',
         sort: 'latest',
       });
 
@@ -227,20 +253,17 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
         dynamicRelated = relatedRes.data.items.filter(
           (item: Article) =>
             item.slug !== slug &&
-            (item.id || item._id) !== (article?.id || article?._id),
+            (item.id || item._id) !== (article?.id || article?._id)
         );
       }
     } catch {
       // ignore
     }
 
-    // Blend with top static articles if dynamic related has fewer than 2 items
     if (dynamicRelated.length < 2) {
       const allStatic = getAllStaticArticles();
       const needed = 4 - dynamicRelated.length;
-      staticRelated = allStatic
-        .filter(s => s.slug !== slug)
-        .slice(0, needed);
+      staticRelated = allStatic.filter(s => s.slug !== slug).slice(0, needed);
     }
   }
 
@@ -282,7 +305,7 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
 
   const tableOfContents =
     staticArt?.tableOfContents && staticArt.tableOfContents.length > 0
-      ? staticArt.tableOfContents
+      ? (staticArt.tableOfContents as TocItem[])
       : extractTocFromContent(currentContent);
 
   const articleCanonicalUrl =
@@ -319,39 +342,35 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
     },
   };
 
+  const breadcrumbItems = curriculum
+    ? [
+        { label: 'قسم الفرونت إند', href: '/frontend' },
+        { label: curriculum.trackTitle, href: curriculum.trackHubUrl },
+        { label: currentTitle },
+      ]
+    : [
+        { label: 'المقالات', href: '/articles' },
+        { label: currentCategory, href: `/articles?category=${encodeURIComponent(currentCategory)}` },
+        { label: currentTitle },
+      ];
+
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'الرئيسية',
-        item: siteUrl,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'المقالات',
-        item: `${siteUrl}/articles`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: currentCategory,
-        item: `${siteUrl}/articles?category=${encodeURIComponent(currentCategory)}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 4,
-        name: currentTitle,
-        item: articleCanonicalUrl,
-      },
-    ],
+    itemListElement: breadcrumbItems.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.href ? `${siteUrl}${item.href}` : articleCanonicalUrl,
+    })),
   };
 
   return (
-    <div className="max-w-4xl mx-auto w-full min-w-0 space-y-10 py-4 sm:py-8 overflow-x-hidden">
+    <div className="w-full min-w-0 py-4 sm:py-6" dir="rtl">
+      {/* Sticky Top Reading Progress Bar */}
+      <ReadingProgressBar />
+
+      {/* JSON-LD Schemas */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
@@ -361,188 +380,232 @@ export default async function ArticleDetailsPage({ params }: ArticlePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      {/* Breadcrumb Navigation */}
-      <ArticleBreadcrumb
-        disableJsonLd
-        items={[
-          { label: 'المقالات', href: '/articles' },
-          { label: currentCategory, href: `/articles?category=${encodeURIComponent(currentCategory)}` },
-          { label: currentTitle },
-        ]}
-      />
+      {/* Structured 3-Area Documentation Layout */}
+      <ArticleDocumentationLayout
+        curriculum={curriculum}
+        tableOfContents={tableOfContents}
+        currentSlug={slug}
+      >
+        <div className="space-y-8 w-full min-w-0">
+          {/* Breadcrumb Navigation */}
+          <ArticleBreadcrumb disableJsonLd items={breadcrumbItems} />
 
-      {/* Back to articles navigation */}
-      <div>
-        <Link
-          href="/articles"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground-muted hover:text-primary transition-colors"
-        >
-          <ArrowRight className="h-4 w-4" />
-          <span>العودة لكل المقالات</span>
-        </Link>
-      </div>
-
-      {/* Article Header */}
-      <header className="space-y-6 text-start">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="primary" className="text-xs px-3 py-1">
-            {currentCategory}
-          </Badge>
-          {(staticArt?.isFeatured || article?.isFeatured) && (
-            <Badge variant="gold" className="text-xs px-3 py-1 gap-1">
-              <Zap className="h-3 w-3" />
-              مقال مميز
-            </Badge>
+          {/* Quick Hub Back Link */}
+          {curriculum && (
+            <div>
+              <Link
+                href={curriculum.trackHubUrl}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground-muted hover:text-primary transition-colors"
+              >
+                <ArrowRight className="h-4 w-4" />
+                <span>العودة لـ {curriculum.trackTitle}</span>
+              </Link>
+            </div>
           )}
-          <span className="inline-flex items-center gap-1 text-xs text-foreground-muted font-medium bg-secondary px-2.5 py-1 rounded-full">
-            <Clock className="h-3 w-3 text-primary" />
-            <span>وقت القراءة: ~{readTime} دقيقة</span>
-          </span>
-        </div>
 
-        <h1 className="text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
-          {currentTitle}
-        </h1>
-
-        <p className="text-base sm:text-xl text-foreground-secondary leading-relaxed font-normal">
-          {currentExcerpt}
-        </p>
-
-        {/* Author & Meta Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-border">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15 text-primary font-black border border-primary/20 overflow-hidden">
-              {currentAuthor.avatar ? (
-                <img
-                  src={currentAuthor.avatar}
-                  alt={currentAuthor.name}
-                  className="h-full w-full object-cover"
-                />
+          {/* Article Header */}
+          <header className="space-y-5 text-start">
+            <div className="flex flex-wrap items-center gap-2">
+              {curriculum ? (
+                <>
+                  <Link href={curriculum.trackHubUrl}>
+                    <Badge variant="primary" className="text-xs px-3 py-1 cursor-pointer">
+                      {curriculum.trackTitle}
+                    </Badge>
+                  </Link>
+                  {typeof curriculum.lessonNumber === 'number' && (
+                    <Badge variant="secondary" className="text-xs px-2.5 py-1 font-mono font-bold">
+                      الدرس {String(curriculum.lessonNumber).padStart(2, '0')} من {curriculum.totalLessons}
+                    </Badge>
+                  )}
+                  {curriculum.phaseTitle && (
+                    <Badge variant="secondary" className="text-xs px-2.5 py-1">
+                      {curriculum.phaseTitle}
+                    </Badge>
+                  )}
+                </>
               ) : (
-                <UserIcon className="h-5 w-5" />
+                <Badge variant="primary" className="text-xs px-3 py-1">
+                  {currentCategory}
+                </Badge>
+              )}
+
+              {(staticArt?.isFeatured || article?.isFeatured) && (
+                <Badge variant="gold" className="text-xs px-3 py-1 gap-1">
+                  <Zap className="h-3 w-3" />
+                  مقال مميز
+                </Badge>
+              )}
+
+              <span className="inline-flex items-center gap-1 text-xs text-foreground-muted font-medium bg-surface border border-border px-2.5 py-1 rounded-full">
+                <Clock className="h-3 w-3 text-primary" />
+                <span>وقت القراءة: ~{readTime} دقيقة</span>
+              </span>
+
+              {words > 0 && (
+                <span className="text-xs text-foreground-muted font-mono hidden sm:inline">
+                  ({words.toLocaleString('en-US')} كلمة)
+                </span>
               )}
             </div>
-            <div>
-              <span className="block text-sm font-bold text-foreground">
-                {currentAuthor.name}
-              </span>
-              <span className="flex items-center gap-1 text-xs text-foreground-muted">
-                <Calendar className="h-3 w-3" />
-                <time>{formattedDate}</time>
-              </span>
+
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
+              {currentTitle}
+            </h1>
+
+            {currentExcerpt && (
+              <p className="text-base sm:text-lg text-foreground-secondary leading-relaxed font-normal">
+                {currentExcerpt}
+              </p>
+            )}
+
+            {/* Author & Meta Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-border/80">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/15 text-primary font-black border border-primary/20 overflow-hidden">
+                  {currentAuthor.avatar ? (
+                    <img
+                      src={currentAuthor.avatar}
+                      alt={currentAuthor.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <UserIcon className="h-5 w-5" />
+                  )}
+                </div>
+                <div>
+                  <span className="block text-sm font-bold text-foreground">
+                    {currentAuthor.name}
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-foreground-muted">
+                    <Calendar className="h-3 w-3" />
+                    <time>{formattedDate}</time>
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="h-9 gap-1.5 text-xs font-bold">
+                  <Share2 className="h-3.5 w-3.5" />
+                  <span>مشاركة الدرس</span>
+                </Button>
+              </div>
             </div>
-          </div>
+          </header>
 
-          <Button variant="outline" size="sm" className="h-9 gap-1.5 text-xs">
-            <Share2 className="h-3.5 w-3.5" />
-            <span>مشاركة المقال</span>
-          </Button>
-        </div>
-      </header>
-
-      {/* Featured Cover Image */}
-      {currentCover && (
-        <div className="overflow-hidden rounded-3xl border border-border shadow-card aspect-[16/9] w-full bg-surface">
-          <img
-            src={currentCover}
-            alt={currentCoverAlt}
-            className="h-full w-full object-cover"
-            loading="eager"
-            fetchPriority="high"
-          />
-        </div>
-      )}
-
-      {/* Table of Contents for Long Form Articles */}
-      {tableOfContents && tableOfContents.length > 0 && (
-        <TableOfContents items={tableOfContents} />
-      )}
-
-      {/* Safe Ad Placement: After Introduction */}
-      <AdSlot slot="article-after-intro" />
-
-      {/* Main Structured Content Area */}
-      <main className="py-4 w-full min-w-0 overflow-hidden">
-        <TiptapRenderer content={currentContent} tocItems={tableOfContents} />
-      </main>
-
-      {/* Safe Ad Placement: Before FAQ and Related Articles */}
-      <AdSlot slot="article-mid-content" />
-
-      {/* Tags Section */}
-      {currentTags && currentTags.length > 0 && (
-        <div className="pt-6 border-t border-border flex items-center gap-2 flex-wrap">
-          <span className="flex items-center gap-1 text-xs font-bold text-foreground-muted ml-2">
-            <Tag className="h-3.5 w-3.5" />
-            الوسوم:
-          </span>
-          {currentTags.map((tag: string, idx: number) => (
-            <Link key={idx} href={`/articles?search=${encodeURIComponent(tag)}`}>
-              <Badge
-                variant="secondary"
-                className="hover:border-primary/40 transition-colors cursor-pointer font-mono"
-              >
-                #{tag}
-              </Badge>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Interactive FAQ Section with Schema */}
-      {staticArt?.faq && staticArt.faq.length > 0 && (
-        <ArticleFaq faq={staticArt.faq} />
-      )}
-
-      {/* Verified Author Box */}
-      <AuthorBox author={currentAuthor} />
-
-      {/* Safe Ad Placement: Above Related Content */}
-      <AdSlot slot="article-bottom" />
-
-      {/* Related Articles */}
-      {(staticRelated.length > 0 || dynamicRelated.length > 0) && (
-        <section className="pt-12 border-t border-border space-y-6">
-          <div className="space-y-1">
-            <h3 className="text-xl sm:text-2xl font-black text-foreground">
-              مقالات وشروحات ذات صلة
-            </h3>
-            <p className="text-xs text-foreground-muted">
-              استكمل رحلتك البرمجية مع هذه الموضوعات المترابطة
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {staticRelated.map(s => (
-              <ArticleCard
-                key={s.id}
-                article={{
-                  _id: s.id,
-                  title: s.title,
-                  slug: s.slug,
-                  excerpt: s.excerpt,
-                  content: s.content,
-                  coverImage: s.coverImage,
-                  category: s.category,
-                  tags: s.tags,
-                  author: {
-                    _id: 'author-rabie',
-                    name: s.author.name,
-                    email: 'info@khamsaprogramming.com',
-                    avatar: s.author.avatar,
-                  },
-                  status: ContentStatus.PUBLISHED,
-                  createdAt: s.publishedAt,
-                  updatedAt: s.updatedAt,
-                }}
+          {/* Featured Cover Image */}
+          {currentCover && (
+            <div className="overflow-hidden rounded-3xl border border-border/80 shadow-card aspect-[16/9] w-full bg-surface">
+              <img
+                src={currentCover}
+                alt={currentCoverAlt}
+                className="h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
               />
-            ))}
-            {dynamicRelated.map((rel: Article) => (
-              <ArticleCard key={rel.id || rel._id || rel.slug} article={rel} />
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          )}
+
+          {/* Safe Ad Placement: After Introduction */}
+          <AdSlot slot="article-after-intro" />
+
+          {/* Main Structured Lesson Content */}
+          <main className="py-2 w-full min-w-0 overflow-hidden">
+            <TiptapRenderer content={currentContent} tocItems={tableOfContents} />
+          </main>
+
+          {/* Safe Ad Placement: Before Navigation */}
+          <AdSlot slot="article-mid-content" />
+
+          {/* Previous & Next Lesson Navigation Cards */}
+          {curriculum && (
+            <LessonNavigationCards
+              previousLesson={curriculum.previousLesson}
+              nextLesson={curriculum.nextLesson}
+              trackHubUrl={curriculum.trackHubUrl}
+              trackTitle={curriculum.trackTitle}
+              currentSlug={slug}
+              storageKey={curriculum.storageKey}
+              lessonNumber={curriculum.lessonNumber}
+            />
+          )}
+
+          {/* Tags Section */}
+          {currentTags && currentTags.length > 0 && (
+            <div className="pt-6 border-t border-border/80 flex items-center gap-2 flex-wrap">
+              <span className="flex items-center gap-1 text-xs font-bold text-foreground-muted ml-2">
+                <Tag className="h-3.5 w-3.5" />
+                الوسوم التقنية:
+              </span>
+              {currentTags.map((tag: string, idx: number) => (
+                <Link key={idx} href={`/articles?search=${encodeURIComponent(tag)}`}>
+                  <Badge
+                    variant="secondary"
+                    className="hover:border-primary/40 transition-colors cursor-pointer font-mono text-xs"
+                  >
+                    #{tag}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Interactive FAQ Section with Schema */}
+          {staticArt?.faq && staticArt.faq.length > 0 && (
+            <ArticleFaq faq={staticArt.faq} />
+          )}
+
+          {/* Verified Author Box */}
+          <AuthorBox author={currentAuthor} />
+
+          {/* Safe Ad Placement: Above Related Content */}
+          <AdSlot slot="article-bottom" />
+
+          {/* Related Articles */}
+          {(staticRelated.length > 0 || dynamicRelated.length > 0) && (
+            <section className="pt-10 border-t border-border/80 space-y-6">
+              <div className="space-y-1">
+                <h3 className="text-xl sm:text-2xl font-black text-foreground">
+                  شروحات ومقالات موصى بها
+                </h3>
+                <p className="text-xs text-foreground-muted">
+                  استكمل رحلتك البرمجية مع هذه الموضوعات الهندسية المترابطة
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {staticRelated.map(s => (
+                  <ArticleCard
+                    key={s.id}
+                    article={{
+                      _id: s.id,
+                      title: s.title,
+                      slug: s.slug,
+                      excerpt: s.excerpt,
+                      content: s.content,
+                      coverImage: s.coverImage,
+                      category: s.category,
+                      tags: s.tags,
+                      author: {
+                        _id: 'author-rabie',
+                        name: s.author.name,
+                        email: 'info@khamsaprogramming.com',
+                        avatar: s.author.avatar,
+                      },
+                      status: ContentStatus.PUBLISHED,
+                      createdAt: s.publishedAt,
+                      updatedAt: s.updatedAt,
+                    }}
+                  />
+                ))}
+                {dynamicRelated.map((rel: Article) => (
+                  <ArticleCard key={rel.id || rel._id || rel.slug} article={rel} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </ArticleDocumentationLayout>
     </div>
   );
 }

@@ -64,7 +64,7 @@ export const articleCSS01: StaticArticle = {
     'javascript-tutorial-for-beginners',
     'html-tutorial-for-beginners',
     'learn-programming-from-scratch',
-    'modern-css-architecture-tailwind-container-queries',
+    'modern-css-mastery-tailwind-design-systems-responsive-ui',
     'modern-javascript-comprehensive-guide-es6-async',
     'react-19-architecture-server-components-advanced-hooks',
   ],
@@ -570,7 +570,7 @@ body {
 
 ## الحادي عشر: هل أتعلم CSS العادية ولا Tailwind CSS؟
 
-كتير من المبتدئين بيسمعوا عن [Tailwind CSS](/articles/modern-css-architecture-tailwind-container-queries) ويسألوا: *«هل أتخطى CSS العادية وأبدأ بـ Tailwind علطول؟»*
+كتير من المبتدئين بيسمعوا عن [Tailwind CSS](/articles/modern-css-mastery-tailwind-design-systems-responsive-ui) ويسألوا: *«هل أتخطى CSS العادية وأبدأ بـ Tailwind علطول؟»*
 
 الإجابة القاطعة: **لأ! اتعلم CSS العادية الأول.**
 

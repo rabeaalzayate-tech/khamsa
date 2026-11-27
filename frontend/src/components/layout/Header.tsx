@@ -7,13 +7,12 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Video, Info, Mail, Sparkles, Layers, Link2, Code2 } from 'lucide-react';
 import { Logo } from '../shared/Logo';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { Button } from '../ui/Button';
 import {
-  LinkedInIcon,
   FacebookIcon,
   TikTokIcon,
   YouTubeIcon,
   WhatsAppIcon,
-  GitHubIcon,
 } from '../shared/BrandIcons';
 import { cn } from '@/lib/utils/cn';
 
@@ -75,12 +74,12 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl transition-colors duration-normal">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-2xl transition-all duration-normal">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Logo />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-surface border border-border/80">
+          <nav className="hidden lg:flex items-center gap-1.5 p-1.5 rounded-2xl bg-surface/90 border border-border/90 shadow-sm backdrop-blur-md">
             {navLinks.map(link => {
               const isActive =
                 link.href === '/'
@@ -92,21 +91,55 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'px-4 py-1.5 rounded-xl text-xs font-bold transition-all duration-normal',
+                    'relative px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-fast flex items-center gap-1.5',
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-subtle'
+                      ? 'bg-primary text-primary-foreground shadow-sm font-black'
                       : 'text-foreground-secondary hover:text-foreground hover:bg-surface-hover',
                   )}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground inline-block shrink-0" />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
+            <Link href="/frontend">
+              <Button size="sm" className="font-black bg-primary text-primary-foreground hover:bg-primary-hover shadow-md shadow-primary/20 gap-1.5 px-4 py-2 rounded-xl text-xs">
+                <Code2 className="h-4 w-4" />
+                <span>ابدأ التعلم</span>
+              </Button>
+            </Link>
+          </div>
+
+          {/* Tablet Navigation fallback (md to lg) */}
+          <div className="hidden md:flex lg:hidden items-center gap-2">
+            <Link
+              href="/frontend"
+              className={cn(
+                'px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors',
+                pathname.startsWith('/frontend')
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-surface text-foreground border-border hover:border-primary/40'
+              )}
+            >
+              قسم الفرونت إند
+            </Link>
+            <ThemeToggle variant="compact" />
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="p-2.5 rounded-xl border border-border bg-surface text-foreground hover:bg-surface-hover hover:border-primary/40 focus:outline-none transition-colors"
+              aria-label="فتح القائمة الجانبية"
+              aria-expanded={mobileMenuOpen}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
           </div>
 
           {/* Mobile Actions: ThemeToggle + Hamburger Button */}

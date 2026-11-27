@@ -2,7 +2,18 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Copy, Check, Quote } from 'lucide-react';
+import {
+  Copy,
+  Check,
+  Quote,
+  Info,
+  Sparkles,
+  AlertTriangle,
+  AlertOctagon,
+  CheckCircle2,
+  Zap,
+  Terminal,
+} from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { slugifyHeading } from '@/lib/utils/slugify';
 
@@ -40,11 +51,18 @@ export function detectCodeLanguage(code: string, explicitLang?: string): string 
   const trimmed = code.trim();
   if (/^(def\s+|import\s+sys|import\s+os|from\s+\w+\s+import|print\(|elif\s+|if\s+__name__)/m.test(trimmed)) return 'python';
   if (/^(import\s+|export\s+|const\s+|let\s+|function\s+|console\.log|app\.(get|post|use)|async\s+function|require\()/m.test(trimmed)) return 'javascript';
+  if (/^(interface\s+|type\s+|:\s*string|:\s*number|:\s*boolean|<T>)/m.test(trimmed)) return 'typescript';
   if (/^(npm\s+|npx\s+|docker\s+|pnpm\s+|yarn\s+|curl\s+|cd\s+|git\s+|node\s+|pip\s+|sudo\s+)/m.test(trimmed)) return 'bash';
   if (/^(\{|\[)/.test(trimmed) && /(\}|\])$/.test(trimmed)) {
-    try { JSON.parse(trimmed); return 'json'; } catch {}
+    try {
+      JSON.parse(trimmed);
+      return 'json';
+    } catch {
+      // Not valid JSON, continue detection
+    }
   }
   if (/^<(!DOCTYPE|html|div|span|p|head|body|svg)/i.test(trimmed)) return 'html';
+  if (/^(body|div|\.[\w-]+|#[\w-]+)\s*\{/i.test(trimmed)) return 'css';
   if (/^(SELECT|INSERT|UPDATE|DELETE|CREATE TABLE|ALTER TABLE)/i.test(trimmed)) return 'sql';
   return 'code';
 }
@@ -66,7 +84,10 @@ function CodeBlockRenderer({
   language?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const [showLineNumbers, setShowLineNumbers] = useState(true);
   const displayLanguage = detectCodeLanguage(code, language);
+
+  const lines = code.split('\n');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -77,7 +98,7 @@ function CodeBlockRenderer({
   return (
     <div
       dir="ltr"
-      className="relative my-6 rounded-2xl border border-border bg-[#080b11] overflow-hidden group shadow-card text-left w-full max-w-full min-w-0"
+      className="relative my-6 rounded-2xl border border-border/80 bg-[#080b11] overflow-hidden group shadow-card text-left w-full max-w-full min-w-0"
       style={{ direction: 'ltr', textAlign: 'left' }}
     >
       {/* Code Header Bar */}
@@ -86,41 +107,57 @@ function CodeBlockRenderer({
         className="flex items-center justify-between px-4 py-2.5 bg-surface border-b border-border/80 text-xs font-mono text-foreground-muted select-none"
         style={{ direction: 'ltr', textAlign: 'left' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5">
             <span className="h-3 w-3 rounded-full bg-[#ff5f56] border border-[#e0443e]" />
             <span className="h-3 w-3 rounded-full bg-[#ffbd2e] border border-[#dea123]" />
             <span className="h-3 w-3 rounded-full bg-[#27c93f] border border-[#1aab29]" />
           </div>
-          <span className="ml-2 px-2 py-0.5 rounded bg-surface-elevated text-[11px] font-bold text-primary uppercase tracking-wider border border-border">
+          <span className="ml-2 px-2.5 py-0.5 rounded-md bg-surface-elevated text-[11px] font-bold text-primary uppercase tracking-wider border border-border">
             {displayLanguage}
+          </span>
+          <span className="text-[11px] text-foreground-muted hidden sm:inline">
+            {lines.length} {lines.length === 1 ? 'line' : 'lines'}
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-sans text-foreground-muted hover:text-foreground hover:bg-surface-hover transition-colors"
-          title="نسخ الكود"
-        >
-          {copied ? (
-            <>
-              <Check className="h-3.5 w-3.5 text-primary" />
-              <span className="text-primary text-[11px] font-bold">تم النسخ</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-3.5 w-3.5" />
-              <span className="text-[11px] font-medium">نسخ الكود</span>
-            </>
+        <div className="flex items-center gap-2">
+          {lines.length > 5 && (
+            <button
+              type="button"
+              onClick={() => setShowLineNumbers(!showLineNumbers)}
+              className="hidden sm:inline-block px-2 py-0.5 rounded text-[11px] font-sans text-foreground-muted hover:text-foreground transition-colors"
+              title="تبديل أرقام الأسطر"
+            >
+              {showLineNumbers ? '# On' : '# Off'}
+            </button>
           )}
-        </button>
+
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-sans text-foreground-muted hover:text-foreground hover:bg-surface-hover transition-colors"
+            title="نسخ الكود"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-primary" />
+                <span className="text-primary text-[11px] font-bold">تم النسخ</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5" />
+                <span className="text-[11px] font-medium">نسخ الكود</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Code Content */}
+      {/* Code Content with Line Numbers */}
       <pre
         dir="ltr"
-        className="p-4 sm:p-5 text-xs sm:text-sm font-mono leading-relaxed text-slate-100 overflow-x-auto max-w-full selection:bg-primary/30"
+        className="p-4 sm:p-5 text-xs sm:text-sm font-mono leading-relaxed text-slate-100 overflow-x-auto max-w-full selection:bg-primary/30 flex"
         style={{
           direction: 'ltr',
           textAlign: 'left',
@@ -130,19 +167,106 @@ function CodeBlockRenderer({
           wordWrap: 'normal',
         }}
       >
+        {showLineNumbers && lines.length > 1 && (
+          <div
+            aria-hidden="true"
+            className="select-none pr-4 mr-4 border-r border-border/60 text-slate-600 text-right font-mono text-xs sm:text-sm"
+            style={{ direction: 'ltr', minWidth: '2.5rem' }}
+          >
+            {lines.map((_, i) => (
+              <div key={i} className="leading-relaxed">
+                {i + 1}
+              </div>
+            ))}
+          </div>
+        )}
         <code
           dir="ltr"
+          className="flex-1"
           style={{
             direction: 'ltr',
             textAlign: 'left',
             unicodeBidi: 'isolate',
-            display: 'block',
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            fontFamily:
+              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
           }}
         >
           {code}
         </code>
       </pre>
+    </div>
+  );
+}
+
+function CalloutBoxRenderer({
+  type,
+  text,
+  children,
+}: {
+  type: 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION' | 'DANGER' | 'SUCCESS';
+  text?: string;
+  children?: React.ReactNode;
+}) {
+  const configs = {
+    NOTE: {
+      icon: Info,
+      title: 'ملاحظة توضيحية',
+      containerClass: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-400',
+      badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    },
+    TIP: {
+      icon: Sparkles,
+      title: 'نصيحة عملية للمحترفين',
+      containerClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400',
+      badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    },
+    IMPORTANT: {
+      icon: Zap,
+      title: 'تنبيه هام ومحوري',
+      containerClass: 'border-amber-500/40 bg-amber-500/10 text-amber-400',
+      badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    },
+    WARNING: {
+      icon: AlertTriangle,
+      title: 'تحذير وخطأ شائع',
+      containerClass: 'border-yellow-500/50 bg-yellow-500/10 text-yellow-300',
+      badgeClass: 'bg-yellow-500/20 text-yellow-200 border-yellow-500/30',
+    },
+    CAUTION: {
+      icon: AlertOctagon,
+      title: 'تنبيه أمني دقيق',
+      containerClass: 'border-rose-500/50 bg-rose-500/10 text-rose-400',
+      badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    },
+    DANGER: {
+      icon: AlertOctagon,
+      title: 'تحذير أمني خطير',
+      containerClass: 'border-rose-500/50 bg-rose-500/10 text-rose-400',
+      badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    },
+    SUCCESS: {
+      icon: CheckCircle2,
+      title: 'أفضل ممارسة موصى بها',
+      containerClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400',
+      badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    },
+  };
+
+  const cfg = configs[type] || configs.NOTE;
+  const Icon = cfg.icon;
+
+  return (
+    <div
+      className={`my-6 rounded-2xl border p-5 sm:p-6 shadow-card space-y-3 ${cfg.containerClass}`}
+      dir="rtl"
+    >
+      <div className="flex items-center gap-2.5 font-bold text-sm">
+        <Icon className="h-5 w-5 shrink-0" />
+        <span className="font-black text-foreground">{cfg.title}</span>
+      </div>
+      <div className="text-sm sm:text-base leading-relaxed text-foreground-secondary pr-1">
+        {text ? renderInlineMarkdown(text, `callout-${type}`) : children}
+      </div>
     </div>
   );
 }
@@ -156,16 +280,32 @@ function renderTextNode(node: TiptapNode, key: React.Key): React.ReactNode {
     node.marks.forEach((mark, markIndex) => {
       switch (mark.type) {
         case 'bold':
-          element = <strong key={markIndex} className="font-bold text-foreground">{element}</strong>;
+          element = (
+            <strong key={markIndex} className="font-bold text-foreground">
+              {element}
+            </strong>
+          );
           break;
         case 'italic':
-          element = <em key={markIndex} className="italic">{element}</em>;
+          element = (
+            <em key={markIndex} className="italic text-foreground-secondary">
+              {element}
+            </em>
+          );
           break;
         case 'underline':
-          element = <u key={markIndex} className="underline underline-offset-4">{element}</u>;
+          element = (
+            <u key={markIndex} className="underline underline-offset-4">
+              {element}
+            </u>
+          );
           break;
         case 'strike':
-          element = <s key={markIndex} className="line-through text-foreground-muted">{element}</s>;
+          element = (
+            <s key={markIndex} className="line-through text-foreground-muted">
+              {element}
+            </s>
+          );
           break;
         case 'code':
           element = (
@@ -222,9 +362,12 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
 
     case 'paragraph':
       return (
-        <p key={key} className="text-base sm:text-lg leading-relaxed text-foreground-secondary mb-4 break-words [overflow-wrap:anywhere]">
+        <p
+          key={key}
+          className="text-base sm:text-lg leading-relaxed text-foreground-secondary mb-4 break-words [overflow-wrap:anywhere]"
+        >
           {node.content?.map((child, idx) =>
-            child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
+            child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx)
           )}
         </p>
       );
@@ -234,47 +377,105 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
       const plainText = getNodeText(node);
       const headingId = slugifyHeading(plainText);
       const headingContent = node.content?.map((child, idx) =>
-        child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
+        child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx)
       );
 
       switch (level) {
         case 1:
-          return <h1 id={headingId} key={key} className="text-2xl sm:text-4xl font-extrabold text-foreground mt-8 mb-4 tracking-tight leading-tight break-words [overflow-wrap:anywhere]">{headingContent}</h1>;
+          return (
+            <h1
+              id={headingId}
+              key={key}
+              className="text-2xl sm:text-4xl font-black text-foreground mt-10 mb-4 tracking-tight leading-tight break-words [overflow-wrap:anywhere] scroll-mt-24"
+            >
+              {headingContent}
+            </h1>
+          );
         case 2:
-          return <h2 id={headingId} key={key} className="text-xl sm:text-2xl font-bold text-foreground mt-8 mb-3 border-r-4 border-primary pr-3 tracking-tight break-words [overflow-wrap:anywhere]">{headingContent}</h2>;
+          return (
+            <h2
+              id={headingId}
+              key={key}
+              className="text-xl sm:text-2xl font-extrabold text-foreground mt-10 mb-4 border-r-4 border-primary pr-3.5 tracking-tight break-words [overflow-wrap:anywhere] scroll-mt-24"
+            >
+              {headingContent}
+            </h2>
+          );
         case 3:
-          return <h3 id={headingId} key={key} className="text-lg sm:text-xl font-bold text-foreground mt-6 mb-2 tracking-tight break-words [overflow-wrap:anywhere]">{headingContent}</h3>;
+          return (
+            <h3
+              id={headingId}
+              key={key}
+              className="text-lg sm:text-xl font-bold text-foreground mt-8 mb-3 tracking-tight break-words [overflow-wrap:anywhere] scroll-mt-24"
+            >
+              {headingContent}
+            </h3>
+          );
         case 4:
-          return <h4 id={headingId} key={key} className="text-base sm:text-lg font-bold text-foreground mt-4 mb-2 break-words [overflow-wrap:anywhere]">{headingContent}</h4>;
+          return (
+            <h4
+              id={headingId}
+              key={key}
+              className="text-base sm:text-lg font-bold text-foreground mt-6 mb-2 break-words [overflow-wrap:anywhere] scroll-mt-24"
+            >
+              {headingContent}
+            </h4>
+          );
         default:
-          return <h5 id={headingId} key={key} className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2 break-words [overflow-wrap:anywhere]">{headingContent}</h5>;
+          return (
+            <h5
+              id={headingId}
+              key={key}
+              className="text-sm sm:text-base font-bold text-foreground mt-4 mb-2 break-words [overflow-wrap:anywhere] scroll-mt-24"
+            >
+              {headingContent}
+            </h5>
+          );
       }
     }
 
     case 'bulletList':
       return (
-        <ul key={key} className="list-disc list-inside space-y-2 text-foreground-secondary pr-2 my-4">
-          {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
+        <ul key={key} className="space-y-2 text-foreground-secondary pr-2 my-4 list-none">
+          {node.content?.map((child, idx) => (
+            <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+              <span className="inline-block w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+              <div className="flex-1">{renderTiptapNode(child, `li-${idx}`)}</div>
+            </li>
+          ))}
         </ul>
       );
 
     case 'orderedList':
       return (
-        <ol key={key} className="list-decimal list-inside space-y-2 text-foreground-secondary pr-2 my-4">
-          {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
+        <ol key={key} className="space-y-2 text-foreground-secondary pr-2 my-4 list-none">
+          {node.content?.map((child, idx) => (
+            <li key={idx} className="flex items-start gap-2.5 leading-relaxed">
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/15 text-primary text-xs font-bold font-mono mt-0.5 flex-shrink-0 border border-primary/25">
+                {idx + 1}
+              </span>
+              <div className="flex-1">{renderTiptapNode(child, `ol-li-${idx}`)}</div>
+            </li>
+          ))}
         </ol>
       );
 
     case 'listItem':
       return (
-        <li key={key} className="leading-relaxed break-words [overflow-wrap:anywhere]">
+        <div key={key} className="leading-relaxed break-words [overflow-wrap:anywhere]">
           {node.content?.map((child, idx) =>
-            child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx),
+            child.type === 'text' ? renderTextNode(child, idx) : renderTiptapNode(child, idx)
           )}
-        </li>
+        </div>
       );
 
-    case 'blockquote':
+    case 'blockquote': {
+      const text = getNodeText(node);
+      const alertMatch = text.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|DANGER|SUCCESS)\]\s*\n?([\s\S]*)$/i);
+      if (alertMatch) {
+        const alertType = alertMatch[1].toUpperCase() as 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION' | 'DANGER' | 'SUCCESS';
+        return <CalloutBoxRenderer key={key} type={alertType} text={alertMatch[2].trim()} />;
+      }
       return (
         <blockquote
           key={key}
@@ -283,6 +484,7 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
           {node.content?.map((child, idx) => renderTiptapNode(child, idx))}
         </blockquote>
       );
+    }
 
     case 'codeBlock': {
       const language = (node.attrs?.language as string) || '';
@@ -385,12 +587,6 @@ function renderTiptapNode(node: TiptapNode, key: React.Key): React.ReactNode {
 function renderInlineMarkdown(text: string, keyPrefix = 'inline'): React.ReactNode {
   if (!text) return null;
 
-  // Regex matches:
-  // 1 & 2 & 3: Image: ![alt](url)
-  // 4 & 5 & 6: Link: [label](url)
-  // 7 & 8: Inline code: `code`
-  // 9 & 10: Bold: **bold**
-  // 11 & 12: Italic: *italic*
   const regex = /(!\[(.*?)\]\((.*?)\))|(\[(.*?)\]\((.*?)\))|(`([^`]+)`)|(\*\*([^*]+)\*\*)|(\*([^*]+)\*)/g;
 
   const elements: React.ReactNode[] = [];
@@ -494,7 +690,17 @@ function renderInlineMarkdown(text: string, keyPrefix = 'inline'): React.ReactNo
 }
 
 interface MarkdownBlock {
-  type: 'heading' | 'code' | 'table' | 'blockquote' | 'unorderedList' | 'orderedList' | 'hr' | 'paragraph';
+  type:
+    | 'heading'
+    | 'code'
+    | 'table'
+    | 'blockquote'
+    | 'callout'
+    | 'unorderedList'
+    | 'orderedList'
+    | 'hr'
+    | 'paragraph';
+  calloutType?: 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION' | 'DANGER' | 'SUCCESS';
   level?: number;
   text?: string;
   code?: string;
@@ -525,7 +731,6 @@ function parseMarkdownToBlocks(rawContent: string, tocItems?: TocItem[]): Markdo
   }
   content = content.replace(/^`+\s*/, '').replace(/\s*`+$/, '');
 
-  // Safeguard: Unescape literal \n and \t if received from raw JSON APIs
   if (content.includes('\\n')) {
     content = content.replace(/\\n/g, '\n').replace(/\\r/g, '').replace(/\\t/g, '\t');
   }
@@ -578,15 +783,16 @@ function parseMarkdownToBlocks(rawContent: string, tocItems?: TocItem[]): Markdo
 
       let headingId = '';
       if (tocItems && tocItems.length > 0) {
-        // Try matching by normalized title text
         const normHeading = normalizeTitleForMatch(headingText);
         const matchedToc = tocItems.find(
-          t => normalizeTitleForMatch(t.title) === normHeading || normHeading.includes(normalizeTitleForMatch(t.title)) || normalizeTitleForMatch(t.title).includes(normHeading)
+          t =>
+            normalizeTitleForMatch(t.title) === normHeading ||
+            normHeading.includes(normalizeTitleForMatch(t.title)) ||
+            normalizeTitleForMatch(t.title).includes(normHeading)
         );
         if (matchedToc) {
           headingId = matchedToc.id;
         } else if (level === 2 && tocHeadingIndex < tocItems.length) {
-          // If level 2 and sequential fallback
           headingId = tocItems[tocHeadingIndex]?.id || slugifyHeading(headingText);
         } else {
           headingId = slugifyHeading(headingText);
@@ -608,17 +814,28 @@ function parseMarkdownToBlocks(rawContent: string, tocItems?: TocItem[]): Markdo
       continue;
     }
 
-    // 5. Blockquote (> ...)
+    // 5. Blockquote (> ...) or Callout Alert (> [!NOTE])
     if (trimmed.startsWith('>')) {
       const quoteLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith('>')) {
         quoteLines.push(lines[i].trim().replace(/^>\s?/, ''));
         i++;
       }
-      blocks.push({
-        type: 'blockquote',
-        text: quoteLines.join('\n'),
-      });
+      const fullQuote = quoteLines.join('\n');
+      const alertMatch = fullQuote.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|DANGER|SUCCESS)\]\s*\n?([\s\S]*)$/i);
+      if (alertMatch) {
+        const alertType = alertMatch[1].toUpperCase() as 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION' | 'DANGER' | 'SUCCESS';
+        blocks.push({
+          type: 'callout',
+          calloutType: alertType,
+          text: alertMatch[2].trim(),
+        });
+      } else {
+        blocks.push({
+          type: 'blockquote',
+          text: fullQuote,
+        });
+      }
       continue;
     }
 
@@ -703,6 +920,9 @@ function renderMarkdownBlock(block: MarkdownBlock, index: number): React.ReactNo
       const text = block.text || '';
       const id = block.id;
 
+      // Special highlight if heading is an exercise or quiz
+      const isExercise = /^(تمرين|تطبيق|المهمة|Challenge|Quiz|تحدي)/i.test(text);
+
       switch (level) {
         case 1:
           return (
@@ -719,9 +939,14 @@ function renderMarkdownBlock(block: MarkdownBlock, index: number): React.ReactNo
             <h2
               key={index}
               id={id}
-              className="text-xl sm:text-2xl font-extrabold text-foreground mt-10 mb-4 border-r-4 border-primary pr-3.5 tracking-tight leading-snug scroll-mt-24 flex items-center justify-between group"
+              className={`text-xl sm:text-2xl font-extrabold text-foreground mt-10 mb-4 border-r-4 ${
+                isExercise ? 'border-amber-400 bg-amber-500/5 py-2' : 'border-primary'
+              } pr-3.5 tracking-tight leading-snug scroll-mt-24 flex items-center justify-between group rounded-l-xl`}
             >
-              <span>{renderInlineMarkdown(text, `h2-${index}`)}</span>
+              <span className="flex items-center gap-2">
+                {isExercise && <Terminal className="h-5 w-5 text-amber-400 shrink-0" />}
+                <span>{renderInlineMarkdown(text, `h2-${index}`)}</span>
+              </span>
               {id && (
                 <a
                   href={`#${id}`}
@@ -766,6 +991,15 @@ function renderMarkdownBlock(block: MarkdownBlock, index: number): React.ReactNo
       }
     }
 
+    case 'callout':
+      return (
+        <CalloutBoxRenderer
+          key={index}
+          type={block.calloutType || 'NOTE'}
+          text={block.text || ''}
+        />
+      );
+
     case 'code':
       return (
         <CodeBlockRenderer
@@ -779,7 +1013,7 @@ function renderMarkdownBlock(block: MarkdownBlock, index: number): React.ReactNo
       return (
         <div
           key={index}
-          className="overflow-x-auto my-6 rounded-2xl border border-border bg-surface/40 shadow-card"
+          className="overflow-x-auto my-6 rounded-2xl border border-border/80 bg-surface/40 shadow-card"
         >
           <table className="w-full text-right text-sm border-collapse">
             {block.headers && block.headers.length > 0 && (

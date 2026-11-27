@@ -8,7 +8,7 @@ export const article26: StaticArticle = {
     'محتار تدخل تخصص نظم المعلومات؟ في هذا الدليل بنشرح لك بالبلدي كل ما يخص تخصص Information Systems: مواده، مجالات عمله، هل يشتغل مبرمج، والفرق بينه وبين علوم الحاسب وهندسة البرمجيات.',
   description:
     'دليل شامل ومبسط لتخصص نظم المعلومات (Information Systems): ما هو تخصص IS؟ ما هي مواده ومجالات عمله والفرق الجوهري بينه وبين علوم الحاسب وهندسة البرمجيات.',
-  category: 'تعلم البرمجة',
+  category: 'إرشاد أكاديمي ومهني',
   tags: [
     'نظم المعلومات',
     'تخصص IS',
@@ -103,7 +103,7 @@ export const article26: StaticArticle = {
 تتنوع الخطة الدراسية بحسب الكلية (سواء كانت كلية حاسبات ومعلومات أو كلية تجارة BIS)، لكن الهيكل العام يرتكز على 4 أعمدة رئيسية:
 
 ### 1. الأساس البرمجي وتطوير التطبيقات
-* لغات البرمجة الشائعة مثل **Python** (راجع مقالنا الميداني: [تعلم Python من الصفر بالبلدي دليل المبتدئين](/articles/learn-python-from-scratch-beginners)) أو **JavaScript** أو **Java/C#**.
+* لغات البرمجة الشائعة مثل **JavaScript** (راجع مقالنا الميداني: [تعلم JavaScript من الصفر للمبتدئين مع أمثلة عملية](/articles/javascript-tutorial-for-beginners)) أو **Python** أو **Java/C#**.
 * تطوير تطبيقات الويب الحديثة (Frontend و Backend).
 * مفاهيم البرمجة الكائنية (OOP) والتعامل مع واجهات برمجة التطبيقات (APIs).
 
@@ -116,7 +116,7 @@ export const article26: StaticArticle = {
 * كيفية الجلوس مع العميل وفهم المشكلة وتحويلها إلى متطلبات تقنية (Requirements Gathering).
 * رسم مخططات سير العمل والـ UML Diagrams ومخططات تدفق البيانات (DFD ومخططات الكيانات ERD).
 * دراسة الجدوى وتخطيط المشاريع بنهج Agile و Scrum.
-* 💡 **دليلك العملي المتكامل:** اقرأ شرحنا التفصيلي بالأمثلة العملية: [تحليل وتصميم نظم المعلومات بالبلدي \| شرح SDLC وDFD وERD](/articles/systems-analysis-and-design-guide).
+* 💡 **دليلك العملي المتكامل:** اقرأ شرحنا التفصيلي في [الدليل الشامل لمعمارية هندسة البرمجيات والنظم](/articles/clean-software-engineering-solid-principles-design-patterns).
 
 ### 4. أنظمة المؤسسات والأعمال (Enterprise Systems)
 * أنظمة تخطيط موارد المؤسسات (ERP Systems) مثل SAP و Odoo و Oracle.
@@ -205,7 +205,7 @@ export const article26: StaticArticle = {
   ],
   relatedSlugs: [
     'systems-analysis-and-design-guide',
-    'learn-python-from-scratch-beginners',
+    'javascript-tutorial-for-beginners',
     'learn-programming-from-scratch',
     'database-architecture-sql-postgresql-vs-nosql-mongodb',
     'build-rest-api-express-nodejs',

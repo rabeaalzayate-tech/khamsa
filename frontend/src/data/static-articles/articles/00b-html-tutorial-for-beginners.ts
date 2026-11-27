@@ -64,7 +64,7 @@ export const articleHTML01: StaticArticle = {
     'html-basic-tags-guide',
     'css-tutorial-for-beginners',
     'learn-programming-from-scratch',
-    'modern-css-architecture-tailwind-container-queries',
+    'modern-css-mastery-tailwind-design-systems-responsive-ui',
     'modern-javascript-comprehensive-guide-es6-async',
     'react-19-architecture-server-components-advanced-hooks',
   ],
@@ -115,7 +115,7 @@ export const articleHTML01: StaticArticle = {
 
 **HTML بالنسبة لصفحة الويب هي الهيكل الأساسي والخرسانة للبيت ده بالضبط!**
 
-أما [CSS](/articles/modern-css-architecture-tailwind-container-queries)، فهي اللي بتساعدك تدهن الحوائط وتنسق شكل الصفحة وألوانها ومسافاتها.
+أما [CSS](/articles/modern-css-mastery-tailwind-design-systems-responsive-ui)، فهي اللي بتساعدك تدهن الحوائط وتنسق شكل الصفحة وألوانها ومسافاتها.
 
 و[JavaScript](/articles/modern-javascript-comprehensive-guide-es6-async)، هي الكهرباء والسباكة وأجهزة التكييف والتحكم الذكي اللي بتضيف التفاعل والسلوك الديناميكي للبيت.
 
@@ -323,7 +323,7 @@ name="value"
 <h1 id="hero-title" class="title-bold text-gold">تعلم البرمجة بالبلدي</h1>
 \`\`\`
 * \`id\`: معرّف فريد لا يتكرر في نفس الصفحة (زي رقم بطاقتك الشخصية).
-* \`class\`: فئة أو تصنيف ممكن تشترك فيه عناصر كتير علشان تديهم نفس التنسيق في [CSS](/articles/modern-css-architecture-tailwind-container-queries).
+* \`class\`: فئة أو تصنيف ممكن تشترك فيه عناصر كتير علشان تديهم نفس التنسيق في [CSS](/articles/modern-css-mastery-tailwind-design-systems-responsive-ui).
 
 ---
 
