@@ -900,6 +900,18 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   22: { status: 'completed', actualWordCount: 12478, readTimeMinutes: 62 },
   23: { status: 'completed', actualWordCount: 9862, readTimeMinutes: 49 },
   24: { status: 'completed', actualWordCount: 8221, readTimeMinutes: 41 },
+  25: { status: 'completed', actualWordCount: 10155, readTimeMinutes: 51 },
+  26: { status: 'completed', actualWordCount: 8483, readTimeMinutes: 42 },
+  27: { status: 'completed', actualWordCount: 8758, readTimeMinutes: 44 },
+  28: { status: 'completed', actualWordCount: 9363, readTimeMinutes: 47 },
+  29: { status: 'completed', actualWordCount: 9576, readTimeMinutes: 48 },
+  30: { status: 'completed', actualWordCount: 10197, readTimeMinutes: 51 },
+  31: { status: 'completed', actualWordCount: 8911, readTimeMinutes: 45 },
+  32: { status: 'completed', actualWordCount: 9817, readTimeMinutes: 49 },
+  33: { status: 'completed', actualWordCount: 10979, readTimeMinutes: 55 },
+  34: { status: 'completed', actualWordCount: 8343, readTimeMinutes: 42 },
+  35: { status: 'completed', actualWordCount: 8796, readTimeMinutes: 44 },
+  36: { status: 'completed', actualWordCount: 10052, readTimeMinutes: 50 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
