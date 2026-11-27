@@ -918,6 +918,13 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   40: { status: 'completed', actualWordCount: 10068, readTimeMinutes: 50 },
   41: { status: 'completed', actualWordCount: 8617, readTimeMinutes: 43 },
   42: { status: 'completed', actualWordCount: 9186, readTimeMinutes: 46 },
+  43: { status: 'completed', actualWordCount: 10717, readTimeMinutes: 54 },
+  44: { status: 'completed', actualWordCount: 11360, readTimeMinutes: 57 },
+  45: { status: 'completed', actualWordCount: 9568, readTimeMinutes: 48 },
+  46: { status: 'completed', actualWordCount: 9933, readTimeMinutes: 50 },
+  47: { status: 'completed', actualWordCount: 7541, readTimeMinutes: 38 },
+  48: { status: 'completed', actualWordCount: 10123, readTimeMinutes: 51 },
+  49: { status: 'completed', actualWordCount: 12295, readTimeMinutes: 61 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
@@ -961,10 +968,11 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
   {
     number: 3,
     title: 'To-Do List Application',
-    arTitle: 'تطبيق إدارة المهام (To-Do List)',
-    description: 'إضافة وتعديل وحذف المهام مع حفظها في LocalStorage واستخدام Event Delegation.',
-    concepts: ['Arrays', 'Event Delegation', 'LocalStorage', 'CRUD'],
-    status: 'not_started',
+    arTitle: 'تطبيق إدارة المهام التفاعلي ونمط التحديث غير القابل للتعديل',
+    description: 'إضافة وتعديل وحذف المهام بنمط لا يقبل التعديل Immutable Updates، حفظها في LocalStorage، والبحث والتصفية.',
+    concepts: ['Arrays & Objects', 'Immutability', 'LocalStorage', 'CRUD', 'React State'],
+    status: 'completed',
+    demoUrl: '/frontend/javascript/todo-list',
   },
   {
     number: 4,
