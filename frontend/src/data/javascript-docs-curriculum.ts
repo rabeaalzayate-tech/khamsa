@@ -888,6 +888,11 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   10: { status: 'completed', actualWordCount: 5493, readTimeMinutes: 27 },
   11: { status: 'completed', actualWordCount: 7200, readTimeMinutes: 36 },
   12: { status: 'completed', actualWordCount: 8020, readTimeMinutes: 40 },
+  13: { status: 'completed', actualWordCount: 7904, readTimeMinutes: 40 },
+  14: { status: 'completed', actualWordCount: 6508, readTimeMinutes: 33 },
+  15: { status: 'completed', actualWordCount: 5460, readTimeMinutes: 27 },
+  16: { status: 'completed', actualWordCount: 5404, readTimeMinutes: 27 },
+  17: { status: 'completed', actualWordCount: 5332, readTimeMinutes: 27 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
@@ -904,11 +909,20 @@ export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSON
 export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
   {
     number: 1,
-    title: 'Simple Calculator',
-    arTitle: 'آلة حاسبة تفاعلية',
-    description: 'تطبيق عملي على المعاملات الحسابية، الجمل الشرطية، ومعالجة أحداث الأزرار.',
-    concepts: ['Operators', 'Conditionals', 'Functions', 'DOM Events'],
-    status: 'not_started',
+    title: 'Interactive Scientific & Currency Calculator Engine',
+    arTitle: 'محرك الآلة الحاسبة العلمية ومحول العملات التفاعلي',
+    description:
+      'تطبيق عملي متكامل يطبق المعاملات الحسابية، أسبقية المعاملات وخوارزمية Shunting-Yard، كائن Math، وتحويل العملات ببيانات موثقة.',
+    concepts: [
+      'Arithmetic Operators',
+      'Math Object',
+      'Operator Precedence',
+      'Shunting-Yard',
+      'Currency Math',
+      'TypeScript',
+    ],
+    status: 'completed',
+    demoUrl: '/frontend/javascript/calculator',
   },
   {
     number: 2,

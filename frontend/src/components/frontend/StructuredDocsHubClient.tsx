@@ -516,6 +516,19 @@ export function StructuredDocsHubClient({
                   </Badge>
                 ))}
               </div>
+
+              {project.demoUrl && (
+                <div className="pt-2 border-t border-border flex items-center justify-between">
+                  <Link
+                    href={project.demoUrl}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 text-xs font-bold transition-colors"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>تجربة المشروع التفاعلي</span>
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
           ))}
         </div>

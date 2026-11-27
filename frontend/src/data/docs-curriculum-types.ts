@@ -32,6 +32,8 @@ export interface DocPracticalProject {
   description: string;
   concepts: string[];
   status: DocArticleStatus;
+  demoUrl?: string;
+  repoUrl?: string;
 }
 
 export interface PhaseProgressStats {
