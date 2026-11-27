@@ -446,6 +446,20 @@ function collectLessonSource(
 }
 
 // ---------------------------------------------------------------------------
+// Helper: Count Table Nodes in TipTap Document
+// ---------------------------------------------------------------------------
+
+function countTableNodes(doc: TipTapDoc): number {
+  let count = 0;
+  function traverse(node: TipTapNode) {
+    if (node.type === 'table') count++;
+    if (Array.isArray(node.content)) node.content.forEach(traverse);
+  }
+  doc.content.forEach(traverse);
+  return count;
+}
+
+// ---------------------------------------------------------------------------
 // Main CLI Runner
 // ---------------------------------------------------------------------------
 
@@ -457,24 +471,48 @@ async function main() {
   const statusArg = args.find(a => a.startsWith('--status='))?.split('=')[1] || 'DRAFT';
   const targetStatus = statusArg === 'PUBLISHED' ? ContentStatus.PUBLISHED : ContentStatus.DRAFT;
 
+  // 1. Batch Range Configuration (--from, --to, --limit)
+  const fromArg = args.find(a => a.startsWith('--from='))?.split('=')[1];
+  const toArg = args.find(a => a.startsWith('--to='))?.split('=')[1];
   const limitArg = args.find(a => a.startsWith('--limit='))?.split('=')[1];
-  const limit = limitArg ? parseInt(limitArg, 10) : 75;
+
+  let startNum = fromArg ? parseInt(fromArg, 10) : 1;
+  let endNum: number;
+  if (toArg) {
+    endNum = parseInt(toArg, 10);
+  } else if (limitArg) {
+    endNum = startNum + parseInt(limitArg, 10) - 1;
+  } else {
+    endNum = 75;
+  }
+
+  // Constrain range between 1 and 75
+  startNum = Math.max(1, Math.min(startNum, 75));
+  endNum = Math.max(startNum, Math.min(endNum, 75));
+  const totalToProcess = endNum - startNum + 1;
+
+  // 2. Configurable Source Directory (--scratchDir="path")
+  const scratchDirArg = args.find(a => a.startsWith('--scratchDir=') || a.startsWith('--scratch-dir='));
+  let scratchDir = scratchDirArg
+    ? scratchDirArg.replace(/^--(scratchDir|scratch-dir)=/, '').replace(/^["']|["']$/g, '')
+    : 'C:/Users/rabea/.gemini/antigravity/brain/6dde1a10-4d5d-4b36-9cb1-3fdb92257108/scratch';
+
+  scratchDir = path.resolve(scratchDir);
+  if (!fs.existsSync(scratchDir)) {
+    throw new Error(`Configured scratch directory does not exist: "${scratchDir}". Please provide a valid directory via --scratchDir="path".`);
+  }
 
   console.log('===========================================================');
   console.log('   Khamsa Programming - JavaScript Curriculum Importer   ');
   console.log('===========================================================');
-  console.log(`- Mode:         ${isDryRun ? 'DRY-RUN (READ-ONLY, NO DB CHANGES)' : 'LIVE IMPORT'}`);
-  console.log(`- Target Status:${targetStatus}`);
-  console.log(`- Allow Update: ${isUpdate}`);
-  console.log(`- Lesson Limit: ${limit}`);
+  console.log(`- Mode:          ${isDryRun ? 'DRY-RUN (READ-ONLY, NO DB CHANGES)' : 'LIVE IMPORT / UPDATE'}`);
+  console.log(`- Target Status: ${targetStatus}`);
+  console.log(`- Update Mode:   ${isUpdate ? 'CONTENT-ONLY REFRESH' : 'INSERT ONLY (SKIP EXISTING)'}`);
+  console.log(`- Lesson Range:  JS-${startNum.toString().padStart(2, '0')} to JS-${endNum.toString().padStart(2, '0')} (${totalToProcess} lessons)`);
+  console.log(`- Source Dir:    ${scratchDir}`);
   console.log('-----------------------------------------------------------');
 
-  const scratchDir = 'C:/Users/rabea/.gemini/antigravity/brain/6dde1a10-4d5d-4b36-9cb1-3fdb92257108/scratch';
-  if (!fs.existsSync(scratchDir)) {
-    throw new Error(`Scratch directory not found: ${scratchDir}`);
-  }
-
-  // 1. Connect to MySQL & retrieve author
+  // 3. Connect to MySQL & retrieve author
   await prisma.$connect();
   console.log('Connected to MySQL via Prisma.');
 
@@ -493,13 +531,10 @@ async function main() {
   }
   console.log(`Assigned Author: ${adminAuthor.name} (${adminAuthor.email}) [ID: ${adminAuthor.id}]`);
 
-  // 2. Load Curriculum Metadata
+  // 4. Load Curriculum Metadata
   const curriculumMap = loadCurriculumMetadata();
   console.log(`Loaded ${curriculumMap.size} lessons from curriculum manifest.`);
-
-  // 3. Process Lessons Sequentially
-  const totalToProcess = Math.min(limit, 75);
-  console.log(`Processing ${totalToProcess} lessons...\n`);
+  console.log(`Processing ${totalToProcess} lessons in numerical sequence...\n`);
 
   let successCount = 0;
   let skippedCount = 0;
@@ -510,10 +545,11 @@ async function main() {
     files: number;
     words: number;
     nodes: number;
+    tables: number;
     status: string;
   }> = [];
 
-  for (let num = 1; num <= totalToProcess; num++) {
+  for (let num = startNum; num <= endNum; num++) {
     const meta = curriculumMap.get(num);
     if (!meta) {
       console.error(`Lesson ${num} missing in curriculum manifest!`);
@@ -529,8 +565,8 @@ async function main() {
         throw new Error(`Invalid TipTap document structure for lesson ${num}`);
       }
 
-      // Check for table nodes inside document
-      const hasTable = JSON.stringify(lesson.tiptapDoc).includes('"type":"table"');
+      // Check and count table nodes inside document
+      const tableCount = countTableNodes(lesson.tiptapDoc);
 
       // Create payload matching createArticleSchema
       const excerpt = lesson.summary.length >= 10
@@ -564,18 +600,23 @@ async function main() {
 
       if (isDryRun) {
         // DRY-RUN ONLY: No DB modification
+        const outcome = existing
+          ? (isUpdate ? 'WOULD_UPDATE_CONTENT_ONLY' : 'ALREADY_EXISTS_SKIP')
+          : 'VALID_NEW_READY';
+
         auditResults.push({
           num,
           slug: lesson.slug,
           files: lesson.files.length,
           words: lesson.wordCount,
           nodes: lesson.tiptapDoc.content.length,
-          status: existing ? (isUpdate ? 'WOULD_UPDATE' : 'ALREADY_EXISTS_SKIP') : 'VALID_READY',
+          tables: tableCount,
+          status: outcome,
         });
         successCount++;
-        process.stdout.write(`[DRY-RUN] Verified Lesson ${num.toString().padStart(2, '0')}: ${lesson.slug} (${lesson.wordCount} words, ${lesson.tiptapDoc.content.length} nodes, table: ${hasTable})\n`);
+        process.stdout.write(`[DRY-RUN] Verified Lesson ${num.toString().padStart(2, '0')}: ${lesson.slug} (${lesson.wordCount} words, ${lesson.tiptapDoc.content.length} nodes, tables: ${tableCount}, action: ${outcome})\n`);
       } else {
-        // LIVE IMPORT MODE
+        // LIVE IMPORT / UPDATE MODE
         if (existing && !isUpdate) {
           auditResults.push({
             num,
@@ -583,31 +624,27 @@ async function main() {
             files: lesson.files.length,
             words: lesson.wordCount,
             nodes: lesson.tiptapDoc.content.length,
+            tables: tableCount,
             status: 'SKIPPED_EXISTS',
           });
           skippedCount++;
-          console.log(`[SKIP] Lesson ${num}: ${lesson.slug} already exists (use --update=true to override).`);
+          console.log(`[SKIP] Lesson ${num}: ${lesson.slug} already exists (use --update=true to override content).`);
           continue;
         }
 
-        const publishedAt = targetStatus === ContentStatus.PUBLISHED ? new Date() : null;
-
         if (existing && isUpdate) {
+          // CONTENT-ONLY UPDATE: Strictly updates ONLY `content` field.
+          // Preserves title, slug, excerpt, category, authorId, status, publishedAt, seo, isFeatured, createdAt.
           await prisma.article.update({
             where: { id: existing.id },
             data: {
-              title: payload.title,
-              excerpt: payload.excerpt,
               content: payload.content,
-              category: payload.category,
-              tags: payload.tags,
-              status: targetStatus,
-              seo: payload.seo,
-              publishedAt,
             },
           });
-          console.log(`[UPDATED] Lesson ${num}: ${lesson.slug}`);
+          console.log(`[CONTENT UPDATED] Lesson ${num}: ${lesson.slug} (content updated, metadata preserved)`);
         } else {
+          // INSERT NEW ARTICLE
+          const publishedAt = targetStatus === ContentStatus.PUBLISHED ? new Date() : null;
           await prisma.article.create({
             data: {
               title: payload.title,
@@ -632,7 +669,8 @@ async function main() {
           files: lesson.files.length,
           words: lesson.wordCount,
           nodes: lesson.tiptapDoc.content.length,
-          status: existing ? 'UPDATED' : 'INSERTED',
+          tables: tableCount,
+          status: existing ? 'CONTENT_UPDATED' : 'INSERTED',
         });
         successCount++;
       }
@@ -645,6 +683,7 @@ async function main() {
         files: 0,
         words: 0,
         nodes: 0,
+        tables: 0,
         status: `FAILED: ${err.message}`,
       });
     }
