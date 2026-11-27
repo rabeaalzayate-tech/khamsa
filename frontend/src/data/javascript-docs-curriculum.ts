@@ -940,6 +940,17 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   62: { status: 'completed', actualWordCount: 13750, readTimeMinutes: 69 },
   63: { status: 'completed', actualWordCount: 18106, readTimeMinutes: 91 },
   64: { status: 'completed', actualWordCount: 16393, readTimeMinutes: 82 },
+  65: { status: 'completed', actualWordCount: 16127, readTimeMinutes: 81 },
+  66: { status: 'completed', actualWordCount: 13658, readTimeMinutes: 68 },
+  67: { status: 'completed', actualWordCount: 17215, readTimeMinutes: 86 },
+  68: { status: 'completed', actualWordCount: 13633, readTimeMinutes: 68 },
+  69: { status: 'completed', actualWordCount: 17855, readTimeMinutes: 89 },
+  70: { status: 'completed', actualWordCount: 14976, readTimeMinutes: 75 },
+  71: { status: 'completed', actualWordCount: 16583, readTimeMinutes: 83 },
+  72: { status: 'completed', actualWordCount: 19139, readTimeMinutes: 96 },
+  73: { status: 'completed', actualWordCount: 15141, readTimeMinutes: 76 },
+  74: { status: 'completed', actualWordCount: 15049, readTimeMinutes: 75 },
+  75: { status: 'completed', actualWordCount: 15740, readTimeMinutes: 79 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
@@ -1004,7 +1015,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'تطبيق حالة الطقس',
     description: 'جلب بيانات الطقس الحية عبر Fetch API و Async/Await مع معالجة أخطاء الشبكة.',
     concepts: ['Fetch API', 'Async/Await', 'Error Handling', 'Geolocation'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/weather',
   },
   {
     number: 6,
@@ -1012,7 +1024,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'متتبع المصروفات والميزانية',
     description: 'حساب الإجمالي والرصيد عبر reduce، وتنسيق العملات بـ Intl.NumberFormat.',
     concepts: ['reduce/filter', 'Intl.NumberFormat', 'LocalStorage', 'Forms'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/expense-tracker',
   },
   {
     number: 7,
@@ -1020,7 +1033,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'سلة تسوق متكاملة لمتجر إلكتروني',
     description: 'إدارة الكميات، الكوبونات، حساب الضرائب، وتحديث السلة بشكل Immutable.',
     concepts: ['Immutability', 'Map/Set', 'Modules', 'Cart State'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/shopping-cart',
   },
   {
     number: 8,
@@ -1028,7 +1042,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'باحث حسابات GitHub',
     description: 'البحث مع Debouncing، إلغاء الطلبات السابقة بـ AbortController، وعرض المستودعات.',
     concepts: ['Debounce', 'AbortController', 'Fetch API', 'Promises'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/github-finder',
   },
   {
     number: 9,
@@ -1036,7 +1051,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'لوحة تحكم تفاعلية للبيانات',
     description: 'فلترة وترتيب الجداول، البحث الفوري، وتجميع الإحصائيات من بيانات متعددة.',
     concepts: ['Data Transformation', 'Sorting/Filtering', 'Event Delegation', 'Storage'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/dashboard',
   },
   {
     number: 10,
@@ -1044,7 +1060,8 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
     arTitle: 'تطبيق JavaScript متكامل بمعمارية ES Modules',
     description: 'مشروع التخرج للمسار يجمع إدارة الحالة، التوجيه، الاتصال بـ API، ومعالجة الأخطاء.',
     concepts: ['ES Modules', 'Architecture', 'Async Flows', 'Clean Code'],
-    status: 'not_started',
+    status: 'completed',
+    demoUrl: '/frontend/javascript/final-project',
   },
 ];
 
