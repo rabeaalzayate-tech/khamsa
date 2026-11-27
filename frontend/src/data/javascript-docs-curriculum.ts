@@ -912,6 +912,12 @@ const PUBLISHED_JS_LESSON_PROGRESS: Record<
   34: { status: 'completed', actualWordCount: 8343, readTimeMinutes: 42 },
   35: { status: 'completed', actualWordCount: 8796, readTimeMinutes: 44 },
   36: { status: 'completed', actualWordCount: 10052, readTimeMinutes: 50 },
+  37: { status: 'completed', actualWordCount: 11004, readTimeMinutes: 55 },
+  38: { status: 'completed', actualWordCount: 10215, readTimeMinutes: 51 },
+  39: { status: 'completed', actualWordCount: 11334, readTimeMinutes: 57 },
+  40: { status: 'completed', actualWordCount: 10068, readTimeMinutes: 50 },
+  41: { status: 'completed', actualWordCount: 8617, readTimeMinutes: 43 },
+  42: { status: 'completed', actualWordCount: 9186, readTimeMinutes: 46 },
 };
 
 export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
@@ -946,10 +952,11 @@ export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
   {
     number: 2,
     title: 'Number Guessing Game',
-    arTitle: 'لعبة تخمين الأرقام',
-    description: 'توليد أرقام عشوائية، إدارة المحاولات، وتحديث الواجهة بناءً على حالة اللعب.',
-    concepts: ['Math.random', 'Loops', 'State Variables', 'DOM Updates'],
-    status: 'not_started',
+    arTitle: 'لعبة تخمين الأرقام وخوارزمية البحث الثنائي',
+    description: 'توليد أرقام عشوائية، إدارة المحاولات، البحث الثنائي، وتحديث الواجهة بناءً على حالة اللعب.',
+    concepts: ['Math.random', 'Binary Search', 'Loops', 'State Variables', 'DOM Updates'],
+    status: 'completed',
+    demoUrl: '/frontend/javascript/guessing-game',
   },
   {
     number: 3,
