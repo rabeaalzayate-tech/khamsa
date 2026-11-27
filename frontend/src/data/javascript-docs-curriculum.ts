@@ -1,5 +1,6 @@
 import {
   calculateDocsOfficialProgress,
+  type DocArticleStatus,
   type DocDifficulty,
   type DocPhaseMetadata,
   type DocPracticalProject,
@@ -871,13 +872,27 @@ const RAW_JS_LESSONS: readonly RawJsLessonSeed[] = [
   },
 ];
 
-export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => ({
-  ...lesson,
-  status: 'not_started',
-  actualWordCount: 0,
-  targetWordCount: 5001,
-  readTimeMinutes: 25,
-}));
+const PUBLISHED_JS_LESSON_PROGRESS: Record<
+  number,
+  { status: DocArticleStatus; actualWordCount: number; readTimeMinutes?: number }
+> = {
+  1: { status: 'completed', actualWordCount: 5172, readTimeMinutes: 26 },
+  2: { status: 'completed', actualWordCount: 5013, readTimeMinutes: 25 },
+  3: { status: 'completed', actualWordCount: 5024, readTimeMinutes: 25 },
+  4: { status: 'completed', actualWordCount: 5026, readTimeMinutes: 25 },
+  5: { status: 'completed', actualWordCount: 5018, readTimeMinutes: 25 },
+};
+
+export const JS_DOCS_CURRICULUM: readonly StructuredDocChapter[] = RAW_JS_LESSONS.map(lesson => {
+  const progress = PUBLISHED_JS_LESSON_PROGRESS[lesson.number];
+  return {
+    ...lesson,
+    status: progress?.status ?? 'not_started',
+    actualWordCount: progress?.actualWordCount ?? 0,
+    targetWordCount: 5001,
+    readTimeMinutes: progress?.readTimeMinutes ?? 25,
+  };
+});
 
 export const JS_DOCS_PROJECTS: readonly DocPracticalProject[] = [
   {
