@@ -130,6 +130,7 @@ const ROADMAP_MILESTONES: RoadmapMilestone[] = [
           'التعامل مع Fetch API و JSON واكتشاف الأخطاء (Debugging)',
         ],
         links: [
+          { label: 'توثيق JavaScript الكامل (75 درسًا)', href: '/frontend/javascript' },
           { label: 'JavaScript الحديثة ES6+', href: '/articles/modern-javascript-comprehensive-guide-es6-async' },
           { label: 'اكتشاف وإصلاح أخطاء JS', href: '/articles/javascript-debugging-errors-guide' },
         ],

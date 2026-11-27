@@ -100,10 +100,10 @@ const STYLING_JS_TRACKS = [
     icon: Layers,
   },
   {
-    title: 'JavaScript الحديثة (ES6+ و Async)',
-    description: 'الـ Event Loop، الـ Closures، الـ Promises، والتعامل مع الـ DOM والـ APIs.',
-    href: '/articles/modern-javascript-comprehensive-guide-es6-async',
-    badge: 'الأساس البرمجي',
+    title: 'توثيق JavaScript الكامل (75 درسًا + 10 مشاريع)',
+    description: 'المرجع الشامل من الصفر للاحتراف: 11 مرحلة تغطي الأساسيات، Closures، الـ DOM، الـ Event Loop، Promises، و Browser APIs.',
+    href: '/frontend/javascript',
+    badge: 'JavaScript Docs',
     icon: Code2,
   },
 ];
