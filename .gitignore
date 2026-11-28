@@ -37,6 +37,7 @@ coverage/
 
 # Backups
 backups/
+rodmpas/
 *.json.gz
 *.tsbuildinfo
 

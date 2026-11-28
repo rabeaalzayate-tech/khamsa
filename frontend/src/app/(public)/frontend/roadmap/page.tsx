@@ -11,7 +11,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { ArticleBreadcrumb } from '@/components/articles/ArticleBreadcrumb';
-import { FrontendRoadmapTree } from '@/components/frontend/FrontendRoadmapTree';
+import { FrontendRoadmapContainer } from '@/components/frontend/FrontendRoadmapContainer';
 import { FrontendProgressOverview } from '@/components/frontend/FrontendProgressOverview';
 import { Button } from '@/components/ui/Button';
 import { getSiteUrl } from '@/lib/seo/site-url';
@@ -126,8 +126,8 @@ export default function FrontendRoadmapPage() {
       {/* Global Learning Progress Overview */}
       <FrontendProgressOverview totalLessons={110} totalProjects={10} />
 
-      {/* The Complete Roadmap Tree */}
-      <FrontendRoadmapTree />
+      {/* The Complete Roadmap Container (Diagram View + Detailed Tree) */}
+      <FrontendRoadmapContainer />
 
       {/* Deep Learning Navigation Grid */}
       <section className="rounded-3xl border border-border/80 bg-card p-6 sm:p-10 shadow-card space-y-6">
