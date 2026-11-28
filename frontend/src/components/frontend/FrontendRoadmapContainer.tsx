@@ -44,7 +44,7 @@ export function FrontendRoadmapContainer() {
               }`}
             >
               <Workflow className="h-4 w-4" />
-              <span>المخطط البصري (Flowchart UI)</span>
+              <span>شجرة المسار البصرية (Modern 2025 Tree)</span>
               <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-black/20 text-[10px] font-mono">
                 جديد
               </span>
@@ -59,7 +59,7 @@ export function FrontendRoadmapContainer() {
               }`}
             >
               <Layers className="h-4 w-4" />
-              <span>الدليل الهيكلي والمشاريع (Detailed)</span>
+              <span>الدليل الهيكلي والمشاريع (Curriculum & Projects)</span>
             </button>
           </div>
         </div>
