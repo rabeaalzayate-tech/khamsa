@@ -29,7 +29,7 @@ export function FrontendRoadmapContainer() {
               اختر طريقة تصفح خارطة الطريق
             </h2>
             <p className="text-xs sm:text-sm text-foreground-muted">
-              يمكنك استعراض المسار عبر المخطط البصري التفاعلي للعقد (على غرار roadmap.sh) أو عبر الدليل الهيكلي المفصل للمشاريع والدروس.
+              استكشف المسار إما عبر الشجرة العصبية التفاعلية الحديثة 2030 (Neural Tree & Matrix Circuit) أو عبر الدليل الهيكلي الشامل للمشاريع والدروس.
             </p>
           </div>
 
@@ -44,9 +44,9 @@ export function FrontendRoadmapContainer() {
               }`}
             >
               <Workflow className="h-4 w-4" />
-              <span>شجرة المسار البصرية (Modern 2025 Tree)</span>
+              <span>شجرة المسار العصبية 2030 (Neural Tree)</span>
               <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-md bg-black/20 text-[10px] font-mono">
-                جديد
+                2030
               </span>
             </button>
 

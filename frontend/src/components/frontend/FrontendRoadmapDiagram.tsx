@@ -27,638 +27,766 @@ import {
   Zap,
   Compass,
   ArrowLeft,
+  ArrowRight,
   Check,
   CornerDownLeft,
   Flame,
   Layout,
   Filter,
+  Activity,
+  Radio,
+  Sliders,
+  TerminalSquare,
+  Crosshair,
+  Orbit,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export type NodeType = 'core' | 'recommended' | 'alternative' | 'optional';
 
-export interface DiagramTopicItem {
+export interface TechNode {
+  id: string;
+  code: string;
   name: string;
   nameAr: string;
   type: NodeType;
+  status: 'mastered' | 'active' | 'future';
   details: string;
-  whyItMatters?: string;
+  whyItMatters: string;
+  subItems: string[];
+  proTip?: string;
+  codeSnippet?: string;
+  prerequisite?: string;
+  nextStep?: string;
   link?: string;
   linkText?: string;
-  subItems?: string[];
-  proTip?: string;
 }
 
-export interface DiagramSubBranch {
+export interface TreeBranch {
   id: string;
+  code: string;
   title: string;
   titleAr: string;
-  description?: string;
-  items: DiagramTopicItem[];
+  description: string;
+  nodes: TechNode[];
 }
 
-export interface DiagramStage {
+export interface TreeStage {
   id: string;
-  title: string;
-  titleAr: string;
   order: string;
-  badgeText: string;
-  themeColor: 'amber' | 'teal' | 'yellow' | 'orange' | 'cyan' | 'purple' | 'emerald' | 'blue';
-  level: 'مبتدئ (Junior Foundation)' | 'متوسط (Mid-Level Core)' | 'متقدم (Senior Architect)';
+  code: string;
+  title: string;
+  titleAr: string;
+  tagline: string;
+  level: 'Junior Foundation' | 'Mid-Level Core' | 'Senior Architect';
+  accent: 'cyan' | 'amber' | 'emerald' | 'purple' | 'blue' | 'yellow';
   summary: string;
-  icon: string;
   articleLink?: string;
-  branches: DiagramSubBranch[];
+  branches: TreeBranch[];
 }
 
-export const MODERN_ROADMAP_STAGES: DiagramStage[] = [
+export const ROADMAP_2030_DATA: TreeStage[] = [
   {
-    id: 'stage-internet',
-    title: 'Internet & Web Architecture',
-    titleAr: 'كيف يعمل الإنترنت والويب في العمق',
+    id: 'stage-01-web-core',
     order: '01',
-    badgeText: 'الأساس الحتمي قبل كتابة أي سطر كود',
-    themeColor: 'amber',
-    level: 'مبتدئ (Junior Foundation)',
-    summary: 'فهم فيزياء الشبكات ومسار حزم البيانات من لحظة كتابة الدومين في المتصفح حتى وصول أول بايت HTML.',
-    icon: 'Globe',
-    branches: [
-      {
-        id: 'branch-net-protocols',
-        title: 'Network & Protocols',
-        titleAr: 'بروتوكولات الاتصال ونقل البيانات',
-        items: [
-          {
-            name: 'How Internet Works',
-            nameAr: 'كيف يعمل الإنترنت والـ IP',
-            type: 'core',
-            details: 'فهم مسار الحزم (Packets)، أجهزة التوجيه (Routers)، مزود خدمة الإنترنت (ISP)، وعناوين IPv4 و IPv6.',
-            whyItMatters: 'بدون فهم كيف تنتقل البيانات، لن تستطيع استيعاب بطء الاتصال أو أخطاء الشبكة في الإنتاج.',
-            subItems: ['IP Addressing & Routing', 'Packets & Latency', 'ISP & Fiber backbones', 'TCP / UDP handshakes'],
-            proTip: 'احفظ الفرق بين TCP (الموثوق ذو المصافحة الثلاثية) و UDP (السريع للبث والألعاب).',
-          },
-          {
-            name: 'HTTP / HTTPS Protocols',
-            nameAr: 'بروتوكولات HTTP و HTTPS و HTTP/3',
-            type: 'core',
-            details: 'تطور بروتوكول الويب: من HTTP/1.1 (مشكلة Head-of-line blocking) إلى HTTP/2 (Multiplexing) و HTTP/3 (QUIC عبر UDP). شهادات SSL/TLS وتشفير البيانات.',
-            whyItMatters: 'كل طلب API أو صفحة ويب تعتمد على Headers و Status Codes و Caching الخاصة بهذا البروتوكول.',
-            subItems: ['Request & Response Headers', 'HTTP Status Codes (200, 301, 401, 404, 500)', 'SSL/TLS Handshake', 'HTTP/2 Multiplexing & HTTP/3 QUIC'],
-            proTip: 'في الإنتاج، احرص دائمًا على تفعيل HTTP/2 أو HTTP/3 عبر السيرفر أو CDN لتسريع جلب الملفات بالتوازي.',
-          },
-          {
-            name: 'DNS Resolution',
-            nameAr: 'نظام أسماء النطاقات (DNS)',
-            type: 'core',
-            details: 'آلية تحويل الدومين مثل khamsaprogramming.com إلى عنوان IP السيرفر عبر Root Nameserver و TLD و Authoritative Nameserver.',
-            whyItMatters: 'ضروري عند ضبط نطاق موقعك وربط سجلات A Record و CNAME و TXT للبريد والحماية.',
-            subItems: ['DNS Hierarchy & Caching', 'A & AAAA Records', 'CNAME & ALIAS', 'TTL (Time To Live) Propagation'],
-          },
-        ],
-      },
-      {
-        id: 'branch-browser-engine',
-        title: 'Browser Internals & Rendering',
-        titleAr: 'محرك المتصفح ومسار الرندر الحرج',
-        items: [
-          {
-            name: 'Browser Critical Rendering Path',
-            nameAr: 'مسار الرندر الحرج (CRP)',
-            type: 'recommended',
-            details: 'كيف يحول المتصفح النص إلى بكسلات: بناء الـ DOM Tree، والـ CSSOM Tree، ودمجهما في Render Tree، ثم حسابات الـ Layout والـ Paint والـ Compositing.',
-            whyItMatters: 'هذا هو المرجع الأهم لحل مشاكل الـ Performance وهبوط الفريمات (Jank) في الواجهات.',
-            subItems: ['DOM & CSSOM construction', 'Render Tree generation', 'Reflow / Layout calculation', 'Repaint & Compositing Layers', 'will-change & GPU optimization'],
-            proTip: 'تجنب تعديل الخصائص التي تسبب Reflow (مثل width, height, top) واستبدلها بـ transform و opacity لتتم على GPU مباشرة.',
-          },
-          {
-            name: 'Hosting & CDN Infrastructure',
-            nameAr: 'الاستضافة وشبكات التوزيع CDN',
-            type: 'recommended',
-            details: 'الفرق بين الاستضافة المشتركة و VPS والسيرفرات السحابية، ودور شبكات الـ CDN (مثل Cloudflare) في تقريب المحتوى من المستخدم.',
-            whyItMatters: 'الواجهة السريعة تحتاج بنية تحتية سريعة توزع الملفات الثابتة عبر أقرب Edge Server.',
-            subItems: ['Static vs Dynamic Hosting', 'Edge Computing & CDNs', 'Cache-Control & ETag headers', 'Vercel / Cloudflare Pages / VPS'],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'stage-html',
-    title: 'HTML5 & Semantic Web',
-    titleAr: 'بنية الويب الدلالية ومعايير الوصول A11y',
-    order: '02',
-    badgeText: 'هيكل الموقع وعظام الصفحة الدلالية',
-    themeColor: 'teal',
-    level: 'مبتدئ (Junior Foundation)',
-    summary: 'كتابة شيفرة HTML دلالية نظيفة، متوافقة مع محركات البحث SEO، ومتاحة للجميع وفق معايير إمكانية الوصول العالمية.',
-    icon: 'Layers',
+    code: 'SYS::NET_FOUNDATION',
+    title: 'Internet & Web Architecture 2030',
+    titleAr: 'فيزياء الإنترنت وشبكات الويب الفائقة',
+    tagline: 'الأساس الخوارزمي لحركة البيانات من السحابة حتى شاشة المستخدم',
+    level: 'Junior Foundation',
+    accent: 'amber',
+    summary: 'فهم مسار الحزم، بروتوكولات HTTP/3 و QUIC، محركات الرندر الحرج، وشبكات الـ Edge Computing العالمية.',
     articleLink: '/frontend/html',
     branches: [
       {
-        id: 'branch-semantic-core',
-        title: 'Semantic Elements & Structure',
-        titleAr: 'العناصر الدلالية وبنية الصفحة',
-        items: [
+        id: 'branch-01-protocols',
+        code: 'MOD::NET_PROTOCOL',
+        title: 'High-Speed Web Protocols',
+        titleAr: 'بروتوكولات الاتصال ونقل الحزم',
+        description: 'بنية نقل البيانات بدون تأخير (Zero-RTT) وتشفير TLS 1.3 المتطور',
+        nodes: [
           {
-            name: 'Semantic Tags Hierarchy',
-            nameAr: 'الهيكل الدلالي الصحيح',
+            id: 'node-net-ip',
+            code: 'IP::PACKET_ROUTING',
+            name: 'Internet Architecture & IP Routing',
+            nameAr: 'كيف يعمل الإنترنت ومسار الحزم',
             type: 'core',
-            details: 'استخدام الوسوم الدلالية الصحيحة: header, nav, main, section, article, aside, footer، بدلاً من تكديس عناصر div عشوائية.',
-            whyItMatters: 'يساعد قراءات الشاشة لمحركات البحث والمتصفحات في فهم المحتوى وأهميته بدقة.',
-            subItems: ['main vs section vs article', 'h1..h6 Heading Structure', 'nav & semantic lists', 'figure & figcaption'],
+            status: 'mastered',
+            details: 'آلية تقسيم البيانات إلى حزم (Packets)، وتوجيهها عبر أجهزة التوجيه (Routers) ومزودي خدمة الإنترنت (ISPs)، ومسار الكابلات البحرية العالمية.',
+            whyItMatters: 'فهم زمن الاستجابة (Latency) وهدر الحزم (Packet Loss) هو الأساس لتشخيص أي بطء في الواجهات الضخمة.',
+            subItems: ['IPv4 & IPv6 addressing', 'TCP 3-way handshake vs UDP', 'ISP peering & BGP routing', 'Packet loss & Jitter diagnosis'],
+            proTip: 'في بيئة الـ Cloud والإنتاج، تقليل عدد قفزات التوجيه (Hops) عبر CDNs يوفر مئات المللي ثانية.',
+            prerequisite: 'مفاهيم الحاسوب العامة',
+            nextStep: 'HTTP/2 و HTTP/3',
           },
           {
-            name: 'Modern Forms & Validation',
-            nameAr: 'النماذج المتقدمة والتحقق المدمج',
+            id: 'node-http3',
+            code: 'HTTP::QUIC_STREAMING',
+            name: 'HTTP/2, HTTP/3 & QUIC Protocol',
+            nameAr: 'بروتوكولات HTTP الحديثة و QUIC',
             type: 'core',
-            details: 'هندسة النماذج التفاعلية باستخدام input types الحديثة، وضبط label المرتبط بـ id، وقواعد التحقق المدمجة pattern و required.',
-            whyItMatters: 'النماذج هي وسيلة التواصل الأساسية بين المستخدم والأنظمة (تسجيل دخول، دفع، مراسلة).',
-            subItems: ['Form validation constraints', 'input types (email, tel, date, number)', 'label for/id accessibility', 'fieldset & legend grouping'],
+            status: 'mastered',
+            details: 'تجاوز مشكلة Head-of-line blocking بفضل Multiplexing في HTTP/2، والانتقال إلى UDP مع HTTP/3 و QUIC لتحقيق اتصال فوري Zero-RTT.',
+            whyItMatters: 'المتصفحات الحديثة تنزل الأكواد والصور بالتوازي عبر اتصال واحد دون انتظار انتهاء الطلب السابق.',
+            subItems: ['Multiplexed streams in single connection', 'HTTP/3 QUIC over UDP', 'HPACK & QPACK header compression', 'Server Push & Early Hints (103)'],
+            codeSnippet: `// Early Hints Header (103) for instant preloading
+Link: </styles.css>; rel=preload; as=style,
+      </app.js>; rel=preload; as=script`,
+            prerequisite: 'أساسيات الـ IP والشبكات',
+            nextStep: 'محركات المتصفح والـ CRP',
+          },
+          {
+            id: 'node-dns-ssl',
+            code: 'SEC::DNS_TLS',
+            name: 'DNS Anycast & TLS 1.3 Security',
+            nameAr: 'نظام DNS الموزع وتشفير TLS 1.3',
+            type: 'recommended',
+            status: 'active',
+            details: 'نظام أسماء النطاقات الموزع Anycast DNS، وسجلات A, CNAME, ALIAS، والتشفير السحابي فائق السرعة عبر TLS 1.3 مع مفاتيح ECDSA.',
+            whyItMatters: 'يضمن وصول المستخدم لأقرب سيرفر في العالم بأمان تام دون الوقوع في هجمات DNS Spoofing.',
+            subItems: ['Anycast DNS resolution hierarchy', 'DNSSEC validation', 'TLS 1.3 1-RTT & 0-RTT handshakes', 'HSTS & OCSP Stapling'],
+            prerequisite: 'مفاهيم بروتوكول HTTP',
+            nextStep: 'الاستضافة السحابية والـ Edge',
           },
         ],
       },
       {
-        id: 'branch-a11y-seo',
-        title: 'Accessibility (A11y) & SEO',
-        titleAr: 'إمكانية الوصول وتحسين محركات البحث',
-        items: [
+        id: 'branch-01-browser',
+        code: 'MOD::BROWSER_INTERNALS',
+        title: 'Browser Engine & Rendering Pipeline',
+        titleAr: 'محرك المتصفح ومسار الرندر الحرج 2030',
+        description: 'تحويل كود HTML و CSS إلى بكسلات على كارت الشاشة بمعدل 120fps',
+        nodes: [
           {
-            name: 'WAI-ARIA & Accessibility',
-            nameAr: 'معايير الوصول A11y و ARIA',
-            type: 'recommended',
-            details: 'تطبيق معايير WCAG: أدوار ARIA (role="dialog", role="tab")، وحالات aria-expanded و aria-hidden، وإمكانية التنقل الكامل بلوحة المفاتيح Focus management.',
-            whyItMatters: 'معيار دولي ملزم في كبرى الشركات لضمان وصول المستخدمين ذوي الهمم وتفادي الغرامات القانونية.',
-            subItems: ['WCAG 2.2 AA Compliance', 'ARIA roles & attributes', 'Keyboard navigation (Tab, Enter, Esc)', 'Focus traps & Skip to content links'],
-            proTip: 'القاعدة الذهبية في ARIA: إذا وُجد عنصر HTML أصلي يؤدي الغرض (مثل <button>)، لا تستخدم div مع ARIA!',
+            id: 'node-crp',
+            code: 'ENG::CRITICAL_PATH',
+            name: 'Critical Rendering Path (CRP)',
+            nameAr: 'مسار الرندر الحرج ومحرك Blink',
+            type: 'core',
+            status: 'mastered',
+            details: 'مراحل بناء الواجهة: HTML Parser -> DOM Tree -> CSSOM Tree -> Render Tree -> Layout (Reflow) -> Paint -> GPU Compositing Layers.',
+            whyItMatters: 'المعيار رقم 1 لمنع تهنيج المتصفح وضمان معدل 60fps/120fps فائق السلاسة.',
+            subItems: ['DOM & CSSOM Tokenization', 'Render Tree computation', 'Layout calculations & Layout thrashing', 'Compositing on GPU layers'],
+            proTip: 'تجنب القراءة ثم الكتابة في الـ DOM في نفس الفريم (Layout Thrashing) واستعن بـ requestAnimationFrame.',
+            prerequisite: 'أساسيات HTML و CSS',
+            nextStep: 'تحسين مؤشرات Core Web Vitals',
           },
           {
-            name: 'SEO Meta & Open Graph',
-            nameAr: 'وسوم الميتا ومشاركة السوشيال',
-            type: 'core',
-            details: 'ضبط وسوم Title و Description والـ Canonical URL، وبيانات Open Graph و Twitter Cards لضمان ظهور بطاقات جذابة عند مشاركة الرابط.',
-            whyItMatters: 'يضمن تصدر الموقع لنتائج جوجل وجذب الزوار عند نشر المقالات والصفحات.',
-            subItems: ['Title & Meta Description', 'Open Graph (og:image, og:title)', 'Canonical links', 'Structured Data (Schema.org JSON-LD)'],
+            id: 'node-edge-infra',
+            code: 'INFRA::EDGE_COMPUTING',
+            name: 'Edge CDNs & Smart Caching',
+            nameAr: 'الحوسبة الطرفية Edge وشبكات CDN',
+            type: 'recommended',
+            status: 'active',
+            details: 'تشغيل الكود على حواف السيرفرات القريبة من المستخدم (Cloudflare Workers, Vercel Edge Runtime) وضبط ترويسات Cache-Control و Stale-While-Revalidate.',
+            whyItMatters: 'تحقيق زمن استجابة عالمي يقل عن 50ms لأي زائر في العالم.',
+            subItems: ['Edge computing runtime', 'Cache-Control: s-maxage & SWR', 'Purging & CDN Tag invalidation', 'Geo-routing & Anycast network'],
+            prerequisite: 'استضافة الويب والـ DNS',
+            nextStep: 'بنية HTML5 الدلالية',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-css',
-    title: 'CSS3, Modern Layouts & Tailwind',
-    titleAr: 'التنسيقات المتقدمة والأنظمة المرئية',
+    id: 'stage-02-semantic-web',
+    order: '02',
+    code: 'SYS::SEMANTIC_A11Y',
+    title: 'HTML5 Semantic & Universal Accessibility (A11y)',
+    titleAr: 'بنية الويب الدلالية والوصول الشامل للجميع',
+    tagline: 'عظام الموقع الدلالية ومعايير الوصول العالمية لجميع البشر ومحركات الذكاء الاصطناعي',
+    level: 'Junior Foundation',
+    accent: 'cyan',
+    summary: 'إتقان العناصر الدلالية، معايير إمكانية الوصول WCAG 2.2 AA، هياكل النماذج التفاعلية، وتجهيز صفحات الويب لقراء الشاشة ومحركات البحث الذكية.',
+    articleLink: '/frontend/html',
+    branches: [
+      {
+        id: 'branch-02-semantic',
+        code: 'MOD::SEMANTIC_CORE',
+        title: 'Semantic Architecture & SEO',
+        titleAr: 'الهيكل الدلالي ومحركات البحث الذكية',
+        description: 'بناء واجهات قابلة للفهم من قبل محركات بحث الذكاء الاصطناعي وقراء الشاشة',
+        nodes: [
+          {
+            id: 'node-semantic-tags',
+            code: 'HTML::SEMANTIC_TAGS',
+            name: 'Semantic Elements Architecture',
+            nameAr: 'العناصر الدلالية المتقدمة',
+            type: 'core',
+            status: 'mastered',
+            details: 'توزيع هيكل الصفحة الدلالي بدقة: header, nav, main, section, article, aside, footer بدلاً من ظاهرة الـ Div Soup.',
+            whyItMatters: 'يحدد لمحركات بحث الذكاء الاصطناعي (ChatGPT, Gemini, Perplexity) الأجزاء الحيوية في مقالك وصفحتك.',
+            subItems: ['article vs section separation', 'h1..h6 hierarchical outline', 'figure & figcaption', 'nav landmark roles'],
+            prerequisite: 'مفاهيم الويب الأساسية',
+            nextStep: 'معايير الوصول WAI-ARIA',
+          },
+          {
+            id: 'node-forms-modern',
+            code: 'HTML::FORM_ENGINE',
+            name: 'Accessible Interactive Forms',
+            nameAr: 'النماذج التفاعلية الميسرة والتحقق الأصلي',
+            type: 'core',
+            status: 'mastered',
+            details: 'بناء نماذج إدخال مؤمنة تدعم التحقق المدمج (Constraint Validation API)، وتسميات الحقول الصريحة label for/id، ومجموعات fieldset/legend.',
+            whyItMatters: 'النماذج هي شريان التحويل المالي والتفاعلي في أي منصة تقنية.',
+            subItems: ['Constraint Validation API (validity, setCustomValidity)', 'inputmode & autocomplete for mobile UX', 'label / id explicit binding', 'accessible error messaging'],
+            prerequisite: 'أساسيات وسوم HTML',
+            nextStep: 'التحكم في النماذج بـ React 19',
+          },
+        ],
+      },
+      {
+        id: 'branch-02-a11y',
+        code: 'MOD::A11Y_WCAG',
+        title: 'Universal Accessibility (WCAG 2.2)',
+        titleAr: 'إمكانية الوصول الشامل WAI-ARIA',
+        description: 'تجربة مستخدم كاملة تدعم لوحة المفاتيح وقراءات الشاشة والمستخدمين ذوي الهمم',
+        nodes: [
+          {
+            id: 'node-wai-aria',
+            code: 'A11Y::ARIA_PATTERNS',
+            name: 'WAI-ARIA & Keyboard Navigation',
+            nameAr: 'أنماط ARIA والتنقل بلوحة المفاتيح',
+            type: 'recommended',
+            status: 'active',
+            details: 'تطبيق سمات ARIA: role, aria-expanded, aria-controls, aria-live، وإدارة التركيز (Focus Trap) في النوافذ المنبثقة.',
+            whyItMatters: 'معيار قانوني إلزامي في كبرى الشركات الأمريكية والأوروبية لضمان المساواة الرقمية وتجنب القضايا القضائية.',
+            subItems: ['WCAG 2.2 AA Compliance targets', 'Keyboard navigation: Tab, Shift+Tab, Enter, Space, Escape', 'Focus Trap & Focus restoration', 'aria-live="polite" / "assertive" updates'],
+            proTip: 'القاعدة الأولى لـ ARIA: لا تستخدم ARIA إذا كان هناك عنصر HTML أصلي يؤدي نفس الوظيفة.',
+            prerequisite: 'بنية HTML الدلالية',
+            nextStep: 'تنسيقات CSS المتجاوبة',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'stage-03-css-systems',
     order: '03',
-    badgeText: 'روح الواجهة وجمال التصميم المتجاوب',
-    themeColor: 'cyan',
-    level: 'مبتدئ (Junior Foundation)',
-    summary: 'إتقان الـ Box Model، وتوزيعات Flexbox و Grid المعقدة، والتحريك المتجاوب، وبناء واجهات عصرية بنظام Tailwind CSS 4.',
-    icon: 'Layout',
+    code: 'SYS::CSS_ENGINEERING',
+    title: 'CSS3, Modern Layouts & Design Tokens',
+    titleAr: 'هندسة التنسيقات والأنظمة البصرية الحديثة',
+    tagline: 'منطق التنسيق الرياضي، شبكات Grid المعقدة، ونظام Tailwind CSS 4',
+    level: 'Junior Foundation',
+    accent: 'cyan',
+    summary: 'إتقان نموذج الصندوق، خوارزميات Specificity، توزيعات Flexbox و Grid المتطورة، وأنظمة التصميم المتجاوبة مع شاشات الهواتف والشاشات العملاقة.',
     articleLink: '/frontend/css',
     branches: [
       {
-        id: 'branch-css-foundations',
-        title: 'Core Engine & Layouts',
-        titleAr: 'محرك CSS وتوزيع العناصر',
-        items: [
+        id: 'branch-03-layout',
+        code: 'MOD::LAYOUT_ALGO',
+        title: 'Flexbox & CSS Grid 2D Engine',
+        titleAr: 'محركات التوزيع Flexbox و CSS Grid ثنائية الأبعاد',
+        description: 'بناء واجهات متجاوبة معقدة دون الحاجة لأي سطر جافاسكريبت',
+        nodes: [
           {
-            name: 'Box Model & Specificity',
-            nameAr: 'نموذج الصندوق وأولوية المحددات',
+            id: 'node-css-box-model',
+            code: 'CSS::BOX_SPECIFICITY',
+            name: 'Box Model & Specificity Algorithm',
+            nameAr: 'نموذج الصندوق وحسابات أوزان المحددات',
             type: 'core',
-            details: 'حسابات content, padding, border, margin وضبط box-sizing: border-box. حساب أوزان المحددات (Specificity) وقواعد Cascade المتقدمة.',
-            whyItMatters: 'أكثر من 80% من مشاكل التنسيق سببها عدم إتقان أوزان المحددات أو حسابات الصندوق.',
-            subItems: ['box-sizing: border-box', 'Specificity formula (Inline > ID > Class > Element)', 'Cascade Layers (@layer)', 'CSS Custom Properties (Variables)'],
+            status: 'mastered',
+            details: 'ضبط box-sizing: border-box، وحساب أوزان المحددات (Inline > ID > Class > Element)، واستخدام طبقات الـ Cascade Layers (@layer).',
+            whyItMatters: 'يمنع 90% من تداخل التنسيقات العشوائي في المشاريع الكبيرة.',
+            subItems: ['box-sizing: border-box math', 'Specificity calculation formula', 'Cascade Layers (@layer)', 'Logical properties (margin-inline, padding-block)'],
+            prerequisite: 'مفاهيم HTML',
+            nextStep: 'Flexbox و Grid',
           },
           {
-            name: 'Flexbox (1D Layout)',
-            nameAr: 'توزيعات Flexbox أحادية البعد',
+            id: 'node-flexbox-grid',
+            code: 'CSS::GRID_SUBGRID',
+            name: 'Advanced CSS Grid & Subgrid',
+            nameAr: 'شبكات CSS Grid و Subgrid المتقدمة',
             type: 'core',
-            details: 'توزيع ومحاذاة العناصر على المحورين Main Axis و Cross Axis باستخدام flex-direction, justify-content, align-items, flex-grow, flex-shrink.',
-            whyItMatters: 'الحل الافتراضي لتنسيق أشرطة التنقل، الأزرار، والبطاقات الأفقية والعمودية.',
-            subItems: ['justify-content & align-items', 'flex-basis, grow, shrink', 'gap & flex-wrap', 'Nested flex containers'],
-          },
-          {
-            name: 'CSS Grid (2D Layout)',
-            nameAr: 'شبكات CSS Grid ثنائية الأبعاد',
-            type: 'core',
-            details: 'بناء تخطيطات معقدة بصفوف وأعمدة متزامنة: grid-template-columns (fr, repeat, minmax, auto-fit/fill) و grid-template-areas و Subgrid.',
-            whyItMatters: 'لبناء صفحات كاملة ولوحات تحكم (Dashboards) متجاوبة بدون كود معقد.',
-            subItems: ['repeat(auto-fit, minmax(...))', 'grid-template-areas', 'Subgrid for nested alignment', 'Implicit vs Explicit grids'],
+            status: 'mastered',
+            details: 'توزيع شبكات ثنائية الأبعاد باستخدام repeat(auto-fit, minmax(280px, 1fr)) وتوحيد المحاذاة الداخلية عبر Subgrid.',
+            whyItMatters: 'بناء لوحات تحكم (Dashboards) وقوائم بطاقات تتكيف تلقائيًا مع أي حجم شاشة بدقة بكسل واحدة.',
+            subItems: ['auto-fit vs auto-fill algorithms', 'minmax() & fr dynamic units', 'CSS Subgrid for nested cards alignment', 'grid-template-areas declarative layout'],
+            codeSnippet: `/* Production Responsive Grid without Media Queries */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}`,
+            prerequisite: 'نموذج الصندوق (Box Model)',
+            nextStep: 'Tailwind CSS 4',
           },
         ],
       },
       {
-        id: 'branch-modern-styling',
-        title: 'Tailwind CSS & Animations',
-        titleAr: 'نظام Tailwind CSS والتحريك الحديث',
-        items: [
+        id: 'branch-03-tailwind',
+        code: 'MOD::TAILWIND_TOKENS',
+        title: 'Tailwind CSS 4 & Container Queries',
+        titleAr: 'نظام Tailwind CSS 4 والـ Container Queries',
+        description: 'أنظمة التصميم السريعة القائمة على Design Tokens المتطورة',
+        nodes: [
           {
-            name: 'Tailwind CSS Modern Ecosystem',
-            nameAr: 'نظام Tailwind CSS الحديث',
+            id: 'node-tailwind4',
+            code: 'CSS::TAILWIND_V4',
+            name: 'Tailwind CSS Modern Architecture',
+            nameAr: 'معمارية Tailwind CSS الحديثة',
             type: 'core',
-            details: 'منهجية Utility-First CSS، التهيئة الصارمة، الفئات المتجاوبة (sm, md, lg, xl)، وحالات التفاعل (hover, focus, group, peer)، ودعم Dark Mode.',
-            whyItMatters: 'المعيار الصناعي الأول في سوق العمل لسرعة الإنتاج وتوحيد Design Tokens.',
-            subItems: ['Utility-First methodology', 'Responsive variants & Breakpoints', 'Arbitrary values & Theme config', 'Dark mode via class/media'],
+            status: 'mastered',
+            details: 'فلسفة Utility-First، التكويد السريع بدون تشتت، متغيرات الثيمات في CSS، حالات group و peer، ودعم الوضع الليلي Dark Mode بدقة.',
+            whyItMatters: 'المعيار الصناعي المعتمد في Vercel, Next.js, shadcn/ui وكبرى الشركات لسرعة الإنتاج الفائقة.',
+            subItems: ['Utility-First methodology', 'Arbitrary variants & theme tokens', 'group-hover & peer-checked states', 'Dark mode via CSS variables & class strategy'],
+            prerequisite: 'أساسيات CSS',
+            nextStep: 'جافاسكريبت ومحرك V8',
           },
           {
-            name: 'Responsive Design & Container Queries',
-            nameAr: 'التصميم المتجاوب و Container Queries',
-            type: 'core',
-            details: 'التصميم للهواتف أولاً (Mobile-First)، وسائط الاستعلام @media، وميزة @container queries لتكييف البطاقات حسب مساحة الحاوية لا الشاشة.',
-            whyItMatters: 'مكونات قابلة لإعادة الاستخدام في أي مكان وتتكيف تلقائيًا مع المساحة المتاحة.',
-            subItems: ['Mobile-First philosophy', 'Viewport units (vw, vh, dvh, svh)', '@container (min-width: ...)', 'Fluid typography via clamp()'],
-          },
-          {
-            name: 'CSS Transitions & Keyframes',
-            nameAr: 'الحركات والانتقالات السلسة',
+            id: 'node-container-queries',
+            code: 'CSS::CONTAINER_QUERIES',
+            name: 'Container Queries (@container)',
+            nameAr: 'استعلامات الحاوية (@container queries)',
             type: 'recommended',
-            details: 'بناء تفاعلات سلسة بمعدل 60fps باستخدام transition و @keyframes مع الاعتماد على GPU transforms بدلاً من تعديل أبعاد العناصر.',
-            whyItMatters: 'اللمسات الحركية المدروسة تميز المواقع الاحترافية وتمنح المستخدم تجربة تفاعلية ممتعة.',
-            subItems: ['CSS transitions & easing curves', '@keyframes animation', 'transform (translate, scale, rotate)', 'will-change & hardware acceleration'],
+            status: 'active',
+            details: 'تكييف تصميم البطاقة بناءً على المساحة المتوفرة داخل الحاوية الأب (Parent Container) وليس عرض شاشة المتصفح بالكامل.',
+            whyItMatters: 'المستقبل الحقيقي لتصميم المكونات المستقلة (Design Systems) القابلة للزرع في أي مكان بالصفحة.',
+            subItems: ['@container (min-width: 400px)', 'cqw and cqh container units', 'Modular component-driven responsiveness'],
+            prerequisite: 'التصميم المتجاوب بـ Media Queries',
+            nextStep: 'جافاسكريبت المتقدمة',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-javascript',
-    title: 'JavaScript Core & V8 Engine',
-    titleAr: 'محرك جافاسكريبت العميق والبرمجة الحديثة',
+    id: 'stage-04-js-engine',
     order: '04',
-    badgeText: '75 درساً معتمداً ومكتمل 100% بالمنصة',
-    themeColor: 'yellow',
-    level: 'متوسط (Mid-Level Core)',
-    summary: 'عصب الواجهات التفاعلية: فهم عميق لمحرك V8، وإدارة الذاكرة، وسلسلة النطاقات، والـ DOM، والـ Event Loop، والبرمجة غير المتزامنة.',
-    icon: 'Terminal',
+    code: 'SYS::V8_JAVASCRIPT',
+    title: 'JavaScript Deep Engine & 75 Production Lessons',
+    titleAr: 'محرك جافاسكريبت العميق V8 (75 درساً معتمداً)',
+    tagline: 'عصب الواجهات التفاعلية: محرك V8، وإدارة الذاكرة، والـ Closures، والـ Event Loop، والـ DOM',
+    level: 'Mid-Level Core',
+    accent: 'yellow',
+    summary: 'إتقان اللغة التي تحكم عالم الويب: الذاكرة (Stack vs Heap)، النطاقات وسياق التنفيذ، تفويض الأحداث، حلقة الأحداث (Event Loop)، والبرمجة غير المتزامنة.',
     articleLink: '/frontend/javascript',
     branches: [
       {
-        id: 'branch-js-engine-foundations',
-        title: 'V8 Engine & Core Syntax',
-        titleAr: 'أساسيات اللغة ومحرك V8',
-        items: [
+        id: 'branch-04-v8-memory',
+        code: 'MOD::V8_INTERNALS',
+        title: 'V8 Engine, Memory & Execution Context',
+        titleAr: 'محرك V8 والذاكرة وسياق التنفيذ',
+        description: 'كيف يترجم محرك V8 كودك إلى Machine Code وكيف يدير الذاكرة وسلسلة النطاقات',
+        nodes: [
           {
-            name: 'Data Types & Memory Model',
-            nameAr: 'أنواع البيانات ونموذج الذاكرة',
+            id: 'node-js-memory',
+            code: 'V8::STACK_HEAP',
+            name: 'Memory Model: Stack vs Heap & GC',
+            nameAr: 'نموذج الذاكرة: Stack و Heap وجمع القمامة',
             type: 'core',
-            details: 'الأنواع البدائية (Primitives) مقابل الكائنات (Objects/References)، وتخزين الذاكرة في الـ Stack والـ Heap، وجمع القمامة (Garbage Collection).',
-            whyItMatters: 'فهم كيف يمرر جافاسكريبت البيانات بالمرجع (By Reference) يمنع أخطاء التعديل غير المقصود (Mutation bugs).',
+            status: 'mastered',
+            details: 'تخزين القيم البدائية في Call Stack وتخزين الكائنات والمصفوفات في Memory Heap. خوارزمية Mark-and-Sweep لجمع القمامة (Garbage Collection).',
+            whyItMatters: 'يمنع تسريبات الذاكرة (Memory Leaks) ويمنع أخطاء تعديل الكائنات بالمرجع غير المقصودة.',
+            subItems: ['Primitives vs Reference types', 'Call Stack frames allocation', 'Heap memory allocation & references', 'Mark-and-Sweep garbage collection algorithm'],
             link: '/articles/js-data-types',
-            linkText: 'درس JS-03: أنواع البيانات ونموذج الذاكرة',
-            subItems: ['7 Primitives & Object type', 'Call Stack vs Memory Heap', 'Value vs Reference mutation', 'Garbage Collector & Mark-and-Sweep'],
+            linkText: 'درس JS-03: أنواع البيانات ونموذج الذاكرة بالبلدي',
+            prerequisite: 'مفاهيم المتغيرات الأساسية',
+            nextStep: 'الـ Closures وسياق التنفيذ',
           },
           {
-            name: 'Scope, Hoisting & Closures',
-            nameAr: 'النطاقات والـ Hoisting والـ Closures',
+            id: 'node-js-closures',
+            code: 'JS::EXEC_CLOSURES',
+            name: 'Execution Context & Closures',
+            nameAr: 'سياق التنفيذ والـ Hoisting والـ Closures',
             type: 'core',
-            details: 'سياق التنفيذ (Execution Context)، والـ Lexical Scope، والمنطقة الميتة المؤقتة (TDZ)، وكيف تحتفظ الدوال بنطاقها الخارجي عبر الـ Closures.',
-            whyItMatters: 'السؤال رقم 1 في جميع مقابلات عمل مهندسي الفرونت إند في العالم.',
+            status: 'mastered',
+            details: 'مراحل إنشاء سياق التنفيذ (Creation Phase vs Execution Phase)، والمنطقة الميتة المؤقتة (TDZ)، وكيف تحتفظ الدوال بسلسلة النطاقات عبر الـ Closures.',
+            whyItMatters: 'السؤال رقم 1 الذي يُسأل في كل المقابلات التقنية لمهندسي البرمجيات حول العالم.',
+            subItems: ['Creation Phase & Variable Environment', 'Lexical Scope & Scope Chain resolution', 'Temporal Dead Zone (TDZ)', 'Data privacy & Memoization closure patterns'],
+            codeSnippet: `// Classic Closure Factory
+function createCounter(initial = 0) {
+  let count = initial; // Private in Lexical Environment
+  return {
+    increment: () => ++count,
+    get: () => count
+  };
+}`,
             link: '/articles/js-closures',
-            linkText: 'درس JS-24: الـ Closures والنطاقات عملياً',
-            subItems: ['Global vs Function vs Block Scope', 'Var vs Let/Const & TDZ', 'Scope Chain resolution', 'Closure patterns & Data privacy'],
-            proTip: 'الـ Closure هو دالة تتذكر وتصل إلى المتغيرات في نطاقها الأب حتى بعد انتهاء تنفيذ الدالة الأب.',
+            linkText: 'درس JS-24: الـ Closures وسلسلة النطاقات عملياً',
+            prerequisite: 'الدوال والمتغيرات',
+            nextStep: 'النماذج الأولية Prototypes',
           },
           {
-            name: 'Prototypes & OOP Classes',
-            nameAr: 'النماذج الأولية والبرمجة كائنية التوجه',
+            id: 'node-js-prototypes',
+            code: 'JS::PROTO_OOP',
+            name: 'Prototypes & Prototypal Inheritance',
+            nameAr: 'النماذج الأولية والوراثة وسلسلة Prototype',
             type: 'recommended',
-            details: 'سلسلة الـ Prototype Chain، والوراثة النموذجية، وكلمة this وديناميكيتها، وفئات ES6 Classes مع الـ Getters والـ Setters.',
-            whyItMatters: 'فهم كيف بُنيت جافاسكريبت وكيف تعمل المكتبات التي تستخدمها يومياً تحت الغطاء.',
+            status: 'active',
+            details: 'كيف يعمل الـ Prototype Chain تحت غطاء كلاسات ES6، وكيف ترتبط الكائنات بـ Object.prototype، وفهم كلمة this وسياقات الربط المختلفة.',
+            whyItMatters: 'فهم الأساس الذي بُنيت عليه لغة جافاسكريبت والمكتبات المتقدمة.',
+            subItems: ['[[Prototype]] internal slot vs prototype property', 'Object.create() & Prototype delegation', 'this explicit binding: call, apply, bind', 'ES6 Classes syntactic sugar & private fields #'],
             link: '/articles/js-prototypes',
             linkText: 'درس JS-38: النماذج الأولية وسلسلة الـ Prototype',
-            subItems: ['[[Prototype]] & __proto__', 'Object.create() & Inheritance', 'this binding (call, apply, bind)', 'ES6 class syntax & Private fields #'],
+            prerequisite: 'الكائنات والدوال',
+            nextStep: 'هندسة الـ DOM والأحداث',
           },
         ],
       },
       {
-        id: 'branch-js-dom-async',
-        title: 'DOM Architecture & Async JS',
-        titleAr: 'هندسة الـ DOM والـ Event Loop',
-        items: [
+        id: 'branch-04-dom-async',
+        code: 'MOD::DOM_EVENT_LOOP',
+        title: 'DOM Engineering, Events & Event Loop',
+        titleAr: 'هندسة شجرة الـ DOM وحلقة الأحداث Event Loop',
+        description: 'إدارة تفاعل المستخدم بكفاءة فائقة والتعامل مع العمليات غير المتزامنة بدون تعليق الواجهة',
+        nodes: [
           {
-            name: 'DOM Events & Delegation',
-            nameAr: 'هندسة أحداث الـ DOM وتفويضها',
+            id: 'node-js-events',
+            code: 'DOM::EVENT_FLOW',
+            name: 'DOM Flow & Event Delegation Pattern',
+            nameAr: 'تدفق الأحداث ونمط تفويض الأحداث (Delegation)',
             type: 'core',
-            details: 'شجرة الـ DOM، ومراحل تدفق الأحداث (Capturing و Target و Bubbling)، ونمط التفويض (Event Delegation) لإدارة آلاف العناصر بكفاءة.',
-            whyItMatters: 'المفتاح لبناء واجهات فائقة السرعة تستهلك أقل قدر من الذاكرة وتتعامل مع المحتوى الديناميكي بسلاسة.',
+            status: 'mastered',
+            details: 'مراحل تدفق الأحداث: Capturing -> Target -> Bubbling. نمط Event Delegation لربط مستمع حدث واحد على الحاوية الأب بدلاً من آلاف العناصر الفرعية.',
+            whyItMatters: 'يوفر استهلاك الذاكرة ويتعامل مع العناصر الديناميكية التي تُضاف لاحقاً بدون أي إعادة ربط.',
+            subItems: ['Event Capturing & Bubbling phases', 'event.target vs event.currentTarget', 'Event Delegation on infinite scroll lists', 'CustomEvent & dispatchEvent API'],
             link: '/articles/js-event-delegation',
             linkText: 'درس JS-64: تدفق الأحداث والـ Event Delegation',
-            subItems: ['Event Bubbling & Capturing phases', 'event.stopPropagation() & preventDefault()', 'Event Delegation on dynamic lists', 'Custom Events & dispatchEvent'],
+            prerequisite: 'محددات الـ DOM الأساسية',
+            nextStep: 'حلقة الأحداث Event Loop',
           },
           {
-            name: 'Event Loop & Concurrency',
-            nameAr: 'حلقة الأحداث (Event Loop) والمزامنة',
+            id: 'node-js-event-loop',
+            code: 'ASYNC::EVENT_LOOP',
+            name: 'Event Loop & Task Queues Architecture',
+            nameAr: 'حلقة الأحداث: Call Stack و Microtasks و Macrotasks',
             type: 'core',
-            details: 'كيف ينفذ جافاسكريبت أحادي الخيط الكود غير المتزامن: Call Stack و Web APIs و Microtask Queue (Promises) و Macrotask Queue (setTimeout).',
-            whyItMatters: 'يفسر لك بدقة متى يتم تنفيذ الـ Promise والـ Timeout ويمنع تجميد واجهة المستخدم (UI Freeze).',
+            status: 'mastered',
+            details: 'كيف ينفذ جافاسكريبت أحادي الخيط الأكواد غير المتزامنة دون توقف: Call Stack -> Web APIs -> Microtask Queue (Promises, queueMicrotask) -> Macrotask Queue (setTimeout).',
+            whyItMatters: 'يفسر لك بدقة ترتيب تنفيذ الكود ويمنع تجميد الشاشة أثناء المعالجة الثقيلة.',
+            subItems: ['Single-threaded non-blocking I/O model', 'Microtasks priority over Macrotasks', 'requestAnimationFrame render pipeline timing', 'queueMicrotask() for high-priority dispatch'],
             link: '/articles/js-event-loop',
             linkText: 'درس JS-66: حلقة الأحداث بالتفصيل الممتع',
-            subItems: ['Call Stack execution', 'Microtasks (Promises, queueMicrotask)', 'Macrotasks (Timers, I/O)', 'requestAnimationFrame for smooth UI'],
+            prerequisite: 'الدوال غير المتزامنة',
+            nextStep: 'Promises و Async/Await',
           },
           {
-            name: 'Promises, Async/Await & Fetch',
-            nameAr: 'الوعود والاتصال بالسيرفر Fetch API',
+            id: 'node-js-async-await',
+            code: 'ASYNC::PROMISES_FETCH',
+            name: 'Promises, Async/Await & Fetch API',
+            nameAr: 'الوعود والاتصال بالسيرفر مع AbortController',
             type: 'core',
-            details: 'التعامل مع الوعود (Pending, Fulfilled, Rejected)، والتسلسل النظيف بـ async/await، وجلب البيانات عبر Fetch API مع إدارة أخطاء الشبكة والـ AbortController.',
-            whyItMatters: 'الوسيلة الأساسية لجلب البيانات من الـ REST APIs وربط الواجهة بالباك إند.',
+            status: 'mastered',
+            details: 'التعامل الاحترافي مع الوعود: Promise.all, Promise.allSettled, Promise.race، وكتابة كود خطي بـ async/await، وإلغاء طلبات الشبكة المعلقة عبر AbortController.',
+            whyItMatters: 'شريان الاتصال بـ REST APIs ومنع هدر بيانات المستخدم عند الانتقال السريع بين الصفحات.',
+            subItems: ['Promise lifecycle states', 'Parallel resolution with Promise.allSettled', 'Fetch API streaming & JSON decoding', 'AbortController signal for cleanup'],
             link: '/articles/js-async-await',
             linkText: 'درس JS-69: البرمجة بـ Async/Await بدون تعقيد',
-            subItems: ['Promise.all / allSettled / race', 'async / await with try..catch', 'Fetch API with JSON payload', 'AbortController for cancellation'],
-          },
-          {
-            name: 'ES Modules & Modern Browser APIs',
-            nameAr: 'الوحدات وميزات المتصفح التخزينية',
-            type: 'recommended',
-            details: 'تقسيم الكود بنظام ES Modules (import/export)، والتخزين في LocalStorage و SessionStorage و Cookies، ومراقبة الرؤية عبر IntersectionObserver.',
-            whyItMatters: 'ضروري لبناء تطبيقات حديثة تدعم التخزين المحلي والتحميل الكسول (Lazy Loading) للصور والمحتوى.',
-            link: '/articles/js-web-storage',
-            linkText: 'درس JS-74: التخزين المحلي والكوكيز',
-            subItems: ['ES Modules syntax', 'LocalStorage vs Cookies', 'IntersectionObserver API', 'Clipboard & Geolocation APIs'],
+            prerequisite: 'حلقة الأحداث والـ Callbacks',
+            nextStep: 'منظومة Git وبناء المشاريع',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-git',
-    title: 'Version Control & Build Pipeline',
-    titleAr: 'إدارة الإصدارات ومنظومة بناء المشاريع',
+    id: 'stage-05-git-tools',
     order: '05',
-    badgeText: 'أدوات العمل الجماعي وبناء حزم الإنتاج',
-    themeColor: 'orange',
-    level: 'متوسط (Mid-Level Core)',
-    summary: 'احتراف Git و GitHub في بيئة عمل الفرق، وفهم أدوات التجميع السريعة (Vite و Turbopack) ومديري الحزم.',
-    icon: 'GitBranch',
+    code: 'SYS::DEV_TOOLCHAIN',
+    title: 'Version Control, Bundlers & Modern Tooling',
+    titleAr: 'إدارة الإصدارات ومنظومة بناء البرمجيات',
+    tagline: 'احتراف Git، سير عمل الفرق، وأسرع مجمعات الكود في العالم (Vite & Turbopack)',
+    level: 'Mid-Level Core',
+    accent: 'amber',
+    summary: 'التعاون البرمجي الاحترافي: فروع Git، الدمج وإعادة التأسيس (Rebase)، مديري الحزم السريعة (pnpm)، ومجمعات الكود الحديثة.',
     branches: [
       {
-        id: 'branch-git-collaboration',
-        title: 'Git & GitHub Mastery',
-        titleAr: 'احتراف Git والعمل الجماعي',
-        items: [
+        id: 'branch-05-git',
+        code: 'MOD::GIT_MASTERY',
+        title: 'Git & Collaboration Pipeline',
+        titleAr: 'احتراف Git والعمل الجماعي بالفرق',
+        description: 'إدارة شجرة الإصدارات، حل النزاعات، والمراجعة الكودية الاحترافية',
+        nodes: [
           {
-            name: 'Git Fundamentals & Branching',
-            nameAr: 'أساسيات Git والفروع',
-            type: 'core',
-            details: 'دورة حياة الملفات (Untracked, Staged, Committed)، وإنشاء الفروع (Branches)، والدمج (Merge)، وفحص التغييرات (Diff & Log).',
-            whyItMatters: 'لا يوجد فريق عمل برمجي في العالم يعمل بدون Git لحفظ تاريخ وتطور المشروع.',
-            subItems: ['git add, commit, push, pull', 'Feature branch workflow', 'git stash for temporary work', 'git log --graph --oneline'],
-          },
-          {
-            name: 'Advanced Git & Conflict Resolution',
-            nameAr: 'فض التعارضات و Git Rebase',
+            id: 'node-git-rebase',
+            code: 'GIT::BRANCH_REBASE',
+            name: 'Interactive Rebase & Conflict Resolution',
+            nameAr: 'إعادة التأسيس التفاعلية (git rebase -i) وفض النزاعات',
             type: 'recommended',
-            details: 'حل تعارضات الدمج (Merge Conflicts)، واستخدام git rebase للحفاظ على تاريخ خطي نظيف، و git cherry-pick لنقل تعديلات محددة.',
-            whyItMatters: 'المهارة التي تميز المهندس المحترف وتنقذ المشاريع عند تداخل تعديلات المطورين.',
-            subItems: ['Interactive rebase (git rebase -i)', 'Resolving merge conflicts', 'git cherry-pick', 'git reset vs git revert (Safe undo)'],
-          },
-          {
-            name: 'GitHub & Pull Requests (PRs)',
-            nameAr: 'منظومة GitHub والمراجعة البرمجية',
-            type: 'core',
-            details: 'إنشاء الـ Pull Requests، والمراجعة الكودية (Code Review)، وربط الـ Issues، وحماية الفروع الرئيسية (Branch Protection Rules).',
-            whyItMatters: 'البوابة لتوثيق مساهماتك وبناء معرض أعمالك والحصول على وظائف عالمية.',
-            subItems: ['Pull Request workflows', 'Code review best practices', 'Branch protection rules', 'GitHub Issues & Milestones'],
+            status: 'active',
+            details: 'تنظيم تاريخ المشروع عبر التأسيس التفاعلي (Squash, Reword, Drop)، وحل تعارضات الدمج يدويًا، ونقل تعديلات محددة بـ git cherry-pick.',
+            whyItMatters: 'يحافظ على تاريخ مستودع GitHub خطياً ونظيفاً ويسهل التراجع عن الأخطاء في الإنتاج.',
+            subItems: ['git rebase -i HEAD~N workflow', 'Resolving merge conflicts step-by-step', 'git cherry-pick specific commits', 'git reset vs git revert for production rollback'],
+            prerequisite: 'أوامر Git الأساسية (add, commit, push)',
+            nextStep: 'مجمعات الكود Vite',
           },
         ],
       },
       {
-        id: 'branch-package-bundlers',
-        title: 'Package Managers & Bundlers',
-        titleAr: 'مديرو الحزم ومجمعات الكود',
-        items: [
+        id: 'branch-05-bundlers',
+        code: 'MOD::BUNDLER_SPEED',
+        title: 'Modern Bundlers & Package Managers',
+        titleAr: 'مجمعات الكود فائقة السرعة ومديرو الحزم',
+        description: 'بناء حزم الإنتاج بسرعة البرق بفضل Native ESM و Rust',
+        nodes: [
           {
-            name: 'Package Managers (pnpm, npm)',
-            nameAr: 'مديرو الحزم pnpm و npm',
+            id: 'node-vite-turbopack',
+            code: 'BUILD::TURBOPACK_VITE',
+            name: 'Vite & Turbopack (Rust-Powered Build)',
+            nameAr: 'مجمعات الكود Vite و Turbopack المبنية بلغة Rust',
             type: 'core',
-            details: 'ملف package.json و lockfiles، والفرق بين dependencies و devDependencies، وتفضيل pnpm لكفاءته الفائقة وسرعته في حفظ المساحة.',
-            whyItMatters: 'إدارة اعتماديات المشروع وتفادي تضارب الإصدارات بين بيئات العمل المختلفة.',
-            subItems: ['package.json & semantic versioning (^, ~)', 'pnpm symlinked node_modules', 'npm scripts automation', 'Audit & security vulnerabilities'],
-          },
-          {
-            name: 'Vite & Modern Bundlers',
-            nameAr: 'مجمعات الكود Vite و Turbopack',
-            type: 'core',
-            details: 'كيف يستفيد Vite من Native ES Modules لتوفير تحديث فوري (Instant HMR)، والتجميع للإنتاج عبر Rollup، ونظام Turbopack في Next.js.',
-            whyItMatters: 'يوفر ساعات من وقت التطوير اليومي بفضل سرعة التشغيل اللحظية.',
-            subItems: ['Vite dev server & native ESM', 'Hot Module Replacement (HMR)', 'Tree-shaking & Code Splitting', 'Turbopack architecture'],
+            status: 'mastered',
+            details: 'كيف يستغل Vite ميزة Native ES Modules في المتصفح لتحديث الشاشة لحظيًا (Instant HMR)، والتجميع الفائق لـ Turbopack بلغة Rust داخل Next.js.',
+            whyItMatters: 'يوفر ساعات عمل يومية على مستوى الفريق بفضل اختفاء شاشات الانتظار وبطء التحديث.',
+            subItems: ['Instant Hot Module Replacement (HMR)', 'Tree-shaking dead code elimination', 'Dynamic code splitting chunks', 'pnpm symlinked hard-link store architecture'],
+            prerequisite: 'مفاهيم موديولات جافاسكريبت (ESM)',
+            nextStep: 'مكتبة React 19',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-react',
-    title: 'React 19 & Component Ecosystem',
-    titleAr: 'مكتبة React 19 والأنظمة التفاعلية',
+    id: 'stage-06-react19',
     order: '06',
-    badgeText: 'المكتبة الأولى عالمياً لبناء الواجهات',
-    themeColor: 'cyan',
-    level: 'متوسط (Mid-Level Core)',
-    summary: 'إتقان React 19 الحديثة: من Virtual DOM والمكونات الدالية والـ Hooks، إلى إدارة الحالة وتحديثات React 19 مثل Actions و use() و useTransition.',
-    icon: 'Code2',
+    code: 'SYS::REACT_ECOSYSTEM',
+    title: 'React 19 & Component Architecture 2030',
+    titleAr: 'مكتبة React 19 والأنظمة التفاعلية الحديثة',
+    tagline: 'المعيار العالمي الأول للواجهات: خوارزمية Fiber، خطافات React 19 الثورية، وإدارة البيانات',
+    level: 'Mid-Level Core',
+    accent: 'cyan',
+    summary: 'إتقان React 19: من Virtual DOM والمكونات الدالية، إلى ميزات React 19 الجديدة كلياً (use(), useTransition, useActionState, useOptimistic) وإدارة الـ Server State بـ TanStack Query.',
     articleLink: '/frontend/react',
     branches: [
       {
-        id: 'branch-react-foundations',
-        title: 'React Core & Modern Hooks',
-        titleAr: 'عناصر React الأساسية والـ Hooks',
-        items: [
+        id: 'branch-06-core-hooks',
+        code: 'MOD::REACT_CORE_HOOKS',
+        title: 'Component Engine & Essential Hooks',
+        titleAr: 'محرك المكونات والـ Hooks الأساسية',
+        description: 'التحكم في دورة حياة المكون وتدفق البيانات أحادي الاتجاه',
+        nodes: [
           {
-            name: 'Components, JSX & Virtual DOM',
-            nameAr: 'المكونات والـ JSX والـ Virtual DOM',
+            id: 'node-react-fiber',
+            code: 'REACT::FIBER_DOM',
+            name: 'Virtual DOM & React Fiber Reconciliation',
+            nameAr: 'الـ Virtual DOM وخوارزمية React Fiber',
             type: 'core',
-            details: 'بناء المكونات الدالية (Functional Components)، وقواعد JSX، وتدفق البيانات أحادي الاتجاه (One-way data flow)، وخوارزمية Reconciliation & React Fiber.',
-            whyItMatters: 'الأساس المعماري الذي تبنى عليه كل شاشة وزر ونموذج في عالم React.',
-            subItems: ['JSX compilation to JS', 'Props & Children composition', 'Virtual DOM diffing algorithm', 'Keys and list rendering best practices'],
+            status: 'mastered',
+            details: 'كيف تقارن React شجرة المكونات القديمة بالجديدة عبر خوارزمية Diffing ثنائية الشجرة، وكيف تجدول Fiber العمليات الحسابية بدون تعطيل تفاعل المستخدم.',
+            whyItMatters: 'فهم كيف ومتى يتم إعادة رندر المكون هو المفتاح لحل أي بطء في تطبيقات React الكبيرة.',
+            subItems: ['Component render phase vs commit phase', 'Reconciliation Diffing heuristics', 'Keys rule in list rendering', 'Pure components & immutable state'],
+            prerequisite: 'جافاسكريبت المتقدمة والـ DOM',
+            nextStep: 'الـ Hooks المتقدمة',
           },
           {
-            name: 'Core Hooks (useState, useEffect)',
-            nameAr: 'الـ Hooks الأساسية ودورة الحياة',
+            id: 'node-react-hooks',
+            code: 'REACT::STATE_LIFECYCLE',
+            name: 'Core Hooks (useState, useEffect, useRef)',
+            nameAr: 'الـ Hooks الأساسية وإدارة الآثار الجانبية',
             type: 'core',
-            details: 'إدارة الحالة بـ useState، وتنفيذ الآثار الجانبية بـ useEffect مع مصفوفة الاعتماديات (Dependencies) ودالة التنظيف (Cleanup function).',
-            whyItMatters: 'تحكم كامل في منطق المكون وعمليات جلب البيانات وربط الـ Listeners.',
-            subItems: ['useState & functional updates', 'useEffect & cleanup functions', 'useRef for DOM & mutable values', 'Custom Hooks abstraction'],
-            proTip: 'لا تستخدم useEffect لتعديل حالة مشتقة (Derived State)؛ احسبها مباشرة أثناء الرندر!',
-          },
-          {
-            name: 'Performance Hooks (useMemo, useCallback)',
-            nameAr: 'خطافات الأداء useMemo و useCallback',
-            type: 'recommended',
-            details: 'حفظ نتائج العمليات الحسابية الثقيلة بـ useMemo، وحفظ مراجع الدوال بـ useCallback لتفادي إعادة رندر المكونات الأبناء بدون داعٍ.',
-            whyItMatters: 'حماية التطبيقات الكبيرة من التباطؤ واستهلاك الذاكرة الزائد.',
-            subItems: ['React.memo for pure components', 'useMemo for heavy calculations', 'useCallback for stable function references', 'React 19 Compiler automated memoization'],
+            status: 'mastered',
+            details: 'إدارة الحالة اللحظية بـ useState، وتنفيذ الآثار الجانبية مع دوال التنظيف (Cleanup Functions) بـ useEffect، وتخزين المراجع الثابتة بـ useRef.',
+            whyItMatters: 'العمود الفقري لبناء كل نموذج وزر وقائمة منسدلة في الواجهة.',
+            subItems: ['useState functional update patterns', 'useEffect dependency array mechanics', 'Cleanup on unmount to prevent leaks', 'Custom Hooks abstraction'],
+            prerequisite: 'مفاهيم React الأساسية',
+            nextStep: 'ميزات React 19 الجديدة',
           },
         ],
       },
       {
-        id: 'branch-react-state-new',
-        title: 'State Management & React 19',
-        titleAr: 'إدارة الحالة وتحديثات React 19',
-        items: [
+        id: 'branch-06-react19-state',
+        code: 'MOD::REACT19_DATA',
+        title: 'React 19 New Features & State Systems',
+        titleAr: 'ميزات React 19 الثورية وإدارة الحالة',
+        description: 'الأسلوب الأحدث والأكثر نظافة للتعامل مع الوعود والنماذج والتحديثات اللحظية',
+        nodes: [
           {
-            name: 'React 19 New Features',
-            nameAr: 'ميزات React 19 الثورية',
+            id: 'node-react19-actions',
+            code: 'REACT19::USE_ACTIONS',
+            name: 'React 19: use(), useActionState & useOptimistic',
+            nameAr: 'ثورة React 19: خطافات النماذج والتحديث اللحظي',
             type: 'core',
-            details: 'تحديثات React 19 الرسمية: خطاف use() لقراءة الوعود والسياق، و useTransition للانتقالات غير المعطلة، و useActionState لإدارة النماذج، و useOptimistic للتحديثات اللحظية.',
-            whyItMatters: 'الأسلوب الأحدث والأكثر نظافة لكتابة كود React دون الحاجة لمكتبات مساعدة ضخمة.',
-            subItems: ['use() hook with Suspense', 'useTransition for non-blocking UI', 'useActionState for form mutations', 'useOptimistic for instant UX'],
+            status: 'mastered',
+            details: 'قراءة الوعود والسياق مباشرة بـ use() مع Suspense، وإدارة عمليات النماذج بـ useActionState، وعرض النتيجة للمستخدم فوريًا قبل رد السيرفر بـ useOptimistic.',
+            whyItMatters: 'يلغي مئات الأسطر من كود الحالات الوسيطة (isLoading, isError) ويمنح المستخدم تجربة تطبيق فائق السرعة.',
+            subItems: ['use() hook promise unwrapping', 'useActionState for server mutations', 'useOptimistic for instant UX updates', 'useTransition for non-blocking UI states'],
+            codeSnippet: `// Instant UI update before network response
+const [optimisticLikes, setOptimisticLikes] = useOptimistic(
+  likes,
+  (current, update) => current + update
+);`,
+            prerequisite: 'مفاهيم React الـ Hooks الأساسية',
+            nextStep: 'إدارة بيانات السيرفر TanStack Query',
           },
           {
-            name: 'Global State Management (Zustand)',
-            nameAr: 'إدارة الحالة الشاملة بـ Zustand',
-            type: 'recommended',
-            details: 'مقارنة Context API بالمكتبات الخارجية، واحتراف Zustand كحل خفيف وبسيط بدون Boilerplate معقد مثل Redux التقليدي.',
-            whyItMatters: 'مشاركة البيانات (مثل سلة المشتريات، بيانات المستخدم، الثيم) عبر كل أجزاء التطبيق بسلاسة.',
-            subItems: ['Context API vs External stores', 'Zustand store creation & hooks', 'Selectors for fine-grained re-renders', 'Persist middleware for LocalStorage'],
-          },
-          {
-            name: 'Server State (TanStack Query)',
-            nameAr: 'إدارة بيانات السيرفر بـ React Query',
+            id: 'node-react-server-state',
+            code: 'STATE::TANSTACK_QUERY',
+            name: 'Server State Management (TanStack Query v5)',
+            nameAr: 'إدارة كاش وبيانات السيرفر بـ TanStack Query',
             type: 'core',
-            details: 'فصل Server State عن Client State باستخدام TanStack Query: التخزين المؤقت الذكي (Caching)، وتحديث البيانات في الخلفية، وإلغاء الطلبات المتكررة.',
-            whyItMatters: 'يوفر آلاف الأسطر من كود جلب البيانات وإدارة حالات التحميل (loading/error) يدويًا.',
-            subItems: ['useQuery & Query Keys', 'useMutation & Invalidation', 'Stale-While-Revalidate caching', 'Optimistic updates pattern'],
+            status: 'mastered',
+            details: 'فصل بيانات السيرفر عن حالة الواجهة: التخزين المؤقت الذكي، إعادة المحاولة التلقائية عند انقطاع الاتصال، وتحديث الكاش في الخلفية بنظام SWR.',
+            whyItMatters: 'يختصر أكثر من 70% من كود الـ API والتخزين المؤقت في التطبيقات التجارية.',
+            subItems: ['Query keys hierarchy & invalidation', 'Stale-While-Revalidate caching model', 'Mutations with optimistic rollback', 'Infinite scroll queries pagination'],
+            prerequisite: 'الوعود و Fetch API',
+            nextStep: 'تايب سكريبت و Next.js App Router',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-nextjs',
-    title: 'TypeScript & Next.js App Router',
-    titleAr: 'تايب سكريبت الصارمة وإطار عمل Next.js 15',
+    id: 'stage-07-nextjs',
     order: '07',
-    badgeText: 'معيار الشركات العالمية لإنتاج التطبيقات الكبرى',
-    themeColor: 'purple',
-    level: 'متقدم (Senior Architect)',
-    summary: 'الجمع بين أمان الأنواع الصارم بـ TypeScript، وقوة الرندر السيرفري (SSR) ومكونات السيرفر (RSC) مع أحدث إصدارات Next.js App Router.',
-    icon: 'Cpu',
+    code: 'SYS::NEXTJS_FULLSTACK',
+    title: 'TypeScript & Next.js 15 App Router Architecture',
+    titleAr: 'تايب سكريبت الصارمة وإطار عمل Next.js 15',
+    tagline: 'معمارية النخبة العالمية: أمان الأنواع الصارم والرندر السيرفري فائق السرعة',
+    level: 'Senior Architect',
+    accent: 'purple',
+    summary: 'الجمع بين قوة TypeScript الصارمة لحماية الكود قبل التشغيل، وبنية Next.js App Router مع React Server Components (RSC) و Server Actions لنشر تطبيقات إنتاجية عملاقة.',
     branches: [
       {
-        id: 'branch-typescript',
+        id: 'branch-07-typescript',
+        code: 'MOD::STRICT_TS',
         title: 'Strict TypeScript Foundations',
-        titleAr: 'لغة تايب سكريبت الصارمة',
-        items: [
+        titleAr: 'تايب سكريبت الصارمة وتأمين المكونات',
+        description: 'اكتشاف الأخطاء وتأمين تدفق البيانات بالأنواع الصارمة والـ Generics',
+        nodes: [
           {
-            name: 'Types, Interfaces & Generics',
-            nameAr: 'الأنواع والـ Interfaces والـ Generics',
+            id: 'node-ts-generics',
+            code: 'TS::GENERICS_UTILITY',
+            name: 'Advanced Generics & Utility Types',
+            nameAr: 'الأنواع المعممة (Generics) والأدوات المساعدة',
             type: 'core',
-            details: 'الأنواع الأساسية، واتحادات الأنواع (Union Types)، والفروق بين Interface و Type Alias، والـ Generics لبناء دوال ومكونات مرنة وآمنة نوعياً.',
-            whyItMatters: 'يكتشف أكثر من 40% من أخطاء وقت التشغيل قبل تشغيل التطبيق في المتصفح.',
-            subItems: ['Union & Intersection types', 'Interfaces vs Type Aliases', 'Generics (<T>) in functions', 'Utility types (Partial, Pick, Omit, Record)'],
-          },
-          {
-            name: 'TypeScript with React Components',
-            nameAr: 'تأمين مكونات React بالـ Types',
-            type: 'core',
-            details: 'تحديد أنواع الـ Props، وتأمين الـ Hooks (useState, useRef)، وتحديد أنواع أحداث المتصفح (MouseEvent, ChangeEvent, FormEvent).',
-            whyItMatters: 'تجربة تطوير فائقة مع ميزة الإكمال التلقائي وتأمين تمرير البيانات بين المكونات.',
-            subItems: ['Props typing & default values', 'React.ReactNode vs React.JSX.Element', 'Event handler types (React.ChangeEvent)', 'ComponentProps & HTML attributes'],
+            status: 'mastered',
+            details: 'بناء مكونات ودوال مرنة نوعيًا بـ Generics <T>، واستخدام Partial, Pick, Omit, Record، وتأمين الـ Props لجميع مكونات React.',
+            whyItMatters: 'يمنع تسرب أي قيمة undefined أو نوع غير متطابق ويضمن وثوقية الكود في المشروعات الضخمة.',
+            subItems: ['Generics constraints (<T extends object>)', 'Utility types (Omit, Pick, Record, ReturnType)', 'Discriminated Unions for state modeling', 'ComponentPropsWithRef for strict UI design systems'],
+            prerequisite: 'أساسيات جافاسكريبت الحديثة',
+            nextStep: 'Next.js App Router',
           },
         ],
       },
       {
-        id: 'branch-nextjs-app-router',
-        title: 'Next.js App Router Architecture',
-        titleAr: 'معمارية Next.js App Router',
-        items: [
+        id: 'branch-07-app-router',
+        code: 'MOD::RSC_NEXTJS',
+        title: 'Next.js App Router & Server Components',
+        titleAr: 'معمارية Next.js App Router و Server Components',
+        description: 'رندر فائق السرعة على السيرفر بدون إرسال جافاسكريبت زائد للعميل',
+        nodes: [
           {
-            name: 'Server vs Client Components (RSC)',
-            nameAr: 'مكونات السيرفر ومكونات العميل',
+            id: 'node-nextjs-rsc',
+            code: 'NEXT::RSC_CLIENT_SPLIT',
+            name: 'Server Components (RSC) vs Client Components',
+            nameAr: 'مكونات السيرفر (RSC) ومكونات العميل ("use client")',
             type: 'core',
-            details: 'فلسفة React Server Components (RSC): تشغيل المكونات على السيرفر بدون إرسال جافاسكريبت للعميل، واستخدام "use client" فقط للتفاعل والـ Hooks.',
-            whyItMatters: 'تقليل حجم حزمة الجافاسكريبت وتحقيق سرعة تحميل قصوى وتصدر محركات البحث.',
-            subItems: ['Server Components by default', '"use client" boundary placement', 'Composition pattern (Passing Server into Client)', 'Zero-bundle-size dependencies on server'],
+            status: 'mastered',
+            details: 'تشغيل المكونات على السيرفر افتراضيًا مع صفر بايت جافاسكريبت في الحزمة، واستخدام "use client" فقط عند الحاجة للتفاعل والـ Hooks.',
+            whyItMatters: 'تقليل حجم حزمة الجافاسكريبت بنسبة تتجاوز 60% وتحقيق أقصى درجات السرعة في محركات البحث.',
+            subItems: ['Zero-bundle-size server components', 'Interleaving pattern (Server inside Client via children)', 'Data fetching directly in async components', 'Suspense streaming with loading.tsx'],
+            prerequisite: 'مفاهيم React الأساسية',
+            nextStep: 'عمليات السيرفر Server Actions',
           },
           {
-            name: 'Routing & Nested Layouts',
-            nameAr: 'التوجيه والـ Layouts المتداخلة',
+            id: 'node-nextjs-actions',
+            code: 'NEXT::SERVER_ACTIONS',
+            name: 'Server Actions & Cache Invalidation',
+            nameAr: 'عمليات السيرفر السريعة وتحديث الذاكرة المؤقتة',
             type: 'core',
-            details: 'نظام الملفات في مجلد app: صفحات page.tsx، والقوالب المشتركة layout.tsx، وشاشات التحميل loading.tsx، وشاشات الخطأ error.tsx، والمسارات الديناميكية [slug].',
-            whyItMatters: 'بناء هياكل تطبيقات معقدة مع حفظ حالة أشرطة التنقل دون إعادة تحميل الصفحة بالكامل.',
-            subItems: ['page.tsx, layout.tsx, template.tsx', 'loading.tsx & Suspense streaming', 'error.tsx & not-found.tsx', 'Dynamic routes [slug] & Catch-all [...slug]'],
+            status: 'mastered',
+            details: 'تنفيذ العمليات السيرفرية مباشرة من مكونات React باستخدام "use server"، وتحديث الكاش فورياً عبر revalidatePath و revalidateTag.',
+            whyItMatters: 'يلغي الحاجة لكتابة كود API Routes منفصل ويجعل التعامل مع النماذج وقواعد البيانات آمناً وسريعاً.',
+            subItems: ['"use server" inline mutations', 'revalidatePath & revalidateTag triggers', 'Zod validation on server boundary', 'Secure session cookies handling in middleware'],
+            prerequisite: 'مكونات السيرفر والـ HTTP',
+            nextStep: 'الاختبارات الآلية والأداء',
           },
           {
-            name: 'Rendering Strategies (SSR, SSG, ISR)',
-            nameAr: 'استراتيجيات الرندر والأداء',
+            id: 'node-nextjs-rendering',
+            code: 'NEXT::SSR_SSG_ISR',
+            name: 'Rendering Modes: SSG, SSR & ISR Engine',
+            nameAr: 'استراتيجيات الرندر: SSG و SSR والـ ISR المتدرج',
             type: 'core',
-            details: 'الرندر المسبق الثابت (SSG)، والرندر على السيرفر عند الطلب (SSR)، والتحديث المتدرج للمحتوى الثابت (ISR) عبر revalidate.',
-            whyItMatters: 'اختيار الاستراتيجية المثلى لكل صفحة لتحقيق أفضل توازن بين السرعة وحداثة البيانات.',
-            subItems: ['Static Site Generation (SSG)', 'Server-Side Rendering (SSR)', 'Incremental Static Regeneration (ISR)', 'Dynamic Segment Configs'],
-          },
-          {
-            name: 'Server Actions & Data Mutations',
-            nameAr: 'عمليات السيرفر السريعة (Server Actions)',
-            type: 'core',
-            details: 'تنفيذ العمليات السيرفرية مباشرة من مكونات React بدون كتابة API Routes منفصلة، وتحديث الكاش تلقائيًا عبر revalidatePath و revalidateTag.',
-            whyItMatters: 'تبسيط بناء النماذج وتعديل البيانات بأمان ومباشرة داخل نفس المشروع.',
-            subItems: ['"use server" directive', 'revalidatePath & revalidateTag', 'Form mutations with useActionState', 'Secure cookie & session management'],
+            status: 'mastered',
+            details: 'توليد الصفحات الثابتة مسبقاً (SSG)، والرندر عند الطلب على السيرفر (SSR)، والتحديث المتدرج بعد النشر بـ ISR دون إعادة بناء المشروع بالكامل.',
+            whyItMatters: 'المعادلة الذهبية بين السرعة الخارقة لصفحات الـ CDN وتوفر أحدث البيانات اللحظية.',
+            subItems: ['Static Site Generation (generateStaticParams)', 'Dynamic rendering per request', 'Incremental Static Regeneration (revalidate: 60)', 'Edge runtime middleware routing'],
+            prerequisite: 'معمارية App Router',
+            nextStep: 'الاختبارات الآلية والأداء الفائق',
           },
         ],
       },
     ],
   },
   {
-    id: 'stage-testing-perf',
-    title: 'Testing, Security & Performance',
-    titleAr: 'الاختبارات الآلية، الأداء الفائق، وأمان الويب',
+    id: 'stage-08-senior',
     order: '08',
-    badgeText: 'المستوى الذي يفصل بين الهاوي ومهندس البرمجيات الحقيقي',
-    themeColor: 'emerald',
-    level: 'متقدم (Senior Architect)',
-    summary: 'ضمان استقرار التطبيق باختبارات آلية شاملة، وتحقيق أعلى درجات الأداء Core Web Vitals، وتأمين الواجهة ضد الثغرات الأمنية.',
-    icon: 'ShieldCheck',
+    code: 'SYS::SENIOR_ENGINEERING',
+    title: 'Testing, Security, Performance & Architecture 2030',
+    titleAr: 'الاختبارات الآلية، الأداء الخارق، وأمان الويب',
+    tagline: 'مستوى القيادة الهندسية (Senior Frontend Architect): ثبات الأنظمة وأمانها ضد أصعب الظروف',
+    level: 'Senior Architect',
+    accent: 'emerald',
+    summary: 'هرم الاختبارات الآلية (Vitest, React Testing Library, Playwright)، أمان الواجهات وفق OWASP، وتحقيق درجات مثالية في مؤشرات Core Web Vitals.',
     branches: [
       {
-        id: 'branch-testing-qa',
+        id: 'branch-08-testing',
+        code: 'MOD::TEST_AUTOMATION',
         title: 'Automated Testing Pyramid',
         titleAr: 'هرم الاختبارات الآلية الشامل',
-        items: [
+        description: 'كتابة اختبارات تضمن عدم تعطل التطبيق مع كل تحديث جديد',
+        nodes: [
           {
-            name: 'Unit Testing (Vitest / Jest)',
-            nameAr: 'اختبارات الوحدات المنفصلة',
+            id: 'node-unit-testing',
+            code: 'TEST::VITEST_RTL',
+            name: 'Unit & Component Testing (Vitest + RTL)',
+            nameAr: 'اختبارات الوحدات وتفاعل المكونات بـ RTL',
             type: 'core',
-            details: 'اختبار الدوال الخالصة (Pure Functions)، والـ Reducers، وحسابات البيانات بمعزل عن الواجهة باستخدام Vitest لسرعته الفائقة.',
-            whyItMatters: 'يضمن أن منطق العمل الأساسي سليم ولا يتعطل مع أي تحديثات جديدة في الكود.',
-            subItems: ['describe, it, expect syntax', 'Test doubles (Mocks, Spies, Stubs)', 'Code coverage reports', 'Fast execution with Vitest'],
+            status: 'mastered',
+            details: 'اختبار المنطق الرياضي بـ Vitest، واختبار سلوك المكونات من وجهة نظر المستخدم الحقيقي باستخدام React Testing Library ومعايير الوصول getByRole.',
+            whyItMatters: 'يمنع رجوع الأخطاء القديمة (Regression) ويسمح لك بتحديث الكود بثقة مطلقة.',
+            subItems: ['Vitest fast concurrent execution', 'Testing user interactions with userEvent', 'Mocking API network layer with MSW (Mock Service Worker)', 'Code coverage thresholds in CI'],
+            prerequisite: 'مفاهيم React و TypeScript',
+            nextStep: 'اختبارات التدفق الشامل E2E',
           },
           {
-            name: 'Component Testing (React Testing Library)',
-            nameAr: 'اختبار تفاعل المكونات (RTL)',
-            type: 'core',
-            details: 'اختبار المكونات من وجهة نظر المستخدم الحقيقي: البحث بالنصوص و Accessibility Roles (getByRole) ومحاكاة النقر والكتابة عبر userEvent.',
-            whyItMatters: 'يختبر سلوك المكون كما يراه المستخدم وليس التفاصيل الداخلية، مما يجعل الاختبارات متينة.',
-            subItems: ['getByRole / findByText philosophy', 'userEvent simulations', 'Testing forms & validation errors', 'Mocking API calls with MSW'],
-          },
-          {
-            name: 'End-to-End Testing (Playwright)',
-            nameAr: 'اختبارات التدفق الشامل E2E',
+            id: 'node-e2e-playwright',
+            code: 'TEST::PLAYWRIGHT_E2E',
+            name: 'End-to-End Testing with Playwright',
+            nameAr: 'اختبارات التدفق الشامل الحقيقي بـ Playwright',
             type: 'recommended',
-            details: 'محاكاة مستخدم حقيقي يتصفح الموقع بالكامل: تسجيل الدخول، إضافة عناصر للسلة، إتمام عملية الشراء عبر متصفحات Chromium و Firefox و WebKit الحقيقية.',
-            whyItMatters: 'خط الدفاع الأخير للتأكد من أن جميع أجزاء النظام (فرونت وباك إند) تعمل معًا بانسجام تام.',
-            subItems: ['Browser automation tests', 'Cross-browser testing (Chrome, Safari, Firefox)', 'Page object model pattern', 'CI pipeline automated testing'],
+            status: 'active',
+            details: 'محاكاة مستخدم حقيقي يتصفح الموقع عبر متصفحات Chromium و Firefox و WebKit: تسجيل الدخول، والشراء، وإتمام رحلة المستخدم بالكامل.',
+            whyItMatters: 'الضمان النهائي بأن كل أجزاء الواجهة والسيرفر وقاعدة البيانات تعمل معًا دون مفاجآت في الإنتاج.',
+            subItems: ['Cross-browser test suites', 'Page Object Model (POM) pattern', 'Visual regression testing (Screenshot diffs)', 'Automated CI/CD integration with GitHub Actions'],
+            prerequisite: 'اختبارات المكونات الأساسية',
+            nextStep: 'الأداء الفائق وأمان الويب',
           },
         ],
       },
       {
-        id: 'branch-perf-security',
-        title: 'Web Vitals & Security',
-        titleAr: 'الأداء الفائق وأمان الويب',
-        items: [
+        id: 'branch-08-perf-sec',
+        code: 'MOD::PERF_SECURITY',
+        title: 'Core Web Vitals & Web Security (OWASP)',
+        titleAr: 'الأداء الخارق وأمان الويب العالمي',
+        description: 'تحقيق أعلى درجات السرعة وتأمين المنصة ضد ثغرات XSS و CSRF',
+        nodes: [
           {
-            name: 'Core Web Vitals & Optimization',
+            id: 'node-core-web-vitals',
+            code: 'PERF::WEB_VITALS',
+            name: 'Core Web Vitals & Real User Monitoring (RUM)',
             nameAr: 'مؤشرات الأداء الحيوية Core Web Vitals',
             type: 'core',
-            details: 'تحسين مقاييس جوجل الرسمية: LCP (سرعة أكبر عنصر)، و INP (زمن الاستجابة للنقر)، و CLS (استقرار التنسيق)، وتقنيات الـ Code Splitting والـ Lazy Loading.',
-            whyItMatters: 'المعيار المباشر لترتيب موقعك في نتائج بحث جوجل وضمان عدم مغادرة الزوار بسبب البطء.',
-            subItems: ['LCP (Largest Contentful Paint) < 2.5s', 'INP (Interaction to Next Paint) < 200ms', 'CLS (Cumulative Layout Shift) < 0.1', 'Dynamic import() & Route splitting'],
+            status: 'mastered',
+            details: 'تحسين مقاييس جوجل الرسمية: LCP (سرعة أكبر عنصر < 2.5s)، و INP (زمن الاستجابة للنقر < 200ms)، و CLS (استقرار التنسيق < 0.1).',
+            whyItMatters: 'العامل المباشر لتصدر نتائج محركات البحث ومنع مغادرة الزوار بسبب البطء أو اهتزاز الصفحة.',
+            subItems: ['LCP optimization via priority preloading', 'INP reduction via scheduler.yield() & web workers', 'CLS prevention via fixed aspect-ratios', 'Bundle analysis & dynamic code splitting'],
+            prerequisite: 'مسار الرندر الحرج CRP',
+            nextStep: 'أمان الويب ومكافحة الثغرات',
           },
           {
-            name: 'Web Security (OWASP)',
-            nameAr: 'أمان الويب ومكافحة الثغرات',
+            id: 'node-web-security',
+            code: 'SEC::OWASP_HARDENING',
+            name: 'Web Security: XSS, CSRF & CSP Headers',
+            nameAr: 'أمان الويب ومكافحة ثغرات XSS وترويسات CSP',
             type: 'core',
-            details: 'الحماية من ثغرات Cross-Site Scripting (XSS)، و CSRF، وسياسات مشاركة الموارد (CORS)، وضبط ترويسات Content Security Policy (CSP)، وتخزين الـ Tokens في HttpOnly Cookies.',
-            whyItMatters: 'حماية بيانات المستخدمين وأسرار الجلسة من الاختراق وسرقة الحسابات.',
-            subItems: ['XSS sanitization & innerHTML traps', 'CORS headers configuration', 'Content Security Policy (CSP)', 'HttpOnly & SameSite Secure Cookies'],
+            status: 'mastered',
+            details: 'حماية المنصة من ثغرات XSS، وضبط ترويسات Content Security Policy (CSP)، وتخزين الـ Tokens في HttpOnly Secure SameSite Cookies لمنع سرقتها.',
+            whyItMatters: 'حماية سمعة المنصة وحسابات آلاف المستخدمين من الاختراق وسرقة الجلسات.',
+            subItems: ['Content Security Policy (CSP) strict directives', 'HttpOnly, Secure, SameSite=Lax cookie flags', 'Sanitization of user inputs (DOMPurify)', 'CORS fine-grained origins configuration'],
+            prerequisite: 'أساسيات بروتوكول HTTP والكوكيز',
+            nextStep: 'الاعتماد كـ Senior Frontend Architect',
           },
         ],
       },
@@ -667,22 +795,23 @@ export const MODERN_ROADMAP_STAGES: DiagramStage[] = [
 ];
 
 export function FrontendRoadmapDiagram() {
-  const [selectedNode, setSelectedNode] = useState<DiagramTopicItem | null>(null);
-  const [filterType, setFilterType] = useState<NodeType | 'all'>('all');
+  const [selectedNode, setSelectedNode] = useState<TechNode | null>(null);
+  const [activeFilter, setActiveFilter] = useState<NodeType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeStageId, setActiveStageId] = useState<string>('all');
+  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [expandedStages, setExpandedStages] = useState<Record<string, boolean>>({
-    'stage-internet': true,
-    'stage-html': true,
-    'stage-css': true,
-    'stage-javascript': true,
-    'stage-git': true,
-    'stage-react': true,
-    'stage-nextjs': true,
-    'stage-testing-perf': true,
+    'stage-01-web-core': true,
+    'stage-02-semantic-web': true,
+    'stage-03-css-systems': true,
+    'stage-04-js-engine': true,
+    'stage-05-git-tools': true,
+    'stage-06-react19': true,
+    'stage-07-nextjs': true,
+    'stage-08-senior': true,
   });
 
-  const toggleStageExpand = (stageId: string) => {
+  const toggleStage = (stageId: string) => {
     setExpandedStages(prev => ({
       ...prev,
       [stageId]: !prev[stageId],
@@ -690,440 +819,449 @@ export function FrontendRoadmapDiagram() {
   };
 
   const expandAll = () => {
-    const allExpanded: Record<string, boolean> = {};
-    MODERN_ROADMAP_STAGES.forEach(s => (allExpanded[s.id] = true));
-    setExpandedStages(allExpanded);
+    const next: Record<string, boolean> = {};
+    ROADMAP_2030_DATA.forEach(s => (next[s.id] = true));
+    setExpandedStages(next);
   };
 
   const collapseAll = () => {
-    const allCollapsed: Record<string, boolean> = {};
-    MODERN_ROADMAP_STAGES.forEach(s => (allCollapsed[s.id] = false));
-    setExpandedStages(allCollapsed);
+    const next: Record<string, boolean> = {};
+    ROADMAP_2030_DATA.forEach(s => (next[s.id] = false));
+    setExpandedStages(next);
   };
 
-  // Filter stages and topics
-  const filteredStages = useMemo(() => {
-    return MODERN_ROADMAP_STAGES.filter(stage => {
+  // Filtered dataset
+  const filteredData = useMemo(() => {
+    return ROADMAP_2030_DATA.filter(stage => {
       if (activeStageId !== 'all' && stage.id !== activeStageId) return false;
       return true;
     }).map(stage => {
-      // Filter branches
       const filteredBranches = stage.branches.map(branch => {
-        const filteredItems = branch.items.filter(item => {
-          // Type filter
-          if (filterType !== 'all' && item.type !== filterType) return false;
-
-          // Search filter
+        const filteredNodes = branch.nodes.filter(node => {
+          if (activeFilter !== 'all' && node.type !== activeFilter) return false;
           if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            const matchName = item.name.toLowerCase().includes(q);
-            const matchAr = item.nameAr.toLowerCase().includes(q);
-            const matchDetails = item.details.toLowerCase().includes(q);
-            const matchSub = item.subItems?.some(s => s.toLowerCase().includes(q));
-            return matchName || matchAr || matchDetails || matchSub;
+            const matchName = node.name.toLowerCase().includes(q);
+            const matchAr = node.nameAr.toLowerCase().includes(q);
+            const matchCode = node.code.toLowerCase().includes(q);
+            const matchDetails = node.details.toLowerCase().includes(q);
+            const matchSub = node.subItems.some(s => s.toLowerCase().includes(q));
+            return matchName || matchAr || matchCode || matchDetails || matchSub;
           }
           return true;
         });
 
         return {
           ...branch,
-          items: filteredItems,
+          nodes: filteredNodes,
         };
-      }).filter(b => b.items.length > 0 || !searchQuery.trim());
+      }).filter(b => b.nodes.length > 0 || !searchQuery.trim());
 
       return {
         ...stage,
         branches: filteredBranches,
       };
     });
-  }, [activeStageId, filterType, searchQuery]);
+  }, [activeStageId, activeFilter, searchQuery]);
 
-  // Color mapper helper
-  const getThemeColors = (theme: DiagramStage['themeColor']) => {
-    switch (theme) {
+  // Accent styling helper
+  const getAccentStyles = (accent: TreeStage['accent']) => {
+    switch (accent) {
       case 'amber':
         return {
-          badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-          spineNode: 'border-amber-500 bg-amber-500/20 text-amber-300 shadow-amber-500/20',
-          border: 'border-amber-500/30',
-          glow: 'from-amber-500/10',
-          accent: 'text-amber-400',
-        };
-      case 'teal':
-        return {
-          badge: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
-          spineNode: 'border-teal-500 bg-teal-500/20 text-teal-300 shadow-teal-500/20',
-          border: 'border-teal-500/30',
-          glow: 'from-teal-500/10',
-          accent: 'text-teal-400',
+          glow: 'from-amber-500/20 via-amber-500/5 to-transparent',
+          border: 'border-amber-500/40 hover:border-amber-400',
+          text: 'text-amber-400',
+          pill: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+          spineNode: 'border-amber-400 bg-amber-950/40 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.25)]',
+          lineGradient: 'url(#amber-circuit)',
         };
       case 'cyan':
         return {
-          badge: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-          spineNode: 'border-cyan-500 bg-cyan-500/20 text-cyan-300 shadow-cyan-500/20',
-          border: 'border-cyan-500/30',
-          glow: 'from-cyan-500/10',
-          accent: 'text-cyan-400',
+          glow: 'from-cyan-500/20 via-cyan-500/5 to-transparent',
+          border: 'border-cyan-500/40 hover:border-cyan-400',
+          text: 'text-cyan-400',
+          pill: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
+          spineNode: 'border-cyan-400 bg-cyan-950/40 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.25)]',
+          lineGradient: 'url(#cyan-circuit)',
         };
       case 'yellow':
         return {
-          badge: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
-          spineNode: 'border-yellow-500 bg-yellow-500/20 text-yellow-300 shadow-yellow-500/20',
-          border: 'border-yellow-500/30',
-          glow: 'from-yellow-500/10',
-          accent: 'text-yellow-400',
-        };
-      case 'orange':
-        return {
-          badge: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
-          spineNode: 'border-orange-500 bg-orange-500/20 text-orange-300 shadow-orange-500/20',
-          border: 'border-orange-500/30',
-          glow: 'from-orange-500/10',
-          accent: 'text-orange-400',
+          glow: 'from-yellow-500/20 via-yellow-500/5 to-transparent',
+          border: 'border-yellow-500/40 hover:border-yellow-400',
+          text: 'text-yellow-400',
+          pill: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30',
+          spineNode: 'border-yellow-400 bg-yellow-950/40 text-yellow-300 shadow-[0_0_20px_rgba(234,179,8,0.25)]',
+          lineGradient: 'url(#yellow-circuit)',
         };
       case 'purple':
         return {
-          badge: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-          spineNode: 'border-purple-500 bg-purple-500/20 text-purple-300 shadow-purple-500/20',
-          border: 'border-purple-500/30',
-          glow: 'from-purple-500/10',
-          accent: 'text-purple-400',
+          glow: 'from-purple-500/20 via-purple-500/5 to-transparent',
+          border: 'border-purple-500/40 hover:border-purple-400',
+          text: 'text-purple-400',
+          pill: 'bg-purple-500/10 text-purple-300 border-purple-500/30',
+          spineNode: 'border-purple-400 bg-purple-950/40 text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.25)]',
+          lineGradient: 'url(#purple-circuit)',
         };
       case 'emerald':
         return {
-          badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-          spineNode: 'border-emerald-500 bg-emerald-500/20 text-emerald-300 shadow-emerald-500/20',
-          border: 'border-emerald-500/30',
-          glow: 'from-emerald-500/10',
-          accent: 'text-emerald-400',
+          glow: 'from-emerald-500/20 via-emerald-500/5 to-transparent',
+          border: 'border-emerald-500/40 hover:border-emerald-400',
+          text: 'text-emerald-400',
+          pill: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
+          spineNode: 'border-emerald-400 bg-emerald-950/40 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.25)]',
+          lineGradient: 'url(#emerald-circuit)',
         };
       default:
         return {
-          badge: 'bg-primary/10 text-primary border-primary/30',
-          spineNode: 'border-primary bg-primary/20 text-primary shadow-primary/20',
-          border: 'border-primary/30',
-          glow: 'from-primary/10',
-          accent: 'text-primary',
+          glow: 'from-primary/20 via-primary/5 to-transparent',
+          border: 'border-primary/40 hover:border-primary',
+          text: 'text-primary',
+          pill: 'bg-primary/10 text-primary border-primary/30',
+          spineNode: 'border-primary bg-primary/20 text-primary shadow-[0_0_20px_rgba(59,130,246,0.25)]',
+          lineGradient: 'url(#cyan-circuit)',
         };
     }
   };
 
   return (
     <div className="space-y-10" dir="rtl">
-      {/* 2025 Modern Control Command Center */}
-      <div className="rounded-3xl border border-border/80 bg-gradient-to-b from-card via-surface/90 to-card p-6 shadow-card space-y-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-border/70">
+      {/* 2030 Cyber Command & Matrix Controller */}
+      <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-slate-950/90 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+        {/* Futuristic Background Matrix Grid */}
+        <div
+          className="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:18px_18px] opacity-25 pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Ambient Neon Beam */}
+        <div
+          className="absolute -top-32 right-1/3 w-96 h-96 bg-primary/15 rounded-full blur-[100px] pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Top Header */}
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800/80">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/30 text-xs font-black">
-                <Workflow className="h-3.5 w-3.5" />
-                <span>شجرة المسار الهندسي التفاعلية 2025</span>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/30 text-xs font-mono font-black tracking-wider uppercase">
+                <Orbit className="h-3.5 w-3.5 animate-spin" style={{ animationDuration: '8s' }} />
+                <span>NEURAL ROADMAP 2030 • INTERCONNECTED TREE</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-surface border border-border text-foreground-muted font-mono">
-                8 محطات رئيسية • 85+ عقدة معرفية
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-900 border border-slate-800 text-slate-400">
+                8 STAGES • 85+ NODES • 75 JS DOCS
               </span>
             </div>
-            <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
-              خريطة شجرية متفرعة تربط المفاهيم والتقنيات حتى مستوى Senior
+
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+              شجرة المسار العصبي التفاعلية لمهندس الواجهات الأمامية
             </h3>
-            <p className="text-xs sm:text-sm text-foreground-muted max-w-3xl leading-relaxed">
-              تصفح شجرة المعرفة الهندسية المترابطة خطوة بخطوة. اضغط على أي فرع أو عقدة لعرض الشرح المفصل، المفاهيم المطلوبة في سوق العمل، والدروس العملية المرتبطة بها في المنصة.
+            <p className="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">
+              تصميم شبكي متفرع فائق التطور يربط المفاهيم، البروتوكولات، والمحركات بخطوط اتصال دائرية ودوائر كهربائية (Circuit Paths). اضغط على أي عقدة لاستدعاء لوحة الفحص الشاملة (HUD Inspector).
             </p>
           </div>
 
-          {/* Interactive Node Legend */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-surface/80 p-3.5 rounded-2xl border border-border text-xs font-bold shrink-0">
-            <span className="text-foreground-muted flex items-center gap-1">
-              <Filter className="h-3.5 w-3.5" />
-              <span>دليل ألوان العقد:</span>
+          {/* Futuristic Filter Badges */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-slate-900/90 p-3 rounded-2xl border border-slate-800 text-xs font-mono shrink-0">
+            <span className="text-slate-400 flex items-center gap-1.5 font-bold">
+              <Activity className="h-3.5 w-3.5 text-primary" />
+              <span>فئات العقد:</span>
             </span>
+
             <div className="flex flex-wrap items-center gap-2">
               <button
-                onClick={() => setFilterType(filterType === 'core' ? 'all' : 'core')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all ${
-                  filterType === 'core'
-                    ? 'bg-amber-400 text-slate-950 border-amber-500 font-black scale-105'
-                    : 'bg-amber-400/20 text-amber-300 border-amber-500/40 hover:bg-amber-400/30'
+                onClick={() => setActiveFilter(activeFilter === 'core' ? 'all' : 'core')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                  activeFilter === 'core'
+                    ? 'bg-amber-400 text-slate-950 border-amber-500 font-black shadow-[0_0_12px_rgba(245,158,11,0.4)] scale-105'
+                    : 'bg-amber-400/10 text-amber-300 border-amber-500/30 hover:bg-amber-400/20'
                 }`}
               >
-                <span className="h-2 w-2 rounded-full bg-amber-400" />
-                <span>مسار أساسي (Core)</span>
+                <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                <span>[CORE] أساسي</span>
               </button>
 
               <button
-                onClick={() => setFilterType(filterType === 'recommended' ? 'all' : 'recommended')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all ${
-                  filterType === 'recommended'
-                    ? 'bg-purple-600 text-white border-purple-700 font-black scale-105'
-                    : 'bg-purple-500/20 text-purple-300 border-purple-500/40 hover:bg-purple-500/30'
+                onClick={() => setActiveFilter(activeFilter === 'recommended' ? 'all' : 'recommended')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                  activeFilter === 'recommended'
+                    ? 'bg-purple-600 text-white border-purple-500 font-black shadow-[0_0_12px_rgba(168,85,247,0.4)] scale-105'
+                    : 'bg-purple-500/10 text-purple-300 border-purple-500/30 hover:bg-purple-500/20'
                 }`}
               >
                 <span className="h-2 w-2 rounded-full bg-purple-400" />
-                <span>موصى به (Recommended)</span>
+                <span>[REC] موصى به</span>
               </button>
 
               <button
-                onClick={() => setFilterType(filterType === 'alternative' ? 'all' : 'alternative')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all ${
-                  filterType === 'alternative'
-                    ? 'bg-teal-500 text-slate-950 border-teal-600 font-black scale-105'
-                    : 'bg-teal-500/20 text-teal-300 border-teal-500/40 hover:bg-teal-500/30'
+                onClick={() => setActiveFilter(activeFilter === 'alternative' ? 'all' : 'alternative')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                  activeFilter === 'alternative'
+                    ? 'bg-teal-500 text-slate-950 border-teal-400 font-black shadow-[0_0_12px_rgba(20,184,166,0.4)] scale-105'
+                    : 'bg-teal-500/10 text-teal-300 border-teal-500/30 hover:bg-teal-500/20'
                 }`}
               >
                 <span className="h-2 w-2 rounded-full bg-teal-400" />
-                <span>بدائل (Alternative)</span>
+                <span>[ALT] بدائل</span>
               </button>
 
-              {filterType !== 'all' && (
+              {activeFilter !== 'all' && (
                 <button
-                  onClick={() => setFilterType('all')}
-                  className="text-[11px] text-foreground-muted hover:text-foreground underline pr-1"
+                  onClick={() => setActiveFilter('all')}
+                  className="text-[11px] text-slate-400 hover:text-slate-200 underline pr-1"
                 >
-                  إلغاء التصفية
+                  إعادة ضبط
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Filter Toolbar: Search, Stage Jump, View Toggle */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          {/* Quick Stage Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+        {/* Neural Controller Toolbar */}
+        <div className="relative z-10 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          {/* Quick Stage Orbit Tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none font-mono text-xs">
             <button
               onClick={() => setActiveStageId('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-xl border transition-all shrink-0 font-bold ${
                 activeStageId === 'all'
-                  ? 'bg-primary text-black border-primary shadow-sm'
-                  : 'bg-surface hover:bg-surface-hover border-border text-foreground-secondary'
+                  ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(59,130,246,0.4)]'
+                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
               }`}
             >
-              كامل الشجرة
+              ALL_STAGES (01-08)
             </button>
-            {MODERN_ROADMAP_STAGES.map(stage => {
-              const isActive = activeStageId === stage.id;
+            {ROADMAP_2030_DATA.map(st => {
+              const isActive = activeStageId === st.id;
               return (
                 <button
-                  key={stage.id}
-                  onClick={() => setActiveStageId(stage.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0 flex items-center gap-1.5 ${
+                  key={st.id}
+                  onClick={() => setActiveStageId(st.id)}
+                  className={`px-3 py-1.5 rounded-xl border transition-all shrink-0 flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-primary text-black border-primary shadow-sm font-black'
-                      : 'bg-surface hover:bg-surface-hover border-border text-foreground-secondary'
+                      ? 'bg-primary text-black border-primary shadow-[0_0_15px_rgba(59,130,246,0.4)] font-bold'
+                      : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-400'
                   }`}
                 >
-                  <span className="font-mono text-[10px] opacity-75">{stage.order}</span>
-                  <span>{stage.titleAr.split(' ')[0]} {stage.titleAr.split(' ')[1] || ''}</span>
+                  <span className="text-[10px] opacity-75">{st.order}</span>
+                  <span>{st.title.split(' ')[0]}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* Search Box + Expand / Collapse Controls */}
+          {/* Search Scanner + Controls */}
           <div className="flex items-center gap-3">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-muted" />
+            <div className="relative flex-1 sm:w-72">
+              <Crosshair className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-primary" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="ابحث عن مفهوم، أداة، أو مصطلح..."
-                className="w-full pr-10 pl-4 py-2 rounded-xl border border-border bg-surface text-xs font-sans text-foreground placeholder:text-foreground-muted focus:outline-none focus:border-primary transition-colors"
+                placeholder="ابحث في شجرة 2030 (DOM, Hooks, SSR...)"
+                className="w-full pr-10 pl-4 py-2 rounded-xl border border-slate-800 bg-slate-900/90 text-xs font-mono text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-foreground-muted hover:text-foreground"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-200"
                 >
                   ✕
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-1 border border-border rounded-xl p-1 bg-surface shrink-0">
+            <div className="flex items-center gap-1 border border-slate-800 rounded-xl p-1 bg-slate-900 shrink-0">
               <button
                 onClick={expandAll}
-                className="p-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface-hover text-xs font-bold flex items-center gap-1"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 text-xs font-bold flex items-center gap-1"
                 title="توسيع كافة الفروع"
               >
                 <Maximize2 className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">توسيع الكل</span>
+                <span className="hidden sm:inline">توسيع</span>
               </button>
               <button
                 onClick={collapseAll}
-                className="p-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface-hover text-xs font-bold flex items-center gap-1"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 text-xs font-bold flex items-center gap-1"
                 title="طي كافة الفروع"
               >
                 <Minimize2 className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">طي الكل</span>
+                <span className="hidden sm:inline">طي</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 2025 Tree Backbone & Branching Network */}
-      <div className="relative space-y-12">
-        {/* Continuous Central Glowing Spine (Desktop) */}
+      {/* 2030 Interconnected Neural Tree Flow */}
+      <div className="relative space-y-16">
+        {/* Futuristic SVG Global Circuit Spine Overlay (Desktop) */}
         <div
-          className="hidden lg:block absolute right-1/2 translate-x-1/2 top-10 bottom-10 w-1 bg-gradient-to-b from-primary via-cyan-400 via-yellow-400 via-purple-500 to-emerald-400 rounded-full opacity-40 pointer-events-none"
+          className="hidden lg:block absolute right-1/2 translate-x-1/2 top-8 bottom-8 w-1 bg-gradient-to-b from-amber-500 via-cyan-400 via-yellow-400 via-purple-500 to-emerald-400 opacity-30 pointer-events-none rounded-full"
           aria-hidden="true"
         />
 
-        {/* Mobile Left/Right Spine */}
+        {/* Mobile Vertical Flow Line */}
         <div
-          className="lg:hidden absolute right-6 top-6 bottom-6 w-0.5 bg-gradient-to-b from-primary via-cyan-400 to-emerald-400 rounded-full opacity-30 pointer-events-none"
+          className="lg:hidden absolute right-6 top-8 bottom-8 w-0.5 bg-gradient-to-b from-primary via-cyan-400 to-emerald-400 opacity-25 pointer-events-none"
           aria-hidden="true"
         />
 
-        {filteredStages.map((stage, stageIdx) => {
+        {filteredData.map((stage, stageIdx) => {
           const isExpanded = expandedStages[stage.id] ?? true;
-          const theme = getThemeColors(stage.themeColor);
-          const isEven = stageIdx % 2 === 0;
+          const styles = getAccentStyles(stage.accent);
 
           return (
             <div
               key={stage.id}
-              className="relative space-y-6 scroll-mt-24"
+              className="relative space-y-8 scroll-mt-24"
               id={stage.id}
             >
-              {/* Stage Milestone Hub (The Junction on the Tree Trunk) */}
+              {/* Stage Milestone Hub (Neural Node Station) */}
               <div className="flex items-center justify-between gap-4 relative z-10">
-                {/* Central Milestone Pin */}
-                <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-4">
+                  {/* Glowing Holographic Milestone Pin */}
                   <div
-                    className={`h-12 w-12 rounded-2xl border-2 flex items-center justify-center font-mono font-black text-lg shadow-lg backdrop-blur-md ${theme.spineNode}`}
+                    className={`h-14 w-14 rounded-2xl border-2 flex flex-col items-center justify-center font-mono font-black text-lg backdrop-blur-xl transition-all duration-300 ${styles.spineNode}`}
                   >
-                    {stage.order}
+                    <span className="text-[10px] opacity-75 font-normal tracking-tighter">STAGE</span>
+                    <span>{stage.order}</span>
                   </div>
 
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[11px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${theme.badge}`}>
-                        STAGE {stage.order} • {stage.level}
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-md border ${styles.pill}`}>
+                        {stage.code} • {stage.level}
                       </span>
                       {stage.articleLink && (
                         <Link
                           href={stage.articleLink}
-                          className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline font-mono"
                         >
-                          <span>دخول التوثيق</span>
+                          <span>[DOCS_ACCESS]</span>
                           <ArrowLeft className="h-3 w-3" />
                         </Link>
                       )}
                     </div>
-                    <h4 className="text-xl sm:text-2xl font-black text-foreground">
-                      {stage.titleAr}{' '}
-                      <span className="text-xs sm:text-sm font-normal text-foreground-muted font-sans mr-1">
-                        ({stage.title})
+
+                    <h4 className="text-xl sm:text-2xl font-black text-slate-100 flex items-center gap-2">
+                      <span>{stage.titleAr}</span>
+                      <span className="text-xs sm:text-sm font-normal text-slate-400 font-mono hidden sm:inline">
+                        // {stage.title}
                       </span>
                     </h4>
+
+                    <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+                      {stage.tagline}
+                    </p>
                   </div>
                 </div>
 
-                {/* Expand / Collapse Button */}
+                {/* Stage Collapse Toggle */}
                 <button
-                  onClick={() => toggleStageExpand(stage.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-xs font-bold text-foreground-secondary transition-all"
+                  onClick={() => toggleStage(stage.id)}
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 transition-all shrink-0"
                 >
-                  <span>{isExpanded ? 'طي المحطة' : 'عرض الفروع'}</span>
+                  <span>{isExpanded ? 'COLLAPSE' : 'EXPAND'}</span>
                   {isExpanded ? (
-                    <ChevronUp className="h-4 w-4" />
+                    <ChevronUp className="h-4 w-4 text-primary" />
                   ) : (
-                    <ChevronDown className="h-4 w-4" />
+                    <ChevronDown className="h-4 w-4 text-primary" />
                   )}
                 </button>
               </div>
 
-              {/* Stage Summary Description */}
-              <div className="pr-14 text-xs sm:text-sm text-foreground-muted max-w-3xl leading-relaxed">
-                {stage.summary}
-              </div>
-
-              {/* Branching Cards & Sub-branches Content */}
+              {/* Branching Grid & Sub-nodes Canvas */}
               {isExpanded && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative pt-2">
                   {stage.branches.map((branch, bIdx) => {
                     return (
                       <div
                         key={branch.id}
-                        className={`rounded-3xl border ${theme.border} bg-card/80 backdrop-blur-md p-5 sm:p-6 shadow-card hover:shadow-xl transition-all duration-300 relative group flex flex-col justify-between space-y-6`}
+                        className={`rounded-3xl border ${styles.border} bg-slate-950/80 backdrop-blur-xl p-6 shadow-2xl transition-all duration-300 relative group flex flex-col justify-between space-y-6 hover:shadow-[0_0_30px_rgba(0,0,0,0.8)]`}
                       >
-                        {/* Branch Card Header with Tree Branch Stem Icon */}
-                        <div className="space-y-3 pb-4 border-b border-border/70">
+                        {/* Ambient Card Top Glow */}
+                        <div
+                          className={`absolute top-0 right-0 left-0 h-1 rounded-t-3xl bg-gradient-to-r ${styles.glow}`}
+                        />
+
+                        {/* Branch Capsule Header */}
+                        <div className="space-y-3 pb-4 border-b border-slate-800/80">
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
-                              <span className="text-[11px] font-mono font-bold text-primary uppercase">
-                                BRANCH {stage.order}.{bIdx + 1}
+                              <span className="h-2 w-2 rounded-full bg-primary animate-ping" />
+                              <span className="text-[11px] font-mono font-bold text-primary">
+                                {branch.code}
                               </span>
                             </div>
-                            <span className="text-[11px] text-foreground-muted font-mono">
-                              {branch.items.length} عقدة
+                            <span className="text-[11px] text-slate-500 font-mono">
+                              {branch.nodes.length} NODES
                             </span>
                           </div>
 
-                          <h5 className="text-base sm:text-lg font-black text-foreground group-hover:text-primary transition-colors">
+                          <h5 className="text-base sm:text-lg font-black text-slate-100 group-hover:text-primary transition-colors">
                             {branch.titleAr}{' '}
-                            <span className="text-xs font-sans font-normal text-foreground-muted block sm:inline">
-                              ({branch.title})
+                            <span className="text-xs font-mono font-normal text-slate-500 block sm:inline">
+                              // {branch.title}
                             </span>
                           </h5>
-                          {branch.description && (
-                            <p className="text-xs text-foreground-muted leading-relaxed">
-                              {branch.description}
-                            </p>
-                          )}
+
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            {branch.description}
+                          </p>
                         </div>
 
-                        {/* Interactive Tree Sub-nodes */}
+                        {/* Interactive Futuristic Tree Nodes */}
                         <div className="space-y-3">
-                          <span className="text-[11px] font-bold text-foreground-muted block">
-                            المحاور والعقد المتفرعة (اضغط على أي عقدة للاطلاع على التفاصيل):
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+                            AVAILABLE CAPABILITY NODES (CLICK FOR HUD INSPECTION):
                           </span>
 
                           <div className="flex flex-wrap gap-2.5">
-                            {branch.items.map((item, iIdx) => {
-                              const isSelected = selectedNode?.name === item.name;
+                            {branch.nodes.map((node, nIdx) => {
+                              const isSelected = selectedNode?.id === node.id;
+                              const isHovered = hoveredNodeId === node.id;
 
-                              // Modern 2025 Roadmap Style Badges
-                              let badgeStyle = '';
-                              let indicatorColor = '';
+                              let badgeClasses = '';
+                              let statusDot = 'bg-primary';
 
-                              if (item.type === 'core') {
-                                badgeStyle =
-                                  'bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border-amber-500 font-black shadow-amber-500/20 hover:brightness-110';
-                                indicatorColor = 'bg-slate-950';
-                              } else if (item.type === 'recommended') {
-                                badgeStyle =
-                                  'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-500 font-bold shadow-purple-500/25 hover:brightness-110';
-                                indicatorColor = 'bg-purple-200';
-                              } else if (item.type === 'alternative') {
-                                badgeStyle =
-                                  'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 border-teal-500 font-black shadow-teal-500/20 hover:brightness-110';
-                                indicatorColor = 'bg-slate-950';
+                              if (node.type === 'core') {
+                                badgeClasses =
+                                  'bg-gradient-to-r from-amber-500/20 via-amber-400/10 to-amber-500/20 text-amber-300 border-amber-500/40 hover:border-amber-400 hover:shadow-[0_0_15px_rgba(245,158,11,0.25)]';
+                                statusDot = 'bg-amber-400';
+                              } else if (node.type === 'recommended') {
+                                badgeClasses =
+                                  'bg-gradient-to-r from-purple-600/20 via-purple-500/10 to-purple-600/20 text-purple-300 border-purple-500/40 hover:border-purple-400 hover:shadow-[0_0_15px_rgba(168,85,247,0.25)]';
+                                statusDot = 'bg-purple-400';
+                              } else if (node.type === 'alternative') {
+                                badgeClasses =
+                                  'bg-gradient-to-r from-teal-500/20 via-teal-400/10 to-teal-500/20 text-teal-300 border-teal-500/40 hover:border-teal-400 hover:shadow-[0_0_15px_rgba(20,184,166,0.25)]';
+                                statusDot = 'bg-teal-400';
                               } else {
-                                badgeStyle =
-                                  'bg-surface-elevated text-foreground border-border hover:bg-surface-hover';
-                                indicatorColor = 'bg-primary';
+                                badgeClasses =
+                                  'bg-slate-900/80 text-slate-300 border-slate-800 hover:border-slate-700';
                               }
 
                               return (
                                 <button
-                                  key={iIdx}
-                                  onClick={() => setSelectedNode(item)}
-                                  className={`group/node relative text-right transition-all transform active:scale-95 duration-150 rounded-2xl px-3.5 py-2.5 border text-xs shadow-sm flex items-center gap-2 ${badgeStyle} ${
+                                  key={node.id}
+                                  onClick={() => setSelectedNode(node)}
+                                  onMouseEnter={() => setHoveredNodeId(node.id)}
+                                  onMouseLeave={() => setHoveredNodeId(null)}
+                                  className={`group/node relative text-right transition-all duration-200 rounded-2xl px-3.5 py-2.5 border text-xs font-mono shadow-sm flex items-center gap-2.5 backdrop-blur-md ${badgeClasses} ${
                                     isSelected
-                                      ? 'ring-4 ring-primary ring-offset-2 ring-offset-background scale-105 z-20'
+                                      ? 'ring-2 ring-primary ring-offset-2 ring-offset-slate-950 scale-105 z-20 shadow-[0_0_20px_rgba(59,130,246,0.4)]'
                                       : 'hover:-translate-y-0.5'
                                   }`}
                                 >
-                                  <span className={`h-1.5 w-1.5 rounded-full ${indicatorColor} shrink-0`} />
-                                  <span className="font-bold tracking-tight">{item.name}</span>
+                                  <span className={`h-2 w-2 rounded-full ${statusDot} shrink-0`} />
+                                  <span className="font-bold tracking-tight text-slate-100">
+                                    {node.name}
+                                  </span>
 
-                                  {item.subItems && item.subItems.length > 0 && (
-                                    <span className="h-4 px-1.5 rounded-md bg-black/25 text-[10px] flex items-center justify-center font-mono opacity-80 shrink-0">
-                                      {item.subItems.length}
+                                  {node.subItems && node.subItems.length > 0 && (
+                                    <span className="h-4 px-1.5 rounded-md bg-black/40 text-[10px] text-slate-400 flex items-center justify-center font-mono shrink-0">
+                                      {node.subItems.length}
                                     </span>
                                   )}
                                 </button>
@@ -1132,13 +1270,13 @@ export function FrontendRoadmapDiagram() {
                           </div>
                         </div>
 
-                        {/* Branch Footer: Direct Practical Link if exists */}
-                        <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
-                          <span className="text-[11px] text-foreground-muted">
-                            مسار تطبيقي عملي
+                        {/* Branch Footer Inspection Trigger */}
+                        <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
+                          <span className="text-[11px] text-slate-500">
+                            CIRCUIT STATUS: OPTIMAL
                           </span>
                           <span className="text-primary font-bold flex items-center gap-1 group-hover:translate-x-[-2px] transition-transform">
-                            <span>استكشاف المحور</span>
+                            <span>INSPECT_BRANCH</span>
                             <ArrowLeft className="h-3.5 w-3.5" />
                           </span>
                         </div>
@@ -1148,13 +1286,13 @@ export function FrontendRoadmapDiagram() {
                 </div>
               )}
 
-              {/* Connecting Branch Indicator Between Stages */}
-              {stageIdx < filteredStages.length - 1 && (
+              {/* Connecting Neural Pulse Between Stages */}
+              {stageIdx < filteredData.length - 1 && (
                 <div className="flex justify-center pt-4 pb-2 relative z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <div className="h-8 w-0.5 bg-gradient-to-b from-primary to-transparent" />
-                    <div className="h-8 w-8 rounded-full bg-surface border border-border shadow-md flex items-center justify-center text-primary animate-bounce">
-                      <ArrowDown className="h-4 w-4" />
+                    <div className="h-10 w-0.5 bg-gradient-to-b from-primary via-cyan-400 to-transparent" />
+                    <div className="h-9 w-9 rounded-full bg-slate-900 border border-slate-800 shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center text-primary">
+                      <ArrowDown className="h-4 w-4 animate-bounce" />
                     </div>
                   </div>
                 </div>
@@ -1164,93 +1302,117 @@ export function FrontendRoadmapDiagram() {
         })}
       </div>
 
-      {/* 2025 Ultra-Modern Glassmorphic Detail Modal */}
+      {/* 2030 Futuristic Cyber HUD Inspection Panel Modal */}
       {selectedNode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="w-full max-w-xl bg-card border border-border/90 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] flex flex-col relative overflow-hidden">
-            {/* Top decorative glow */}
-            <div className="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-primary via-cyan-400 to-yellow-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] flex flex-col relative overflow-hidden">
+            {/* Top Glowing Laser Beam */}
+            <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-cyan-400 via-primary to-yellow-400 animate-pulse" />
 
-            {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
+            {/* HUD Header */}
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-800">
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-black uppercase px-2.5 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
-                    {selectedNode.type === 'core'
-                      ? 'مسار أساسي (Core Foundation)'
-                      : selectedNode.type === 'recommended'
-                      ? 'موصى به لسوق العمل (Recommended)'
-                      : 'بديل حديث (Modern Alternative)'}
+                  <span className="text-[10px] font-mono font-black uppercase px-2.5 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/40">
+                    {selectedNode.code}
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    STATUS: {selectedNode.status.toUpperCase()}
                   </span>
                 </div>
-                <h4 className="text-2xl font-black text-foreground">
+                <h4 className="text-2xl font-black text-slate-100 font-mono">
                   {selectedNode.name}
                 </h4>
-                <p className="text-sm font-bold text-foreground-secondary">
+                <p className="text-sm font-bold text-slate-300">
                   {selectedNode.nameAr}
                 </p>
               </div>
 
               <button
                 onClick={() => setSelectedNode(null)}
-                className="h-9 w-9 rounded-xl border border-border bg-surface text-foreground-muted hover:text-foreground hover:bg-surface-hover flex items-center justify-center transition-all shrink-0"
+                className="h-9 w-9 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-100 hover:bg-slate-800 flex items-center justify-center transition-all shrink-0 font-mono"
                 aria-label="إغلاق النافذة"
               >
                 ✕
               </button>
             </div>
 
-            {/* Modal Body */}
+            {/* HUD Body */}
             <div className="flex-1 overflow-y-auto space-y-5 pr-1 pl-1">
-              {/* Detailed Explanation */}
+              {/* Technical Breakdown */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-primary flex items-center gap-1.5">
-                  <BookOpen className="h-4 w-4" />
-                  <span>الشرح الهندسي للمفهوم:</span>
+                <span className="text-xs font-mono font-bold text-primary flex items-center gap-1.5">
+                  <TerminalSquare className="h-4 w-4" />
+                  <span>// TECHNICAL SPECIFICATION & OVERVIEW:</span>
                 </span>
-                <div className="rounded-2xl bg-surface/80 p-4 border border-border/80 text-xs sm:text-sm text-foreground leading-relaxed">
+                <div className="rounded-2xl bg-slate-900/90 p-4 border border-slate-800 text-xs sm:text-sm text-slate-200 leading-relaxed">
                   {selectedNode.details}
                 </div>
               </div>
 
               {/* Why It Matters */}
-              {selectedNode.whyItMatters && (
+              <div className="space-y-2">
+                <span className="text-xs font-mono font-bold text-yellow-400 flex items-center gap-1.5">
+                  <Flame className="h-4 w-4" />
+                  <span>// PRODUCTION VALUE & IMPACT:</span>
+                </span>
+                <div className="rounded-2xl bg-yellow-500/5 p-4 border border-yellow-500/20 text-xs text-slate-300 leading-relaxed">
+                  {selectedNode.whyItMatters}
+                </div>
+              </div>
+
+              {/* Code Snippet Preview (if available) */}
+              {selectedNode.codeSnippet && (
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-yellow-400 flex items-center gap-1.5">
-                    <Sparkles className="h-4 w-4" />
-                    <span>لماذا يعتبر هذا المحور مهمًا في الإنتاج؟</span>
+                  <span className="text-xs font-mono font-bold text-cyan-400 flex items-center gap-1.5">
+                    <Code2 className="h-4 w-4" />
+                    <span>// CODE ARCHITECTURE SNIPPET:</span>
                   </span>
-                  <div className="rounded-2xl bg-yellow-500/5 p-4 border border-yellow-500/20 text-xs text-foreground-secondary leading-relaxed">
-                    {selectedNode.whyItMatters}
-                  </div>
+                  <pre className="rounded-2xl bg-slate-900 border border-slate-800 p-4 font-mono text-xs text-emerald-400 overflow-x-auto text-left" dir="ltr">
+                    <code>{selectedNode.codeSnippet}</code>
+                  </pre>
                 </div>
               )}
 
-              {/* Pro Tip */}
-              {selectedNode.proTip && (
-                <div className="rounded-2xl bg-cyan-500/10 p-4 border border-cyan-500/25 space-y-1">
-                  <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
-                    <Flame className="h-4 w-4" />
-                    <span>نصيحة المهندس للمقابلات والإنتاج:</span>
-                  </span>
-                  <p className="text-xs text-foreground-secondary leading-relaxed">
-                    {selectedNode.proTip}
-                  </p>
+              {/* Prerequisite & Next Step Flow */}
+              {(selectedNode.prerequisite || selectedNode.nextStep) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  {selectedNode.prerequisite && (
+                    <div className="p-3 rounded-xl border border-slate-800 bg-slate-900/60 space-y-1">
+                      <span className="text-[10px] font-mono text-slate-500 uppercase block">
+                        PREREQUISITE (المتطلب السابق)
+                      </span>
+                      <span className="text-xs font-bold text-slate-200">
+                        {selectedNode.prerequisite}
+                      </span>
+                    </div>
+                  )}
+
+                  {selectedNode.nextStep && (
+                    <div className="p-3 rounded-xl border border-primary/30 bg-primary/10 space-y-1">
+                      <span className="text-[10px] font-mono text-primary uppercase block">
+                        NEXT STEP (الخطوة التالية)
+                      </span>
+                      <span className="text-xs font-bold text-primary">
+                        {selectedNode.nextStep}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Sub-items Checklist */}
               {selectedNode.subItems && selectedNode.subItems.length > 0 && (
                 <div className="space-y-2.5">
-                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                  <span className="text-xs font-mono font-bold text-slate-300 flex items-center gap-1.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                    <span>المفاهيم والأدوات التي يجب أن تتقنها في هذه العقدة:</span>
+                    <span>// VERIFIED SKILLS IN THIS NODE:</span>
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {selectedNode.subItems.map((sub, sIdx) => (
                       <div
                         key={sIdx}
-                        className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-surface/60 text-xs text-foreground font-mono"
+                        className="flex items-center gap-2 p-2.5 rounded-xl border border-slate-800 bg-slate-900/70 text-xs text-slate-200 font-mono"
                       >
                         <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                         <span>{sub}</span>
@@ -1260,12 +1422,12 @@ export function FrontendRoadmapDiagram() {
                 </div>
               )}
 
-              {/* Direct Lesson Link if available */}
+              {/* Direct Lesson Link */}
               {selectedNode.link && (
                 <div className="pt-2">
                   <Link
                     href={selectedNode.link}
-                    className="flex items-center justify-between p-3.5 rounded-2xl border border-primary/40 bg-primary/10 hover:bg-primary/15 transition-all text-xs font-bold text-primary group"
+                    className="flex items-center justify-between p-4 rounded-2xl border border-primary/40 bg-primary/15 hover:bg-primary/25 transition-all text-xs font-mono font-bold text-primary group shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                   >
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4" />
@@ -1277,18 +1439,18 @@ export function FrontendRoadmapDiagram() {
               )}
             </div>
 
-            {/* Modal Footer */}
-            <div className="pt-4 border-t border-border flex items-center justify-between gap-3">
-              <span className="text-[11px] text-foreground-muted">
-                خمسة برمجة • مسار الواجهات الأمامية المعتمد 2027
+            {/* HUD Footer */}
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-between gap-3 font-mono">
+              <span className="text-[11px] text-slate-500">
+                KHAMSA_OS // FRONTEND ROADMAP 2030
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setSelectedNode(null)}
-                className="font-bold text-xs"
+                className="font-mono font-bold text-xs"
               >
-                إغلاق النافذة
+                CLOSE_HUD
               </Button>
             </div>
           </div>
