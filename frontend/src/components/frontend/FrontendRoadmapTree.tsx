@@ -25,21 +25,30 @@ import {
   ChevronUp,
   Award,
   Layout,
+  FileCode,
+  Workflow,
+  Search,
+  ExternalLink,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
-interface RoadmapBranch {
+export interface TopicGroup {
+  groupTitle: string;
+  items: string[];
+}
+
+export interface RoadmapBranch {
   id: string;
   title: string;
   subtitle: string;
   tag: string;
   icon: React.ComponentType<{ className?: string }>;
-  learnItems: string[];
+  topicGroups: TopicGroup[];
   links: Array<{ label: string; href: string }>;
 }
 
-interface MilestoneProject {
+export interface MilestoneProject {
   title: string;
   subtitle: string;
   techStack: string[];
@@ -47,7 +56,7 @@ interface MilestoneProject {
   projectLink?: { label: string; href: string };
 }
 
-interface RoadmapMilestone {
+export interface RoadmapMilestone {
   step: string;
   level: 'beginner' | 'intermediate' | 'advanced';
   role: string;
@@ -65,512 +74,754 @@ interface RoadmapMilestone {
   nextStepPill: string;
 }
 
-const ROADMAP_MILESTONES: RoadmapMilestone[] = [
+export const ROADMAP_MILESTONES: RoadmapMilestone[] = [
   {
     step: '00',
     level: 'beginner',
     role: 'Pre-Frontend Foundations',
-    roleAr: 'مستكشف الويب والأساسيات',
-    title: 'ما قبل الفرونت إند: كيف يعمل الويب وبيئة المطور',
+    roleAr: 'مستكشف الويب وبيئة المطور الأساسية',
+    title: 'المحطة 00: أساسيات الإنترنت، كيف يعمل الويب، وبيئة العمل ونظام Git & GitHub',
     duration: 'أسبوعان',
     description:
-      'قبل ما تكتب أول سطر كود أو تبدأ في React، لازم تفهم المتصفح والإنترنت بيشتغلوا إزاي في الكواليس، وتجهز أدواتك كمبرمج محترف.',
+      'قبل أن تكتب سطراً برمجياً واحداً في HTML أو جافاسكريبت، يجب أن تفهم البنية التحتية للإنترنت، وكيف يستقبل المتصفح البيانات ويرسمها، وإتقان نظام إدارة النسخ Git ومنصة GitHub والتعامل مع موجه الأوامر (Terminal).',
     prerequisites: [
       'جهاز كمبيوتر واتصال بالإنترنت',
       'لا يُشترط أي خبرة برمجية سابقة (نبدأ تمامًا من الصفر)',
-      'الرغبة في الفهم العميق لما يدور خلف كواليس المتصفح',
+      'الرغبة في الفهم العميق للشبكات وما يدور خلف كواليس المتصفح',
     ],
     learningOutcomes: [
-      'فهم مسار الطلب الكامل من كتابة الدومين حتى ظهور البكسلات على الشاشة (DNS, IP, HTTP/HTTPS)',
-      'استيعاب طريقة رسم المتصفح للصفحة (DOM, CSSOM, Render Tree, Paint, Layout)',
-      'التعامل السلس مع موجه الأوامر (Terminal / CLI) لإدارة الملفات والمجلدات',
-      'إدارة النسخ وحماية الكود بنظام Git الاحترافي والتعاون على GitHub عبر Pull Requests',
+      'فهم دورة الطلب والاستجابة الكاملة: كيف يعمل الإنترنت، خوادم الـ DNS، أسماء النطاقات (Domain Name)، والاستضافة (Hosting)',
+      'فهم بروتوكولات الويب: HTTP و HTTPS وتشفير TLS وأكواد الحالة ومعنى CORS و CSP',
+      'تشريح محركات المتصفحات: الـ Rendering Engine (Blink, WebKit, Gecko) وخطوات Critical Rendering Path',
+      'إتقان أوامر التيرمينال (CLI) للتحكم في الملفات وتثبيت البيئات البرمجية',
+      'احتراف نظام Git لإدارة النسخ والتحكم بالمستودعات، وإنشاء الفروع والدمج، والتعاون عبر GitHub و Pull Requests',
     ],
     accentClass: 'border-amber-500/40 bg-amber-500/10 text-amber-400',
     badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
     glowClass: 'from-amber-500/20 via-amber-500/5 to-transparent',
     branches: [
       {
-        id: 'web-internet',
-        title: 'الإنترنت والشبكات (How the Web Works)',
-        subtitle: 'فهم دورة الطلب والاستجابة',
-        tag: 'مفاهيم تأسيسية',
+        id: 'internet-web-basics',
+        title: 'الإنترنت وكيف يعمل الويب (How the Internet Works)',
+        subtitle: 'المسار الدقيق للبيانات بين المتصفح والخادم',
+        tag: 'تأسيس شبكات الويب',
         icon: Globe,
-        learnItems: [
-          'كيف يعمل الـ DNS، الـ IP، والـ Domain Name والفرق بين IPv4 و IPv6',
-          'بروتوكول HTTP / HTTPS وتشفير TLS وأكواد الحالة (200, 301, 401, 404, 500)',
-          'كيف يرسم المتصفح الصفحة: Critical Rendering Path، DOM و CSSOM',
-          'الفرق المعماري بين الـ Client والـ Server وكيف تتخاطب الـ APIs',
+        topicGroups: [
+          {
+            groupTitle: '1. بنية الإنترنت والشبكات (Internet Architecture)',
+            items: [
+              'كيف يعمل الإنترنت؟ (How does the Internet work): الكابلات البحرية، الـ Routers، وحزم البيانات (Packets)',
+              'عناوين الـ IP وأسماء النطاقات: ما هو Domain Name؟ الفرق بين IPv4 و IPv6 ونظام تسمية النطاقات TLDs',
+              'خوادم الـ DNS: دورة ترجمة العنوان (Recursive Resolver, Root Server, TLD Server, Authoritative Server)',
+              'ما هي الاستضافة السحابية (Hosting)؟ الفرق بين الاستضافة المشتركة، السيرفرات الافتراضية VPS، والسحابة (Cloud/Serverless)',
+            ],
+          },
+          {
+            groupTitle: '2. بروتوكولات الاتصال والمتصفحات (HTTP & Browsers)',
+            items: [
+              'ما هو بروتوكول HTTP؟ إصدارات HTTP/1.1 و HTTP/2 و HTTP/3 وطبقة الأمان والتشفير HTTPS / TLS',
+              'أكواد الحالة (HTTP Status Codes): فئات 2xx (نجاح)، 3xx (إعادة توجيه)، 4xx (أخطاء عميل)، 5xx (أخطاء خادم)',
+              'كيف تعمل المتصفحات (Browsers & Rendering Engine): من تحميل HTML إلى شجرة الـ DOM و CSSOM و Render Tree',
+              'مراحل رسم الشاشة (Layout / Reflow, Paint, Compositing) وتفادي الاختناقات الأدائية الأولية',
+            ],
+          },
         ],
         links: [
-          { label: '1. DNS و IP و Domain', href: '/articles/web-docs-01-how-internet-dns-ip-domain-works' },
-          { label: '2. HTTP/HTTPS و Status Codes', href: '/articles/web-docs-02-http-https-tls-status-codes' },
-          { label: '3. DOM و CSSOM ورسم الصفحة', href: '/articles/web-docs-03-browser-rendering-dom-cssom-critical-path' },
-          { label: '4. Client vs Server و APIs', href: '/articles/web-docs-04-client-vs-server-and-apis-architecture' },
+          { label: 'توثيق كيف يعمل الإنترنت والـ DNS', href: '/articles/web-docs-01-how-internet-dns-ip-domain-works' },
+          { label: 'دليل بروتوكول HTTP/HTTPS وأكواد الحالة', href: '/articles/web-docs-02-http-https-tls-status-codes' },
+          { label: 'شرح معمارية المتصفحات و DOM و CSSOM', href: '/articles/web-docs-03-browser-rendering-dom-cssom-critical-path' },
+          { label: 'معمارية العميل والخادم Client vs Server', href: '/articles/web-docs-04-client-vs-server-and-apis-architecture' },
         ],
       },
       {
-        id: 'tooling-git',
-        title: 'بيئة التطوير والتحكم بالنسخ (Tooling & Git)',
-        subtitle: 'عدة الشغل اليومية للمبرمج',
-        tag: 'إلزامي للعمل',
+        id: 'git-github-tooling',
+        title: 'نظام إدارة النسخ ومستودعات GitHub (Git & GitHub Mastery)',
+        subtitle: 'بيئة العمل اليومية للمبرمج المحترف من سطر الأوامر حتى التعاون الجماعي',
+        tag: 'مهارة هندسية إلزامية',
         icon: GitBranch,
-        learnItems: [
-          'تهيئة محرر VS Code وأهم الإضافات والاختصارات الإنتاجية',
-          'استخدام الـ Terminal و CLI للتنقل وتشغيل السيرفرات وإدارة الحزم',
-          'أساسيات Git: init, add, commit, branch, merge, stash, rebase',
-          'رفع مشاريعك على GitHub وإدارتها عبر Pull Requests وتوثيق README احترافي',
+        topicGroups: [
+          {
+            groupTitle: '1. أساسيات Git وسطر الأوامر (Core Git CLI)',
+            items: [
+              'أساسيات سطر الأوامر (Terminal / Bash / PowerShell): تنقل المجلدات، إنشاء الملفات، تشغيل الأوامر والبرامج',
+              'مفهوم أنظمة التحكم بالإصدار (VCS): لماذا نستخدم Git؟ ومقارنته بالأنظمة القديمة مثل SVN',
+              'دورة حياة الملف في Git: Working Directory، Staging Area، و Commit History',
+              'أوامر Git الأساسية: `git init`, `git config` (المحلي والعالمي), `git add`, `git commit`, `git status`, `git log`',
+              'ملف التطهير والتجاهل `.gitignore`: القواعد، الأنماط، وتفادي رفع الملفات الحساسة وبيئات العمل `node_modules`',
+            ],
+          },
+          {
+            groupTitle: '2. التفريع والدمج واستراتيجيات الحل (Branching & Merging)',
+            items: [
+              'الفروع (Branches): إنشاء الفروع، التبديل بينها (`git checkout` / `git switch`)، وإعادة التسمية والحذف',
+              'استراتيجيات الدمج (Merging Strategies): Fast-Forward مقابل 3-Way Merge، ومفهوم `git rebase` و `git cherry-pick`',
+              'حل التعارضات البرمجية (Merge Conflicts): فهم إشارات التعارض `<<<<<<<` وحلها خطوة بخطوة',
+              'حفظ التعديلات المؤقتة بـ `git stash` (pop, apply, drop, list)',
+              'إلغاء التغييرات والرجوع في التاريخ: `git revert` الآمن، و `git reset` بخياراته (`--soft`, `--mixed`, `--hard`)',
+            ],
+          },
+          {
+            groupTitle: '3. التعاون عبر GitHub و CI/CD الأساسي (Collaboration on GitHub)',
+            items: [
+              'المستودعات البعيدة (Remotes): ربط المستودع، `git remote add`, `git push`, `git pull`, و `git fetch`',
+              'منصة GitHub: إدارة الحساب والملف الشخصي، إنشاء المستودعات العامة والخاصة، وتوثيق README بصيغة Markdown',
+              'سير عمل الفرق (Team Workflow): Forking، إنشاء الفروع الموجهة، وفتح الـ Pull Requests (PRs)',
+              'مراجعة الأكواد (Code Reviews): طلب المراجعة، إضافة التعليقات السطرية، والـ Approvals',
+              'أدوات GitHub المتقدمة: Issues و Labels والـ Milestones ومشاريع الـ Kanban، والتعريف بمقدمة GitHub Actions للـ CI/CD',
+            ],
+          },
         ],
         links: [
-          { label: '1. إعداد VS Code باحتراف', href: '/articles/tooling-docs-01-vscode-setup-extensions-shortcuts' },
-          { label: '2. احتراف الـ Terminal و CLI', href: '/articles/tooling-docs-02-terminal-cli-essentials' },
-          { label: '3. توثيق Git الكامل', href: '/articles/tooling-docs-03-git-fundamentals-branching-merging' },
-          { label: '4. GitHub و PRs و README', href: '/articles/tooling-docs-04-github-pull-requests-readme' },
+          { label: 'دليل إعداد بيئة VS Code والتيرمينال', href: '/articles/tooling-docs-01-vscode-setup-extensions-shortcuts' },
+          { label: 'دليل Git الشامل: من الصفر حتى الفروع والدمج', href: '/articles/tooling-docs-03-git-fundamentals-branching-merging' },
+          { label: 'دليل GitHub والتعاون و Pull Requests الاحترافية', href: '/articles/tooling-docs-04-github-pull-requests-readme' },
+          { label: 'دليل النشر المجاني واستضافة المشاريع', href: '/articles/web-deployment-free-guide' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'تجهيز بيئة العمل ونشر أول مستودع Git موثق',
-      subtitle: 'تطبيق عملي على التيرمينال و Git و GitHub',
-      techStack: ['VS Code', 'Terminal / Bash', 'Git CLI', 'GitHub Markdown'],
+      title: 'تجهيز بيئة العمل الكاملة ونشر أول مستودع Git موثق مع سير عمل الفريق',
+      subtitle: 'تطبيق عملي حقيقي يغطي التيرمينال، التفريع، وحل التعارضات، ورفع مستند موثق على GitHub',
+      techStack: ['VS Code', 'Terminal / Bash', 'Git CLI', 'GitHub Markdown', 'Branching & PRs'],
       challenge:
-        'إعداد بيئة عمل متكاملة، إنشاء مستودع Git محلي عبر الـ CLI، وعمل فروع مستقلة (branches)، وحل تعارض بسيط (merge conflict)، ثم رفعه على GitHub مع README احترافي يوضح خطتك التعليمية.',
-      projectLink: { label: 'دليل Git و GitHub العملي', href: '/articles/git-github-practical-guide' },
+        'إنشاء مستودع Git محلي عبر سطر الأوامر، وضبط ملف .gitignore احترافي، وإنشاء فرعين ومحاكاة تعارض ودمجه (Merge Conflict Resolution)، ثم رفع المشروع إلى GitHub مع وثيقة README غنية ومفصلة بخطة التعلم مع فتح Pull Request واعتماده.',
+      projectLink: { label: 'دليل Git و GitHub العملي', href: '/articles/tooling-docs-03-git-fundamentals-branching-merging' },
     },
-    nextStepPill: 'الانتقال إلى المرحلة 01: معمارية الويب والواجهات (HTML5 & Modern CSS3)',
+    nextStepPill: 'الانتقال إلى المرحلة 01: معمارية الويب والواجهات (HTML5 الكامل & Modern CSS3)',
   },
   {
     step: '01',
     level: 'beginner',
     role: 'Web Interface Developer',
-    roleAr: 'مطور واجهات الويب الأساسية',
-    title: 'المرحلة الأولى: معمارية الويب والواجهات المتجاوبة (HTML5 & CSS3)',
-    duration: '3 – 4 أسابيع',
+    roleAr: 'مهندس هيكلة وتصميم واجهات الويب',
+    title: 'المرحلة الأولى: معمارية الويب الدلالية، هندسة التنسيق، والتصميم المتجاوب (HTML5 & CSS3 & Tailwind)',
+    duration: '4 – 5 أسابيع',
     description:
-      'هيكل وتصميم صفحات الويب بمواصفات المعايير العالمية (WHATWG و W3C). هنا تتعلم بناء واجهات سهلة الاستخدام، متوافقة مع محركات البحث، وتعمل بانسيابية على كل الشاشات.',
+      'هيكل وتصميم صفحات الويب وفق أعلى المعايير القياسية العالمية (W3C و WHATWG). في هذه المحطة تتقن لغة HTML5 الدلالية، وتستوعب معماريات CSS المتقدمة (Flexbox, CSS Grid, Box Model)، ومبادئ التصميم المتجاوب Mobile-First، وإطار عمل Tailwind CSS مع إمكانية الوصول A11y ومعايير محركات البحث SEO.',
     prerequisites: [
-      'إكمال المحطة 00 واستخدام التيرمينال ومحرر VS Code',
-      'فهم كيفية استدعاء ملفات HTML و CSS داخل المتصفح',
+      'إكمال المحطة 00 واستخدام التيرمينال ومحرر VS Code ومستودعات Git',
+      'فهم كيفية استدعاء ملفات HTML و CSS وربطها بالمتصفح',
     ],
     learningOutcomes: [
-      'بناء صفحات دلالية Semantic HTML5 متوافقة مع متطلبات الـ SEO ومعايير الوصول A11y',
-      'السيطرة التامة على CSS Box Model ونماذج التدفق والتراكب (Z-Index و Stacking Context)',
-      'إتقان التوزيعات أحادية البعد (Flexbox) والتوزيعات الشبكية المعقدة (CSS Grid)',
-      'تصميم واجهات متجاوبة Responsive Design تعتمد فلسفة Mobile-First ونقاط التوقف',
-      'تسريع التطوير وبناء واجهات عصرية متناسقة باستخدام Tailwind CSS و Design Tokens',
+      'بناء صفحات ويب دلالية Semantic HTML5 مطابقة تماماً لمعايير محركات البحث (SEO) وقارئات الشاشة (A11y)',
+      'التحكم الكامل في الـ Forms والتحقق من صحة المدخلات ورفع الملفات وقيود الأمان',
+      'تضمين الوسائط المتعددة (Images, Audio, Video, iframes) بأعلى أداء واستخدام Priority Hints و WebP/AVIF',
+      'فهم عميق لـ CSS Box Model، المحددات (Selectors)، الهوامش المنهارة (Margin Collapse)، ونظام الأوزان (Specificity)',
+      'احتراف التوزيعات الحديثة: Flexbox للواجهات المرنة أحادية البعد، و CSS Grid للتخطيطات ثنائية الأبعاد المعقدة',
+      'إتقان التصميم المتجاوب (Responsive Design) مع Mobile-First و Media Queries و Container Queries',
+      'كتابة CSS سريع وقابل للصيانة عبر Tailwind CSS ومعمارية BEM ومتغيرات CSS ونظام الوضع الليلي (Dark Mode)',
     ],
     accentClass: 'border-teal-500/40 bg-teal-500/10 text-teal-400',
     badgeClass: 'bg-teal-500/15 text-teal-400 border-teal-500/30',
     glowClass: 'from-teal-500/20 via-teal-500/5 to-transparent',
     branches: [
       {
-        id: 'html5-semantics',
-        title: 'HTML5 الدلالي وإمكانية الوصول (Accessibility & SEO)',
-        subtitle: 'الهيكل المعماري السليم للصفحة',
-        tag: 'معايير دولية',
+        id: 'html5-deep-dive',
+        title: 'توثيق HTML5 الكامل والدلالي (Semantic HTML5 & Accessibility)',
+        subtitle: 'الهيكل المعماري السليم، النماذج، الوسائط، ومحركات البحث',
+        tag: 'معايير الويب القياسية',
         icon: Layers,
-        learnItems: [
-          'العناصر الدلالية: header, nav, main, article, section, aside, footer والفرق الدقيق بينها',
-          'نماذج الإدخال المعقدة: Form Validation، حقول الإدخال، accessibility labels، و autocomplete',
-          'معايير الوصول A11y: أدوار ARIA، لوحة المفاتيح والـ Focus States، ودعم قارئات الشاشة',
-          'تهيئة الـ Meta Tags لمحركات البحث (SEO) والـ Open Graph لشبكات التواصل الاجتماعي',
+        topicGroups: [
+          {
+            groupTitle: '1. أساسيات ولغة التوصيف (HTML Basics & Structure)',
+            items: [
+              'مفهوم لغات التوصيف (Markup Languages) ومكانة HTML في الواجهات الأمامية',
+              'بنية المستند الأساسية: `<!DOCTYPE html>`, `<html>`, `<head>`, `<body>`, وبيانات الـ `<meta>` والـ `<title>`',
+              'الوسوم والسمات (Tags & Attributes): المعيار العالمي، عدم حساسية الأحرف، الكيانات الخاصة (HTML Entities)، والتعليقات والمسافات البيضاء',
+              'وسوم النصوص والتنسيق الأساسي: العناوين `<h1>` إلى `<h6>`، الفقرات `<p>`، الروابط `<a>`، الفواصل `<hr>` و `<br>`، التوكيد `<strong>` و `<em>`، والرموز `<code>` و `<pre>`',
+              'تجميع النصوص والسمات العامة: `<div>` و `<span>`، ومحددات المعرفات `id` والفئات `class`، وسمات البيانات المخصصة `data-*` و `style`',
+            ],
+          },
+          {
+            groupTitle: '2. القوائم، الجداول، والوسائط المتعددة (Lists, Tables & Media)',
+            items: [
+              'أنواع القوائم: القوائم المرتبة `<ol>`، غير المرتبة `<ul>`، قوائم التعريفات `<dl>, <dt>, <dd>`، والقوائم المتداخلة (Nested Lists)',
+              'بنية الجداول الكاملة: `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<th>`, `<td>` والسمات `colspan` و `rowspan`',
+              'تضمين الصور: الفرق بين `<img>` و `<figure>/<figcaption>`، واستخدام `alt`، وأبعاد العرض والارتفاع لمنع الـ CLS، و Priority Hints و `loading="lazy"`',
+              'الصوت والفيديو والتضمين الخارجي: وسوم `<audio>` و `<video>` مع `<source>` و `controls`، وتضمين الـ `<iframe>` وسياسات الأمان CSP',
+            ],
+          },
+          {
+            groupTitle: '3. النماذج، الدلالات، وإمكانية الوصول (Forms, Semantics & A11y)',
+            items: [
+              'استخدام النماذج (Forms): الحقول `<input>` بأنواعها (text, email, password, number, checkbox, radio)، `<textarea>`، القوائم `<select>` و `<option>`',
+              'عناصر التسمية والتحقق: وسوم `<label>` المرتبطة بـ `for/id`، رفع الملفات `type="file"`، والتحقق الأصلي (required, pattern, min/max)',
+              'الوسوم الدلالية لهيكلة الصفحة: `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`',
+              'وسوم الاقتباس والمراجع: `<blockquote>`, `<q>`, `<cite>`, `<abbr>`, `<dfn>`, `<address>`، ووسوم إبراز التغييرات `<ins>`, `<del>`, `<s>`',
+              'إمكانية الوصول (Web Accessibility): معايير WCAG، أدوار ARIA (role, aria-label, aria-expanded)، التصفح بالـ Keyboard و Focus States',
+              'أساسيات الـ SEO في HTML: وسوم Meta الوصفية، الروابط الأساسية (Canonical URLs)، وبطاقات Open Graph و Twitter Cards',
+            ],
+          },
         ],
         links: [
-          { label: 'توثيق HTML5 الكامل (6 دروس)', href: '/frontend/html' },
-          { label: 'دليل الوسوم الأساسية للمبتدئين', href: '/articles/html-basic-tags-guide' },
-          { label: 'دليل وسوم HTML المتقدمة', href: '/articles/advanced-html-tags-guide' },
+          { label: 'توثيق HTML5 الكامل (6 دروس بالبلدي)', href: '/frontend/html' },
+          { label: 'دليل وسوم HTML الأساسية الشامل', href: '/articles/html-basic-tags-guide' },
+          { label: 'دليل وسوم HTML المتقدمة والدلالية', href: '/articles/advanced-html-tags-guide' },
         ],
       },
       {
-        id: 'modern-css3-tailwind',
-        title: 'هندسة CSS3 والتصميم المتجاوب و Tailwind CSS',
-        subtitle: 'المظهر، التجاوب، والحركة الانسيابية',
+        id: 'css3-architecture-tailwind',
+        title: 'هندسة التنسيق والتصميم المتجاوب و Tailwind CSS (CSS3 Mastery)',
+        subtitle: 'المظهر الاحترافي، أنظمة التوزيع، الحركة، وهندسة الأكواد الحديثة',
         tag: 'تصميم عالي الجودة',
         icon: Layout,
-        learnItems: [
-          'فهم Box-Sizing، الهوامش المنهارة (Margin Collapse)، و Specificity في CSS',
-          'احتراف Flexbox لبناء شاشات الموبايل والـ Navbars والقوائم المرنة',
-          'احتراف CSS Grid لبناء شبكات المنتجات، لوحات التحكم، والـ Dashboards المعقدة',
-          'تصميم متجاوب Mobile-First باستخدام Media Queries ودوال `clamp()` و `calc()`',
-          'بناء واجهات إنتاجية بـ Tailwind CSS بنظام الألوان والمتغيرات والمتغيرات الداكنة (Dark Mode)',
+        topicGroups: [
+          {
+            groupTitle: '1. أساسيات وبنية CSS (Syntax & Box Model)',
+            items: [
+              'طرق تضمين CSS: Inline CSS، Internal CSS، و External CSS، وفهم أسبقية التدفق (Cascading Order)',
+              'بنية القواعد والمحددات: Simple Selectors (النوع، الفئة، المعرف، العام، التجميع)، ومحددات السمات (Attribute Selectors)',
+              'محددات الروابط (Combinators): الأبناء (`child >`)، السلالة (`descendant `)، الأخ المجاور (`adjacent sibling +`)، والأخوة العامة (`general sibling ~`)',
+              'العناصر الشبه زائفة والفئات (Pseudo-classes & Pseudo-elements): `:hover`, `:focus`, `:active`, `:first-child`, `:nth-child()`, و `::before`, `::after`',
+              'نموذج الصندوق (Box Model): تفصيل Content, Padding, Border, Margin، وتأثير `box-sizing: border-box`، وظاهرة Margin Collapse',
+              'الألوان والوحدات: Hex, RGB, RGBA, HSL, HSLA، والوحدات المطلقة (px) مقابل النسبية (rem, em, %, vw, vh) ودوال CSS الحسابية (`calc()`, `min()`, `max()`, `clamp()`)',
+            ],
+          },
+          {
+            groupTitle: '2. التوزيع والمواقع وشبكات العرض (Display, Positioning & Layouts)',
+            items: [
+              'خاصية Display: الفرق الجوهري بين `inline` و `block` و `inline-block` و `none` مقابل `visibility: hidden`',
+              'خاصية الموقع (Positioning): `static`, `relative`, `absolute`, `fixed`, `sticky`، ومفهوم سياق التكديس Z-Index & Stacking Context',
+              'أوزان الخصائص والأسبقية (CSS Specificity): حساب نقاط المحددات وفهم كيفية تجنب استخدام `!important`',
+              'توزيع العناصر بـ Flexbox: اتجاه المحاور (flex-direction)، المحاذاة (justify-content, align-items, align-self)، والنمو والانكماش (flex-grow, flex-shrink, flex-basis, gap)',
+              'توزيع العناصر بـ CSS Grid: تعريف الأعمدة والصفوف (grid-template-columns, grid-template-rows, fr unit)، المناطق (grid-template-areas)، والملء التلقائي (auto-fit, auto-fill, minmax())',
+            ],
+          },
+          {
+            groupTitle: '3. التصميم المتجاوب، الحركة، ومعماريات الإنتاج (Responsive, Animations & Tailwind)',
+            items: [
+              'فلسفة التصميم المتجاوب (Responsive Web Design): منهجية Mobile-First ونقاط التوقف (Breakpoints) باستخدام Media Queries',
+              'مستقبل التجاوب: استعلامات الحاويات (Container Queries) لتجاوب المكونات مع مساحتها وليس نافذة المتصفح فقط',
+              'الحركة والانتقالات: خصائص Transitions، التحويلات ثنائية وثلاثية الأبعاد Transforms (translate, rotate, scale, skew)، والرسوم المتحركة بـ `@keyframes`',
+              'المعالجات القبلية وهندسة الكود: Sass و SCSS، منهجية التسمية BEM، و CSS Modules لتفادي تضارب الفئات',
+              'إطار عمل Tailwind CSS: الفئات المساعدة (Utility-First)، أنظمة التصميم (Design Tokens)، الوضع الليلي (Dark Mode)، وضغط الحزمة (JIT Compiler)',
+            ],
+          },
         ],
         links: [
-          { label: 'توثيق CSS3 الكامل (8 دروس)', href: '/frontend/css' },
-          { label: 'أساسيات CSS للمبتدئين', href: '/articles/css-tutorial-for-beginners' },
-          { label: 'احتراف Tailwind CSS وأنظمة التصميم', href: '/articles/modern-css-mastery-tailwind-design-systems-responsive-ui' },
+          { label: 'توثيق CSS3 الكامل (8 دروس مفصلة)', href: '/frontend/css' },
+          { label: 'أساسيات CSS للمبتدئين خطوة بخطوة', href: '/articles/css-tutorial-for-beginners' },
+          { label: 'احتراف CSS الحديث و Tailwind CSS وأنظمة التصميم', href: '/articles/modern-css-mastery-tailwind-design-systems-responsive-ui' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'بناء صفحة هبوط متجاوبة بالكامل مع Dark Mode ومعايير A11y',
-      subtitle: 'مشروع متكامل يجمع HTML5 دلالي و CSS Grid و Tailwind',
-      techStack: ['HTML5 Semantic', 'Modern CSS Grid', 'Tailwind CSS', 'Accessible Forms'],
+      title: 'بناء منصة متجاوبة متعددة الأقسام مع لوحة تحكم شبكية ووضع داكن كامل ومعايير A11y',
+      subtitle: 'مشروع حقيقي متكامل يجمع HTML5 دلالي متقدم و CSS Grid و Flexbox و Tailwind CSS',
+      techStack: ['HTML5 Semantic', 'CSS Grid & Flexbox', 'Tailwind CSS', 'Responsive Mobile-First', 'Accessible Forms'],
       challenge:
-        'بناء Landing Page احترافية متعددة الأقسام متجاوبة تمامًا من 320px إلى 2560px، تدعم لوحة المفاتيح بدون فأرة، متوافقة بنسبة 100% مع قارئات الشاشة، مع وضع ليلي/نهاري مريح.',
-      projectLink: { label: 'انتقل لتوثيق HTML و CSS', href: '/frontend/html' },
+        'بناء موقع متكامل (Landing Page + Dashboard Grid) متجاوب تماماً من 320px حتى 4K، يحتوي على جداول تفاعلية مجهزة للتمرير الأفقي، ونماذج تحقق كاملة، ويدعم التنقل بلوحة المفاتيح، مع تبديل وضع ليلي/نهاري مريح وفحص Lighthouse بنتيجة 98+ في Accessibility و Best Practices.',
+      projectLink: { label: 'استعرض توثيق HTML و CSS على المنصة', href: '/frontend/html' },
     },
-    nextStepPill: 'الانتقال إلى المرحلة 02: احتراف جافاسكريبت الشامل (75 درسًا + 10 مشاريع)',
+    nextStepPill: 'الانتقال إلى المرحلة 02: احتراف جافاسكريبت الشامل (75 درسًا موسوعيًا + 10 مشاريع)',
   },
   {
     step: '02',
     level: 'intermediate',
     role: 'Core JavaScript Engineer',
-    roleAr: 'مهندس جافاسكريبت المتقن للأساسيات',
-    title: 'المرحلة الثانية: احتراف جافاسكريبت الشامل (Core JS, DOM & Event Loop)',
-    duration: '6 – 8 أسابيع',
+    roleAr: 'مهندس جافاسكريبت الشامل والمتعمق',
+    title: 'المرحلة الثانية: احتراف لغة JavaScript الشامل (من محرك V8 وحتى الـ Event Loop والـ Web APIs)',
+    duration: '8 – 10 أسابيع',
     description:
-      'العمود الفقري لأي مهندس واجهات أمامية حقيقي. من غير إتقان جافاسكريبت النظيفة، ستتحول React وأي إطار عمل إلى طلاسم. هنا تتقن اللغة من محرك V8 وحتى الـ Event Loop والـ Asynchronous.',
+      'العمود الفقري الحقيقي لكل مهندس واجهات أمامية. بدون إتقان جافاسكريبت بمستواها المعماري، تصبح أطر العمل مثل React مجرد سحر غامض. هنا تدرس المنهج الأضخم: 75 درساً موسوعياً (أكثر من 780,000 كلمة و 221 جدولاً و 4,000 كود) مع 10 مشاريع عملية كاملة.',
     prerequisites: [
-      'فهم جيد لـ HTML و CSS وبناء عناصر الويب (Stage 01)',
-      'معرفة أساسية بمتغيرات ودوال البرمجة العامة',
+      'إتقان المرحلة 01: بناء العناصر الدلالية بـ HTML5 وتنسيقها بـ CSS3 المتجاوب',
+      'فهم المنطق البرمجي العام والرغبة في استيعاب ما يجري داخل ذاكرة الحاسوب',
     ],
     learningOutcomes: [
-      'فهم عميق لكيفية تنفيذ الكود داخل محرك جافاسكريبت (Call Stack, Memory Heap, Lexical Scope, Closures)',
-      'إتقان البرمجة الكائنية وتدفق الوراثة بالـ Prototype Chain و ES6 Classes',
-      'التحكم الكامل في شجرة الـ DOM وتدفق الأحداث (Event Bubbling, Capturing, Delegation)',
-      'احتراف البرمجة غير المتزامنة: الـ Event Loop، الـ Microtasks والـ Macrotasks، الـ Promises، والـ async/await',
-      'التواصل مع السيرفر عبر Fetch API و REST APIs والتعامل الآمن مع الأخطاء واستخدام أدوات الـ Debugger',
+      'فهم تشريح محركات جافاسكريبت (V8, SpiderMonkey) ومراحل التنفيذ (Call Stack, Memory Heap, Lexical Scope, Hoisting)',
+      'السيطرة الكاملة على أنواع البيانات، مقارنات التساوي الخوارزمية (SameValue, SameValueZero)، والتحويل الضمني والصريح (Coercion)',
+      'إتقان البرمجة الكائنية وتدفق الوراثة عبر سلاسل الـ Prototypes وفئات ES6 Classes',
+      'التحكم الاحترافي في شجرة الـ DOM ومعالجة الأحداث بأنماط Bubbling و Capturing و Event Delegation',
+      'احتراف البرمجة غير المتزامنة: الـ Event Loop، طوابير Microtasks و Macrotasks، الـ Promises، والـ async/await',
+      'التواصل مع السيرفر عبر Fetch API وإلغاء الطلبات بـ AbortController وتتبع الأخطاء بـ DevTools',
+      'إتقان ميزات JavaScript الحديثة (ES6 حتى ES2025)، والوحدات البرمجية (ES Modules vs CommonJS)، و Web Storage و Browser APIs',
     ],
     accentClass: 'border-yellow-500/40 bg-yellow-500/10 text-yellow-400',
     badgeClass: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30',
     glowClass: 'from-yellow-500/20 via-yellow-500/5 to-transparent',
     branches: [
       {
-        id: 'js-engine-deep',
-        title: 'محرك جافاسكريبت والأساس العميق (Engine, Scope & Closures)',
-        subtitle: 'أسرار ما يجري داخل الذاكرة',
-        tag: 'أهم موضوع في المقابلات',
+        id: 'js-core-foundations',
+        title: 'الأساسيات المعمارية وأنواع البيانات والمحرك (Engine, Variables & Types)',
+        subtitle: 'المرحلة 01 إلى 05 من منهج جافاسكريبت',
+        tag: 'فهم أسرار الذاكرة',
         icon: Terminal,
-        learnItems: [
-          'Execution Context، مراحل الإنشاء والتنفيذ، و Hoisting في المتغيرات والدوال',
-          'Scope Chain، الـ Lexical Environment، والـ Closures وتطبيقاتها في الخصوصية وحفظ الحالة',
-          'سلوك الكلمة المفتاحية `this` والربط الصريح (call, apply, bind) وسلوك Arrow Functions',
-          'الكائنات و Prototype Chain و Prototypal Inheritance وفئات ES6 الحديثة',
+        topicGroups: [
+          {
+            groupTitle: '1. مقدمة اللغة والمتغيرات والأنواع (Introduction, Variables & Types)',
+            items: [
+              'مقدمة وتاريخ JavaScript: كيف نشأت، معايير ECMAScript وتطورها، ولجنة TC39 والمراحل الأربع للاقتراحات',
+              'المتغيرات وأماكن التخزين: مقارنة تفصيلية بين `var` و `let` و `const`، نطاقات المتغيرات (Block, Function, Global Scopes)',
+              'ظاهرة الرفع (Hoisting) والمنطقة الميتة المؤقتة Temporal Dead Zone (TDZ)',
+              'أنواع البيانات البدائية (Primitive Types): string, number, bigint, boolean, undefined, null, symbol',
+              'التحويل بين الأنواع (Type Casting): التحويل الصريح مقابل التحويل الضمني (Implicit Coercion) ومخاطره',
+            ],
+          },
+          {
+            groupTitle: '2. المقارنات، العوامل، والتحكم بالتدفق (Equality, Operators & Control Flow)',
+            items: [
+              'خوارزميات التساوي في المحرك: الفرق الدقيق بين `==` و `===` و `Object.is` وخوارزميات `isLooselyEqual` و `SameValue` و `SameValueZero`',
+              'العمليات والتعبيرات (Expressions & Operators): الحسابية، المنطقية (Short-circuiting)، الشرطية الثلاثية (Ternary)، دمج القيم الخالية (`??`)، والربط الاختياري (`?.`)',
+              'بنى التحكم والتكرار: `if/else`, `switch`، وحلقات `for`, `while`, `do...while`, `for...of`, `for...in` مع `break` و `continue`',
+              'إدارة الاستثناءات والأخطاء: `try`, `catch`, `finally`، إطلاق الأخطاء بـ `throw`، وأنواع كائنات الأخطاء المدمجة (TypeError, ReferenceError, SyntaxError)',
+            ],
+          },
         ],
         links: [
           { label: 'توثيق JavaScript الكامل (75 درسًا)', href: '/frontend/javascript' },
-          { label: 'المرحلة 01: أساسيات اللغة والبيانات', href: '/frontend/javascript#phase-01' },
-          { label: 'المرحلة 06: الكائنات والـ Prototypes', href: '/frontend/javascript#phase-06' },
-          { label: 'المرحلة 08: جافاسكريبت المتقدمة والـ Closures', href: '/frontend/javascript#phase-08' },
+          { label: 'المرحلة 01: أساسيات اللغة والبيانات (الدروس 1-5)', href: '/frontend/javascript#phase-01' },
+          { label: 'المرحلة 02: المتغيرات والأنواع (الدروس 6-12)', href: '/frontend/javascript#phase-02' },
+          { label: 'المرحلة 03: العمليات والتحكم (الدروس 13-20)', href: '/frontend/javascript#phase-03' },
         ],
       },
       {
-        id: 'js-dom-events',
-        title: 'الـ DOM وهندسة الأحداث (DOM Manipulation & Events)',
-        subtitle: 'التفاعل المباشر مع واجهة المستخدم',
-        tag: 'أساس بناء الـ UI',
+        id: 'js-functions-objects-data',
+        title: 'الدوال، الكائنات، وهياكل البيانات وسلاسل الـ Prototypes',
+        subtitle: 'المرحلة 04 إلى 08 من منهج جافاسكريبت',
+        tag: 'أهم موضوع في المقابلات',
         icon: Code2,
-        learnItems: [
-          'شجرة الـ DOM والفرق بين Node و Element وطرق البحث والتعديل السريعة',
-          'دورة حياة الأحداث: Event Capturing و Event Target و Event Bubbling',
-          'نمط Event Delegation لإدارة أحداث مئات العناصر بكفاءة وسرعة فائقة',
-          'إدارة النماذج والـ Form Events وتفادي إعادة تحميل الصفحة الافتراضية',
+        topicGroups: [
+          {
+            groupTitle: '1. هندسة الدوال والنطاقات والـ Closures (Functions & Scope)',
+            items: [
+              'أنماط تعريف الدوال: Function Declarations مقابل Function Expressions وسلوك الـ Hoisting بينهما',
+              'الدوال السهمية (Arrow Functions): القواعد، الإرجاع الضمني، وغياب كائن `arguments` وسلوك `this` المعجمي',
+              'المعاملات المتقدمة: المعاملات الافتراضية (Default Parameters) ومعاملات البقية (Rest Parameters `...args`)',
+              'الدوال الذاتية الاستدعاء (IIFE) ودوال الرتب العليا (Higher-Order Functions) وتطبيقات Callback Functions',
+              'سلسلة النطاقات والـ Closures: فهم Lexical Environment وكيف تحتفظ الدوال بذاكرتها واستخداماتها في حماية البيانات (Encapsulation)',
+              'الاستدعاء الذاتي (Recursion): شروط الإيقاف (Base Case) وإدارة Call Stack وتفادي الـ Stack Overflow',
+            ],
+          },
+          {
+            groupTitle: '2. المصفوفات، الكائنات، والبرمجة كائنية التوجه (Arrays, Objects & OOP)',
+            items: [
+              'المصفوفات وهياكل البيانات: طرق الإضافة والحذف، ودوال التحويل الشهيرة (`map`, `filter`, `reduce`, `flat`, `flatMap`)',
+              'المجموعات المتقدمة المدمجة (Keyed Collections): كائنات `Map` و `Set` و `WeakMap` و `WeakSet` وتطبيقات إدارة الذاكرة',
+              'الكائنات وتفكيك البيانات: Object Literals، التفكيك (Destructuring) للكائنات والمصفوفات، ومعامل النشر (Spread Operator)',
+              'دوال الكائنات الثابتة: `Object.keys`, `Object.values`, `Object.entries`, `Object.freeze`, و `Object.seal`',
+              'سلوك الكلمة المفتاحية `this`: في الدوال، الكائنات، الأحداث، وأدوات الربط الصريح (`call`, `apply`, `bind`)',
+              'الوراثة وسلاسل الـ Prototypes: فهم `prototype` و `__proto__`، والوراثة بالكائنات مقابل فئات ES6 Classes (constructor, extends, super, static, getters/setters)',
+            ],
+          },
         ],
         links: [
-          { label: 'المرحلة 09: الـ DOM وتدفق الأحداث', href: '/frontend/javascript#phase-09' },
-          { label: 'دليل تتبع وإصلاح أخطاء جافاسكريبت', href: '/articles/javascript-debugging-errors-guide' },
+          { label: 'المرحلة 04: الدوال المتقدمة (الدروس 21-30)', href: '/frontend/javascript#phase-04' },
+          { label: 'المرحلة 05: المصفوفات والنصوص (الدروس 31-40)', href: '/frontend/javascript#phase-05' },
+          { label: 'المرحلة 06: الكائنات وهياكل البيانات (الدروس 41-49)', href: '/frontend/javascript#phase-06' },
+          { label: 'المرحلة 07: Scope و this و OOP (الدروس 50-57)', href: '/frontend/javascript#phase-07' },
         ],
       },
       {
-        id: 'js-async-eventloop',
-        title: 'البرمجة غير المتزامنة والـ Event Loop و Fetch API',
-        subtitle: 'إدارة العمليات الشبكية والـ Asynchronous',
-        tag: 'لبّ الويب الحديث',
+        id: 'js-dom-async-browser',
+        title: 'الـ DOM، البرمجة غير المتزامنة، والـ Event Loop و Web APIs',
+        subtitle: 'المرحلة 09 إلى 11 من منهج جافاسكريبت والمشاريع العملية',
+        tag: 'لبّ الويب التفاعلي',
         icon: Zap,
-        learnItems: [
-          'كيف تتعامل جافاسكريبت الأحادية الخيط مع العمليات المتزامنة وغير المتزامنة',
-          'تشريح الـ Event Loop: Call Stack، Microtask Queue (Promises)، و Macrotask Queue (Timer)',
-          'بناء الـ Promises والتعامل مع حالاتها (Pending, Fulfilled, Rejected) وسلسلة `.then()`',
-          'كتابة كود نظيف مقروء بـ `async/await` وإدارة الأخطاء الشاملة بـ `try/catch/finally`',
-          'استدعاء البيانات من السيرفر عبر Fetch API وإلغاء الطلبات بـ `AbortController`',
+        topicGroups: [
+          {
+            groupTitle: '1. شجرة الـ DOM وتدفق الأحداث (DOM & Events Architecture)',
+            items: [
+              'معمارية شجرة الـ DOM: التمييز الدقيق بين Nodes و Elements وطرق التحديد السريعة (`querySelector`, `getElementById`)',
+              'إنشاء وتعديل وحذف العناصر: `createElement`, `append`, `prepend`, `remove`، وإدارة الـ ClassList و Styles و Attributes',
+              'تدفق الأحداث المتقدم (Event Flow): مراحل Event Capturing، Target، و Event Bubbling، واستخدام `stopPropagation` و `preventDefault`',
+              'نمط تفويض الأحداث (Event Delegation): إدارة أحداث القوائم والجداول الكبيرة عبر مستمع واحد عالي الكفاءة',
+            ],
+          },
+          {
+            groupTitle: '2. البرمجة غير المتزامنة والـ Event Loop (Asynchronous JavaScript)',
+            items: [
+              'البرمجة المتزامنة مقابل غير المتزامنة: كيف تنجز جافاسكريبت الأحادية الخيط مهاماً متعددة دون تجميد الواجهة',
+              'تشريح الـ Event Loop بالكامل: Call Stack، و Web APIs، وطابور المهام الدقيقة (Microtask Queue للـ Promises)، وطابور المهام العامة (Macrotask Queue للـ Timers)',
+              'الوعود (Promises): فهم الحالات (Pending, Fulfilled, Rejected)، وسلسلة الوعود، ودوال `Promise.all`, `Promise.race`, `Promise.allSettled`, `Promise.any`',
+              'البرمجة غير المتزامنة بـ `async/await`: كتابة كود يشبه الكود المتزامن، ومعالجة الأخطاء الشاملة بـ `try/catch`',
+              'التخاطب الشبكي بـ Fetch API: استدعاء الـ REST APIs، إرسال ترويسات Headers والـ Body، وإلغاء الطلبات بـ `AbortController`',
+            ],
+          },
+          {
+            groupTitle: '3. واجهات المتصفح الحديثة وتصحيح الأخطاء (Browser APIs & Modern JS)',
+            items: [
+              'التخزين في المتصفح: مقارنة تفصيلية بين LocalStorage و SessionStorage والـ Cookies الآمنة وتخزين IndexedDB',
+              'واجهات المتصفح المدمجة (Web APIs): Clipboard API، Geolocation API، Notifications API، و Intersection Observer',
+              'وحدات جافاسكريبت (Modules): معايير ES Modules (`import`/`export`) مقابل CommonJS (`require`) في السيرفر والمتصفح',
+              'أدوات تصحيح الأخطاء (Browser DevTools): استخدام نقاط التوقف (Breakpoints)، مراقبة Call Stack، واكتشاف تسريبات الذاكرة (Memory Leaks)',
+            ],
+          },
         ],
         links: [
-          { label: 'المرحلة 10: البرمجة غير المتزامنة والـ Event Loop', href: '/frontend/javascript#phase-10' },
-          { label: 'المرحلة 11: جافاسكريبت الحديثة و Browser APIs', href: '/frontend/javascript#phase-11' },
-          { label: 'دليل جافاسكريبت الحديثة ES6+ الشامل', href: '/articles/modern-javascript-comprehensive-guide-es6-async' },
+          { label: 'المرحلة 09: الـ DOM وتدفق الأحداث (الدروس 60-64)', href: '/frontend/javascript#phase-09' },
+          { label: 'المرحلة 10: البرمجة غير المتزامنة والـ Event Loop (الدروس 65-71)', href: '/frontend/javascript#phase-10' },
+          { label: 'المرحلة 11: جافاسكريبت الحديثة و Browser APIs (الدروس 72-75)', href: '/frontend/javascript#phase-11' },
+          { label: 'دليل تصحيح أخطاء جافاسكريبت الاحترافي', href: '/articles/javascript-debugging-errors-guide' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'إنجاز المشاريع العشرة التطبيقية المكتملة في التوثيق (P01 – P10)',
-      subtitle: 'تطبيقات عملية نقدية من كود الـ Vanilla JS الخالص بدون أي مكتبات',
-      techStack: ['Vanilla JS (ES6+)', 'DOM API', 'Event Delegation', 'Async/Fetch', 'LocalStorage'],
+      title: 'إنجاز المشاريع العشرة التطبيقية المكتملة في توثيق جافاسكريبت (P01 إلى P10)',
+      subtitle: 'مشاريع متدرجة الصعوبة مبنية بكود Vanilla JS خالص بدون أي مكتبات أو أطر عمل خارجية',
+      techStack: ['Vanilla JS (ES6+)', 'DOM Manipulation', 'Event Delegation', 'Async / Fetch', 'LocalStorage', 'Browser APIs'],
       challenge:
-        'بناء 10 مشاريع حقيقية متدرجة الصعوبة: من نظام تبديل الأنماط والـ Modals وحتى تطبيق إدارة مهام Kanban تفاعلي وتطبيق SPA مصغر مع تخزين محلي وتزامن كامل.',
+        'إنجاز المشاريع العشرة الرسمية: الآلة الحاسبة العلمية، لعبة تخمين الأرقام، تطبيق إدارة المهام Todo List، تطبيق الاختبارات التفاعلي Quiz App، تطبيق الطقس بالـ API الحي، متتبع المصروفات Expense Tracker، سلة التسوق التفاعلية Shopping Cart، مستكشف مستخدمي GitHub، لوحة التحكم المتقدمة Dashboard، والمشروع الختامي الشامل Final Project.',
       projectLink: { label: 'استعرض المشاريع العشرة في قسم جافاسكريبت', href: '/frontend/javascript#projects' },
     },
-    nextStepPill: 'الانتقال إلى المرحلة 03: توثيق React.js الكامل (10 فصول بالعامية المصرية)',
+    nextStepPill: 'الانتقال إلى المرحلة 03: احتراف React.js الكامل ومنظومة الـ Hooks المتقدمة',
   },
   {
     step: '03',
     level: 'intermediate',
     role: 'React Frontend Engineer',
-    roleAr: 'مهندس واجهات متخصص في React.js',
-    title: 'المرحلة الثالثة: توثيق React.js الكامل ومنظومة الـ Hooks (React 19)',
+    roleAr: 'مهندس واجهات متخصص في مكتبة React.js',
+    title: 'المرحلة الثالثة: احتراف مكتبة React.js الكامل، منظومة الـ Hooks، وإدارة الحالة (React 19)',
     duration: '6 – 8 أسابيع',
     description:
-      'الانتقال من كتابة جافاسكريبت التقليدية لبناء تطبيقات أحادية الصفحة (SPA) معقدة وقابلة للتوسع. منهج React الكامل المكون من 10 فصول مكتوب بأسلوب عملي عميق بالعامية المصرية.',
+      'الانتقال من جافاسكريبت التقليدية إلى بناء تطبيقات أحادية الصفحة (SPA) معقدة وقابلة للتوسع. منهج React الكامل المكون من 10 فصول تطبيقية يغطي المعمارية الداخلية، منظومة الـ Hooks، إدارة النماذج، والتوجيه، وإدارة الحالة العالمية، وإدارة بيانات السيرفر.',
     prerequisites: [
-      'فهم قوي لـ ES6+ (Destructuring, Spread, Arrow Functions, Array Methods)',
-      'فهم الـ Closures والـ Async/Await وتدفق الأحداث في DOM (Stage 02)',
+      'إتقان عميق لـ ES6+ (Destructuring, Spread, Arrow Functions, Array Methods)',
+      'فهم الـ Closures والـ Promises والـ Async/Await وتدفق الأحداث في DOM (Stage 02)',
     ],
     learningOutcomes: [
-      'فهم معمارية React الداخلية: Virtual DOM ومحرك React Fiber وآلية الـ Reconciliation',
-      'إتقان منظومة الـ Hooks: `useState`, `useEffect`, `useRef`, `useReducer`, `useMemo`, `useCallback`',
-      'بناء Custom Hooks لإعادة استخدام منطق الحالة (Business Logic) عبر التطبيق',
-      'إدارة الحالة العامة والتخلص من الـ Prop Drilling باستخدام Context API و Zustand',
-      'بناء نماذج إدخال معقدة وسريعة مع التحقق المتقدم بـ React Hook Form و Zod',
-      'إدارة حالة السيرفر والـ Caching والتحديثات المتفائلة بـ TanStack Query (React Query)',
-      'مواكبة مميزات وتحديثات React 19 والتحسينات المتقدمة للأداء وتفادي إعادة الرندر',
+      'فهم معمارية React الداخلية: Virtual DOM ومحرك React Fiber وآلية المطابقة (Reconciliation) وشجرة المكونات',
+      'إتقان القواعد الأساسية: صيغة JSX، المكونات الوظيفية، تفكيك وتمرير الـ Props، وتكوين المكونات (Component Composition)',
+      'التحكم التام في منظومة الـ Hooks الأساسية: `useState`, `useEffect`, `useRef`, `useReducer`, `useMemo`, `useCallback`, `useContext`',
+      'بناء الـ Custom Hooks لإعادة استخدام المنطق البرمجي (Business Logic) عبر شاشات التطبيق بكفاءة',
+      'إدارة الحالة العامة للمشروع والتحرر من الـ Prop Drilling باستخدام Context API ومكتبة Zustand السريعة',
+      'بناء نماذج الإدخال المعقدة بكفاءة قصوى والتحقق الصارم بـ React Hook Form ومخططات Zod Schemas',
+      'إدارة حالة السيرفر والـ Caching والتحديثات المتفائلة والتزامن بـ TanStack Query v5 (React Query)',
+      'مواكبة مميزات React 19 والتحسينات المتقدمة لمعمارية الأداء وتفادي إعادة الرندر الزائدة بـ Profiler و React.memo',
     ],
     accentClass: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-400',
     badgeClass: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
     glowClass: 'from-cyan-500/20 via-cyan-500/5 to-transparent',
     branches: [
       {
-        id: 'react-core-hooks',
-        title: 'توثيق React.js (الفصول 1 إلى 7): الأساس، المكونات، والـ Hooks',
-        subtitle: 'المفاهيم الجوهرية من الصفر للاحتراف',
-        tag: 'منهج React المتكامل',
+        id: 'react-core-architecture',
+        title: 'معمارية المكونات، JSX، ومنظومة الـ Hooks (React Fundamentals & Hooks)',
+        subtitle: 'الفصول 1 إلى 7 من توثيق React.js الكامل',
+        tag: 'الأساس المعماري لـ React',
         icon: Code2,
-        learnItems: [
-          'الفصل 1–2: مقدمة React، Virtual DOM، Fiber، قواعد JSX، الـ Props، وتكوين المكونات (Composition)',
-          'الفصل 3–4: إدارة الـ State، الـ Immutability، دورة إعادة الرندر، الـ Events، والقوائم والـ Keys',
-          'الفصل 5: الـ Side Effects، دورة حياة المكون بـ `useEffect`، وظيفة الـ Cleanup، و `AbortController`',
-          'الفصل 6: أدوات التحكم المتقدمة: `useRef`، وإدارة الحالات المعقدة بـ `useReducer`، وحفظ الحسابات بـ `useMemo`',
-          'الفصل 7: بناء Custom Hooks ومشاركة الحالة عبر التطبيق بـ Context API',
+        topicGroups: [
+          {
+            groupTitle: '1. أساسيات المكونات والرندر (Component Basics & Rendering)',
+            items: [
+              'مقدمة React: لماذا نستخدم React؟ والفرق بين التطبيقات متعددة الصفحات (MPA) والتطبيقات أحادية الصفحة (SPA)',
+              'المكونات الوظيفية (Functional Components): قواعد كتابة JSX، استخدام التعابير البرمجية، وتصدير واستيراد المكونات',
+              'الخصائص (Props) وتكوين المكونات: تمرير البيانات، الخصائص الافتراضية، خاصية `children`، ونمط Component Composition',
+              'الرندر الشرطي والقوائم: عرض العناصر شرطياً بـ (`&&` و Ternary)، وتوليد القوائم عبر `.map()` وأهمية خاصية `key` الفريدة لمنع المشاكل الأدائية',
+              'مفهوم شجرة الـ Virtual DOM: كيف يحسب React الفروقات عبر Reconciliation ومحرك React Fiber لتحديث الشاشة بأقل تكلفة',
+            ],
+          },
+          {
+            groupTitle: '2. إدارة الحالة ودورة الحياة بـ Hooks (State & Lifecycle Hooks)',
+            items: [
+              'إدارة الحالة بـ `useState`: مفهوم الـ Immutability، تحديث المصفوفات والكائنات، وتفادي الأخطاء الشائعة في التحديث المتزامن',
+              'الآثار الجانبية ودورة الحياة بـ `useEffect`: متى يُستدعى؟ مصفوفة الاعتماديات (Dependency Array)، ودالة التنظيف (Cleanup Function)',
+              'التعامل مع عناصر DOM المباشرة بـ `useRef`: حفظ المراجع بدون التسبب في إعادة الرندر، والتحكم في حقول الإدخال والـ Timers',
+              'إدارة الحالات المعقدة بـ `useReducer`: مقارنة `useState` مع `useReducer` ونمط Actions و Reducer Function',
+              'تحسين الأداء الحسابي: حفظ نتائج العمليات الثقيلة بـ `useMemo` وتثبيت مراجع الدوال البرمجية بـ `useCallback`',
+              'بناء الـ Custom Hooks: قواعد الـ Hooks، وكيفية استخراج المنطق البرمجي المشترك في دوال تبدأ بـ `use`',
+            ],
+          },
         ],
         links: [
-          { label: 'فهرس توثيق React.js الكامل (10 فصول)', href: '/frontend/react' },
-          { label: 'الفصل 1: المكونات و Virtual DOM', href: '/articles/react-docs-01-intro-components-virtual-dom' },
-          { label: 'الفصل 5: useEffect ودورة الحياة', href: '/articles/react-docs-05-useeffect-lifecycle-data-fetching' },
+          { label: 'فهرس توثيق React.js الكامل (10 فصول بالعامية)', href: '/frontend/react' },
+          { label: 'الفصل 1: المكونات والـ Virtual DOM', href: '/articles/react-docs-01-intro-components-virtual-dom' },
+          { label: 'الفصل 5: useEffect ودورة الحياة وجلب البيانات', href: '/articles/react-docs-05-useeffect-lifecycle-data-fetching' },
           { label: 'دليل React Hooks العملي للمبتدئين', href: '/articles/react-hooks-beginners-guide' },
         ],
       },
       {
-        id: 'react-ecosystem-prod',
-        title: 'توثيق React.js (الفصول 8 إلى 10): منظومة الإنتاج والأداء',
-        subtitle: 'النماذج، التوجيه، وإدارة بيانات السيرفر',
-        tag: 'جاهزية الشركات',
-        icon: BookOpen,
-        learnItems: [
-          'الفصل 8: بناء النماذج بكفاءة قصوى عبر React Hook Form والتحقق الصارم بـ Zod Schemas',
-          'الفصل 9: التوجيه في تطبيقات الـ SPA بـ React Router وإدارة بيانات السيرفر بـ TanStack Query',
-          'الفصل 10: معمارية الأداء الفائق: Profiler، Lazy Loading & Suspense، Error Boundaries، وتحديثات React 19',
+        id: 'react-ecosystem-advanced',
+        title: 'منظومة الإنتاج، النماذج، التوجيه، وإدارة الحالة (Ecosystem & Production Readiness)',
+        subtitle: 'الفصول 8 إلى 10 من توثيق React: التوجيه، النماذج، البيانات، والأداء',
+        tag: 'جاهزية سوق العمل',
+        icon: Workflow,
+        topicGroups: [
+          {
+            groupTitle: '1. التوجيه وإدارة النماذج والتحقق (Routing, Forms & Validation)',
+            items: [
+              'التوجيه في تطبيقات الـ SPA بـ React Router: تعريف المسارات `Routes`, `Route`, المعاملات الديناميكية `useParams`, والـ Query Parameters بـ `useSearchParams`',
+              'المسارات المتداخلة (Nested Routes) ومكون المخرج `<Outlet>` والروابط الذكية `<Link>` و `<NavLink>` وحماية المسارات الخاصة (Protected Routes)',
+              'بناء النماذج الاحترافية بـ React Hook Form: تسجيل الحقول بـ `register`، تقليل إعادة الرندر، والتعامل السلس مع الأخطاء',
+              'التحقق الصارم من صحة البيانات بـ Zod: بناء Schemas للمدخلات، وربط Zod مع React Hook Form عبر `@hookform/resolvers/zod`',
+            ],
+          },
+          {
+            groupTitle: '2. إدارة الحالة وبيانات السيرفر والأداء (State Management & Data Fetching)',
+            items: [
+              'إدارة الحالة العامة (Global State Management): متى نستخدم Context API؟ ومكتبة Zustand السريعة كبديل خفيف وعصري لـ Redux',
+              'إدارة بيانات السيرفر بـ TanStack Query v5: مفهوم Caching، حالات التحميل والخطأ (`isLoading`, `isError`)، إعادة الجلب بالخلفية، والتحديثات المتفائلة (Optimistic Updates)',
+              'مكتبات المكونات وواجهات المستخدم (UI Libraries): Tailwind CSS، مكونات Headless UI (Radix UI, Shadcn UI) للتصميم المرن',
+              'معمارية الأداء وتحديثات React 19: تقسيم الكود بـ `React.lazy` و `Suspense`، التقاط الانهيارات بـ `ErrorBoundary`، وتحسينات الرندر المتقدمة',
+            ],
+          },
         ],
         links: [
-          { label: 'الفصل 8: النماذج والتحقق بـ RHF و Zod', href: '/articles/react-docs-08-forms-validation-rhf-zod' },
-          { label: 'الفصل 9: React Router و TanStack Query', href: '/articles/react-docs-09-routing-and-tanstack-query' },
-          { label: 'الفصل 10: معمارية الأداء وتحديثات React 19', href: '/articles/react-docs-10-performance-architecture-react-19' },
+          { label: 'الفصل 8: النماذج والتحقق الصارم بـ RHF و Zod', href: '/articles/react-docs-08-forms-validation-rhf-zod' },
+          { label: 'الفصل 9: التوجيه بـ React Router وإدارة بيانات السيرفر', href: '/articles/react-docs-09-routing-and-tanstack-query' },
+          { label: 'الفصل 10: معمارية الأداء الفائق وتحديثات React 19', href: '/articles/react-docs-10-performance-architecture-react-19' },
           { label: 'دليل معماريات React 19 والـ Server Actions', href: '/articles/react-19-architecture-deep-dive-server-actions' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'بناء منصة تفاعلية لإدارة المشاريع مع سلة تسوق وإدارة حالة معقدة',
-      subtitle: 'تطبيق SPA متكامل مع TanStack Query و React Hook Form و Zod',
-      techStack: ['React 19', 'TanStack Query v5', 'React Hook Form', 'Zod', 'Tailwind CSS'],
+      title: 'بناء منصة تفاعلية لإدارة المهام والمشاريع مع سلة تسوق وإدارة حالة معقدة بـ TanStack Query',
+      subtitle: 'تطبيق SPA متكامل يربط React 19 مع React Router و TanStack Query و React Hook Form و Zod و Zustand',
+      techStack: ['React 19', 'React Router v6', 'TanStack Query v5', 'React Hook Form', 'Zod Schemas', 'Zustand', 'Tailwind CSS'],
       challenge:
-        'بناء تطبيق تفاعلي معقد يتعامل مع واجهات API حقيقية، يدعم التخزين المؤقت للبيانات، والفلترة الفورية، ونماذج تحقق صارمة بدون إعادة رندر زائدة، مع معالجة راقية لحالات التحميل والأخطاء.',
-      projectLink: { label: 'ابدأ دراسة توثيق React.js الآن', href: '/frontend/react' },
+        'بناء تطبيق SPA تفاعلي كامل متصل بواجهات API حقيقية، يدعم البحث والفلترة اللحظية بدون إعادة رندر زائدة، مع نظام تحقق صارم من النماذج، وسلة تسوق محفوظة بالحالة العامة، وإدارة أخطاء احترافية بـ Error Boundaries مع دعم الوضع الداكن.',
+      projectLink: { label: 'ابدأ دراسة توثيق React.js الشامل', href: '/frontend/react' },
     },
-    nextStepPill: 'الانتقال إلى المرحلة 04: بيئة الإنتاج Full-Stack و Next.js و TypeScript',
+    nextStepPill: 'الانتقال إلى المرحلة 04: إتقان Next.js وبيئة الإنتاج السحابية و TypeScript الصارمة',
   },
   {
     step: '04',
     level: 'advanced',
     role: 'Next.js & Full-Stack Specialist',
-    roleAr: 'متخصص تطبيقات Next.js والإنتاج السحابي',
-    title: 'المرحلة الرابعة: بيئة الإنتاج Full-Stack و Next.js و TypeScript',
-    duration: '4 – 6 أسابيع',
+    roleAr: 'متخصص تطبيقات Next.js والإنتاج السحابي و TypeScript',
+    title: 'المرحلة الرابعة: إتقان Next.js App Router، السيرفرات السحابية، و TypeScript الصارمة للمشاريع الكبرى',
+    duration: '6 – 8 أسابيع',
     description:
-      'المعيار الأول لشركات التكنولوجيا في مصر والخليج والعالم. هنا تتعلم الجمع بين قوة React وسرعة السيرفر والأمان عبر Next.js App Router وحماية الكود بنظام TypeScript الصارم.',
+      'المعيار الأكثر طلباً في كبرى شركات التكنولوجيا في العالم والشرق الأوسط. تجمع هذه المحطة بين قوة React وسرعة السيرفر والأمان الفائق عبر Next.js App Router (RSC, Server Actions)، مع حماية الكود بنظام TypeScript الصارم، وتطبيق التوثيق الأمني وإدارة الجلسات.',
     prerequisites: [
-      'إتقان React.js ومفاهيم الـ Hooks وإدارة الحالة (Stage 03)',
-      'فهم كيفية تخاطب السيرفر والعميل عبر بروتوكول HTTP',
+      'إتقان عميق لـ React.js ومفاهيم الـ Hooks وإدارة الحالة (Stage 03)',
+      'فهم كيفية تخاطب السيرفر والعميل عبر بروتوكول HTTP وأكواد الحالة',
     ],
     learningOutcomes: [
-      'إتقان لغة TypeScript: الأنواع الصارمة، Generics، Utility Types، وتحديد أنواع الـ Props والـ State بدقة',
-      'فهم معمارية Next.js App Router والفرق بين Server Components (RSC) و Client Components',
-      'استخدام أنماط الرندر الحديثة: Static Generation (SSG)، Server-Side Rendering (SSR)، و ISR',
-      'تنفيذ العمليات السيرفرية بأمان عبر Server Actions وحماية المسارات بـ Next.js Middleware',
-      'تهيئة محركات البحث المتقدمة (Dynamic Metadata, Open Graph, Sitemap, Robots.txt)',
-      'تطبيق التوثيق وإدارة الجلسات الآمنة (Authentication بـ HttpOnly Cookies و JWT)',
-      'نشر المشاريع على السحابة (Vercel / Cloudflare) وضبط متغيرات البيئة باحترافية',
+      'إتقان لغة TypeScript: الأنواع الأساسية، Interfaces، Type Aliases، الـ Generics، والـ Utility Types لتأمين مشاريع React بالكامل',
+      'فهم معمارية Next.js App Router والفرق الجوهري بين مكونات السيرفر (RSC) ومكونات العميل (Client Components)',
+      'استيعاب استراتيجيات الرندر الحديثة: Static Site Generation (SSG)، Server-Side Rendering (SSR)، و Incremental Static Regeneration (ISR)',
+      'إتقان العمليات السيرفرية بـ Server Actions لحفظ البيانات دون الحاجة لكتابة REST API مستقلة للواجهة',
+      'حماية المسارات وإدارة المصادقة الأمنية (Authentication بـ HttpOnly Cookies و JWT) باستخدام Next.js Middleware',
+      'تحسين محركات البحث الديناميكي (Dynamic Metadata، خريطة الموقع sitemap.xml، ملف robots.txt، والـ Open Graph)',
+      'نشر المشاريع على السحابة (Vercel / Hostinger / Docker) وضبط متغيرات البيئة باحترافية وضمان الأداء الأقصى',
     ],
     accentClass: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400',
     badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
     glowClass: 'from-emerald-500/20 via-emerald-500/5 to-transparent',
     branches: [
       {
-        id: 'typescript-strict',
-        title: 'تايب سكريبت الصارمة للمشاريع الاحترافية (Strict TypeScript)',
-        subtitle: 'حماية الكود وتفادي أخطاء الـ Runtime',
-        tag: 'مطلب وظيفي إلزامي',
+        id: 'typescript-strict-mastery',
+        title: 'تايب سكريبت الصارمة للمشاريع الكبرى (Strict TypeScript for React)',
+        subtitle: 'حماية الكود، الأمان النوعي، وتفادي أخطاء الـ Runtime الشائعة',
+        tag: 'شرط إلزامي للشركات',
         icon: Cpu,
-        learnItems: [
-          'الأنواع الأساسية، الفرق بين Interface و Type Alias، و Union و Literal Types',
-          'احتراف الـ Generics لبناء دوال ومكونات قابلة لإعادة الاستخدام بأمان نوعي',
-          'استخدام الـ Utility Types (Partial, Pick, Omit, Record, Readonly) والـ Type Narrowing',
-          'تحديد أنواع الـ Props والـ Events والـ Hooks ومستودعات البيانات داخل React',
+        topicGroups: [
+          {
+            groupTitle: '1. أساسيات الأنواع والـ Interfaces والـ Generics',
+            items: [
+              'مقدمة TypeScript: لماذا نستخدمها؟ وكيف يعمل الـ Transpiler لإنتاج كود JavaScript نظيف',
+              'الأنواع البدائية والخاصة: number, string, boolean, arrays, tuples, enums, any vs unknown, void, never',
+              'مقارنة Interfaces مقابل Type Aliases: الوراثة (`extends`)، الدمج التلقائي (Declaration Merging)، واستخدام Union و Intersection Types',
+              'احتراف الـ Generics: كتابة دوال ومكونات وواجهات قابلة لإعادة الاستخدام مع الحفاظ على الأمان النوعي الصارم',
+            ],
+          },
+          {
+            groupTitle: '2. الأنواع المساعدة و TypeScript داخل React',
+            items: [
+              'أدوات الأنواع المساعدة (Utility Types): `Partial`, `Required`, `Readonly`, `Record`, `Pick`, `Omit`, `Exclude`, `Extract`',
+              'تحديد أنواع مكونات React: أنواع الـ Props، الـ State، معالجات الأحداث (Event Handlers مثل `React.MouseEvent`, `React.ChangeEvent`)',
+              'تحديد أنواع الـ Hooks: تحديد نوع الـ Refs بـ `useRef<HTMLInputElement>(null)`، والـ Context، ومستودعات البيانات مع مكتبات إدارة الحالة',
+            ],
+          },
         ],
         links: [
-          { label: 'دليل TypeScript الشامل للإنتاج', href: '/articles/comprehensive-typescript-guide-types-generics-patterns' },
+          { label: 'دليل TypeScript الشامل للإنتاج وهندسة المشاريع', href: '/articles/comprehensive-typescript-guide-types-generics-patterns' },
         ],
       },
       {
-        id: 'nextjs-app-router',
-        title: 'Next.js App Router ومعمارية السيرفر (RSC & Server Actions)',
-        subtitle: 'أعلى أداء وأفضل توافق مع محركات البحث SEO',
-        tag: 'معيار الشركات الحديثة',
+        id: 'nextjs-deep-architecture',
+        title: 'معمارية Next.js App Router والسيرفرات (RSC, Data Fetching & Caching)',
+        subtitle: 'التوجيه المتقدم، الرندر السيرفري، وإدارة البيانات والذاكرة المؤقتة',
+        tag: 'معيار الويب الحديث',
         icon: Rocket,
-        learnItems: [
-          'معمارية React Server Components (RSC): متى تستخدم Server ومحتوى Client',
-          'استراتيجيات التحميل والرندر: SSR، SSG، ISR، و Streaming مع Suspense',
-          'استبدال واجهات الـ REST البسيطة بـ Server Actions مع معالجة البيانات على السيرفر',
-          'تحسين محركات البحث الديناميكي: توليد Metadata و Open Graph تلقائيًا',
+        topicGroups: [
+          {
+            groupTitle: '1. بنية التوجيه والمكونات (App Router & Component Architecture)',
+            items: [
+              'مقدمة Next.js: لماذا نستخدم Next.js؟ ومقارنته بالأطر الأخرى مثل Remix و Vite SPA',
+              'معمارية مجلد `app`: الصفحات (`page.tsx`)، التخطيطات العامة والفرعية (`layout.tsx`)، القوالب (`template.tsx`)، وشاشات التحميل (`loading.tsx`) والأخطاء (`error.tsx`, `not-found.tsx`)',
+              'مكونات السيرفر مقابل مكونات العميل: الفرق المعماري بين Server Components (RSC) و Client Components ومحدد `"use client"`',
+              'أنماط التوجيه المتقدمة: المسارات الديناميكية `[slug]`، المسارات المتوازية (Parallel Routes `@slot`)، واعتراض المسارات (Intercepting Routes `(..)`)',
+              'مسارات الواجهة البرمجية (Route Handlers): كتابة دوال `GET`, `POST`, `PUT`, `DELETE` داخل ملفات `route.ts`',
+            ],
+          },
+          {
+            groupTitle: '2. جلب البيانات والتخزين المؤقت والـ Server Actions',
+            items: [
+              'استراتيجيات الرندر: Server-Side Rendering (SSR)، Static Site Generation (SSG)، و Incremental Static Regeneration (ISR) عبر `revalidate`',
+              'معمارية التخزين المؤقت (Next.js Caching Architecture): Request Memoization، Data Cache، Full Route Cache، و Router Cache',
+              'إلغاء التخزين المؤقت وتحديث البيانات: استخدام `revalidatePath` و `revalidateTag` لإعادة توليد الصفحات فورياً',
+              'العمليات السيرفرية (Server Actions): تنفيذ الطفرات (Mutations) على الخادم مباشرة عبر `"use server"` وتكاملها مع النماذج ونظام الأمان',
+            ],
+          },
+          {
+            groupTitle: '3. الأمان، التحسينات، والنشر السحابي (Security, Optimization & Deployment)',
+            items: [
+              'برمجيات الوسيط (Middleware): فحص الطلبات، إعادة التوجيه، وحماية المسارات الخاصة ومنع الوصول غير المصرح به',
+              'المصادقة وإدارة الجلسات: توثيق المستخدمين عبر JWT والـ HttpOnly Cookies المشفرة وتفادي ثغرات التخزين المحلي',
+              'تحسينات الموارد المدمجة: تحسين الصور بـ `<Image>` (تلقائية الحجم والضغط)، تحسين الخطوط بـ `next/font`، وسكربتات الطرف الثالث بـ `<Script>`',
+              'تحسين محركات البحث الديناميكي (SEO): دالة `generateMetadata`، وتوليد خرائط الموقع الديناميكية `sitemap.xml` وملف `robots.txt`',
+              'خيارات النشر في بيئات الإنتاج: النشر التلقائي على Vercel، السيرفرات الخاصة Node.js Server عبر PM2، حاويات Docker، والتصدير الثابت Static Export',
+            ],
+          },
         ],
         links: [
-          { label: 'دليل Next.js App Router الشامل للإنتاج', href: '/articles/nextjs-app-router-engineering-guide-production-performance' },
-        ],
-      },
-      {
-        id: 'auth-security-deploy',
-        title: 'التوثيق الآمن وإدارة الجلسات والنشر السحابي',
-        subtitle: 'Authentication, Security & Production Deployment',
-        tag: 'مستوى الإنتاج الحقيقي',
-        icon: ShieldCheck,
-        learnItems: [
-          'إدارة الجلسات الآمنة باستخدام JWT والـ HttpOnly Cookies وتفادي ثغرات التخزين',
-          'حماية المسارات وحظر الوصول غير المصرح به باستخدام Next.js Middleware',
-          'إعداد خطوط النشر السحابي على Vercel وضبط متغيرات البيئة (Production Env Vars)',
-        ],
-        links: [
+          { label: 'دليل Next.js App Router الشامل للإنتاج والأداء', href: '/articles/nextjs-app-router-engineering-guide-production-performance' },
           { label: 'مقارنة أمان JWT: التخزين في Cookies أم LocalStorage', href: '/articles/jwt-storage-localstorage-vs-httponly-cookies' },
-          { label: 'دليل النشر المجاني للمشاريع على السيرفرات', href: '/articles/web-deployment-free-guide' },
+          { label: 'دليل النشر المجاني للمشاريع على السيرفرات السحابية', href: '/articles/web-deployment-free-guide' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'بناء متجر إلكتروني / مدونة تقنية Full-Stack بـ Next.js و TypeScript',
-      subtitle: 'تطبيق إنتاجي متكامل مع Server Actions و Auth و SEO كامل',
-      techStack: ['Next.js 15 (App Router)', 'TypeScript Strict', 'Server Actions', 'Auth / Cookies', 'Vercel Deployment'],
+      title: 'بناء منصة تجارة إلكترونية / محتوى رقمي Full-Stack بـ Next.js و TypeScript مع Server Actions ومصادقة آمنة',
+      subtitle: 'مشروع إنتاجي متكامل يطبق معايير الشركات الكبرى مع SSR و Caching و SEO ديناميكي متفوق',
+      techStack: ['Next.js 15 (App Router)', 'TypeScript Strict', 'Server Actions', 'HttpOnly Cookies & Auth', 'Zod', 'Tailwind CSS', 'Vercel / Cloud'],
       challenge:
-        'بناء تطبيق Full-Stack كامل يدعم الرندر السيرفري (SSR) وتوليد الصفحات الثابتة (SSG)، مع نظام توثيق مستخدمين آمن، ولوحة تحكم لإدارة المحتوى، مع تحقيق درجة 95+ في فحص أداء ومؤشرات SEO.',
+        'بناء تطبيق Full-Stack حقيقي يجمع بين الصفحات الثابتة والسيرفرية، يحتوي على نظام تسجيل دخول بالمصادقة الآمنة عبر Middleware و Cookies، مع لوحة تحكم كاملة لإدارة المنتجات أو المقالات عبر Server Actions، وتطبيق الـ Caching و Revalidation اللحظي مع تحقيق نتيجة 95+ في فحص Lighthouse.',
       projectLink: { label: 'اقرأ دليل Next.js App Router للإنتاج', href: '/articles/nextjs-app-router-engineering-guide-production-performance' },
     },
-    nextStepPill: 'الانتقال إلى المرحلة 05: مستوى مهندس البرمجيات، المعمارية، والمشروع النهائي',
+    nextStepPill: 'الانتقال إلى المرحلة 05: مستوى مهندس البرمجيات المحترف (المعمارية، الاختبارات، والأمان)',
   },
   {
     step: '05',
     level: 'advanced',
-    role: 'Senior Frontend Engineer',
-    roleAr: 'مهندس واجهات محترف (Senior Engineer & Tech Lead)',
-    title: 'المرحلة الخامسة: مستوى مهندس البرمجيات، المعمارية والمشروع النهائي',
-    duration: 'مستمر (Ongoing Excellence)',
+    role: 'Senior Frontend Engineer & Tech Lead',
+    roleAr: 'مهندس واجهات خبير (Senior Engineer & Tech Lead)',
+    title: 'المرحلة الخامسة: مستوى مهندس البرمجيات المحترف (المعمارية، الاختبارات الآلية، الأداء والأمان ومقابلات العمل)',
+    duration: 'مستمر (مسار الاحتراف الدائم)',
     description:
-      'المرحلة التي تفصل بين من يكتب كودًا يعمل فقط، ومهندس برمجيات حقيقي قادر على قيادة فرق العمل، وتصميم معماريات ضخمة مستقرة، وضمان الجودة والاختبارات والأمان الفائق.',
+      'المحطة التي تفصل بين من يكتب كوداً يعمل بالصدفة، ومهندس برمجيات حقيقي قادر على قيادة فرق التطوير، وتصميم معماريات برمجية ضخمة قابلة للتوسع، وتطبيق أتمتة الاختبارات الشاملة، ورفع سرعة الأداء وتأمين الأنظمة ضد الاختراق.',
     prerequisites: [
-      'خبرة في بناء وتطوير تطبيقات Next.js و React و TypeScript كاملة (Stage 04)',
-      'الرغبة في الانتقال إلى مصاف المطورين المحترفين في كبرى الشركات العالمية',
+      'خبرة متينة في بناء وتطوير تطبيقات Next.js و React و TypeScript كاملة (Stage 04)',
+      'الرغبة في الانتقال إلى مصاف المطورين المحترفين في كبرى الشركات التقنية الإقليمية والعالمية',
     ],
     learningOutcomes: [
-      'تنظيم المشاريع الضخمة وفق معمارية Feature-Sliced Design (FSD) ومبادئ Clean Code و SOLID',
-      'كتابة اختبارات آلية شاملة: Unit & Integration بـ Vitest، واختبارات المكونات بـ Testing Library، و E2E بـ Playwright',
-      'قياس وتحسين مؤشرات الأداء الحيوية للويب Core Web Vitals (LCP, INP, CLS) وتحليل حجم الحزم (Bundle Splitting)',
-      'تأمين تطبيقات الويب الأمامية ضد ثغرات OWASP Top 10 مثل XSS و CSRF و Clickjacking وتهيئة الـ CSP',
-      'إعداد خطوط التكامل والنشر المستمر CI/CD عبر GitHub Actions لفحص الكود تلقائيًا',
-      'بناء Portfolio شخصي استثنائي، وتجاوز المقابلات الفنية الصعبة في كبرى شركات مصر والخليج والعالم',
+      'تنظيم المشاريع الضخمة وفق معمارية Feature-Sliced Design (FSD) ومبادئ Clean Code و SOLID في الواجهات الأمامية',
+      'بناء هرم الاختبارات الآلية الشامل: Unit & Integration بـ Vitest، واختبار المكونات بـ React Testing Library، واختبارات E2E بـ Playwright',
+      'قياس وتحسين مؤشرات الأداء الحيوية للويب Core Web Vitals (LCP, INP, CLS) وتحليل وتجزئة الحزم بـ Bundle Analyzers',
+      'تأمين تطبيقات الواجهة الأمامية ضد أشهر ثغرات الويب: OWASP Top 10 (XSS, CSRF, Clickjacking) وتهيئة سياسات المحتوى الصارمة CSP',
+      'بناء أنظمة التصميم (Design Systems) ومكونات الـ Headless UI القابلة لإعادة الاستخدام عبر مشاريع الشركة',
+      'إعداد خطوط التكامل والنشر المستمر CI/CD عبر GitHub Actions لاختبار وتدقيق الكود تلقائياً قبل كل عملية دمج',
+      'بناء ملف أعمال (Portfolio) استثنائي، وتجاوز المقابلات الفنية المعمارية ومقابلات الـ Live Coding في مصر والخليج والعالم',
     ],
     accentClass: 'border-purple-500/40 bg-purple-500/10 text-purple-400',
     badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
     glowClass: 'from-purple-500/20 via-purple-500/5 to-transparent',
     branches: [
       {
-        id: 'arch-clean-code',
-        title: 'المعمارية الحديثة ومبادئ الكود النظيف (Architecture & SOLID)',
-        subtitle: 'هندسة كود قابل للصيانة والتوسع مع نمو الفريق',
+        id: 'arch-clean-code-solid',
+        title: 'المعمارية الحديثة ومبادئ الكود النظيف (Architecture, Clean Code & SOLID)',
+        subtitle: 'هندسة كود قابل للصيانة والتوسع مع نمو الفريق وحجم المشروع',
         tag: 'مستوى القيادة الهندسية',
         icon: Gauge,
-        learnItems: [
-          'تنظيم ملفات ومجلدات المشاريع بمعمارية Feature-Based ومعمارية Feature-Sliced Design (FSD)',
-          'تطبيق مبادئ SOLID الخمسة ومبادئ DRY و KISS و YAGNI في تصميم مكونات الواجهة',
-          'تصميم واستخدام مكتبات المكونات وأنظمة التصميم (Design Systems) بمكونات Headless UI',
-          'إدارة الحالة العامة للمشاريع المعقدة وتفادي الفوضى باستخدام معايير واضحة',
+        topicGroups: [
+          {
+            groupTitle: '1. معمارية المشاريع وأنظمة التصميم (Project Structure & Design Systems)',
+            items: [
+              'تنظيم مجلدات المشاريع الضخمة: مقارنة معمارية Feature-Based ومعمارية الطبقات الصارمة Feature-Sliced Design (FSD)',
+              'بناء أنظمة التصميم (Design Systems): مكتبات المكونات المشتركة، توحيد الألوان والخطوط (Design Tokens)، ومكونات Headless UI المفتوحة',
+              'معمارية المكونات المعقدة: Compound Components Pattern، Render Props Pattern، ومكونات التحكم بالوصول والمحتوى المشروط',
+            ],
+          },
+          {
+            groupTitle: '2. الكود النظيف ومبادئ SOLID (Clean Code & SOLID Principles)',
+            items: [
+              'مبادئ SOLID الخمسة وتطبيقها العملي داخل واجهات الفرونت إند ومكونات React',
+              'مبادئ هندسة البرمجيات العامة: DRY (لا تكرر نفسك)، KISS (اجعلها بسيطة)، YAGNI (لن تحتاجها الآن)، وتجنب الـ Premature Optimization',
+              'إدارة الأكواد المتباعدة: عزل منطق الأعمال (Business Logic) تماماً عن طبقة العرض والـ UI عبر Custom Hooks و Services',
+            ],
+          },
         ],
         links: [
-          { label: 'معمارية الفرونت إند الحديثة وإدارة الحالة', href: '/articles/modern-frontend-architecture-state-management-component-design' },
-          { label: 'دليل الكود النظيف ومبادئ SOLID وأنماط التصميم', href: '/articles/clean-code-solid-design-patterns-practical-guide' },
+          { label: 'معمارية الفرونت إند الحديثة وإدارة الحالة والمكونات', href: '/articles/modern-frontend-architecture-state-management-component-design' },
+          { label: 'دليل الكود النظيف ومبادئ SOLID وأنماط التصميم للواجهات', href: '/articles/clean-code-solid-design-patterns-practical-guide' },
         ],
       },
       {
-        id: 'qa-testing-automation',
-        title: 'الاختبارات الآلية وضمان الجودة (QA & Automated Testing)',
-        subtitle: 'حماية النظام من الانهيار وثقة كاملة في كل Deploy',
+        id: 'qa-automated-testing-cicd',
+        title: 'الاختبارات الآلية وضمان الجودة و CI/CD (QA & Automated Testing)',
+        subtitle: 'حماية النظام من الانهيار وثقة كاملة في كل عملية نشر للإنتاج',
         tag: 'معيار الشركات العالمية',
         icon: ShieldCheck,
-        learnItems: [
-          'أنواع الاختبارات: هرم الاختبارات (Unit, Integration, End-to-End)',
-          'كتابة اختبارات الدوال الصافية والمنطق البرمجي السريع باستخدام Vitest / Jest',
-          'اختبار تفاعل المستخدم والمكونات باستخدام React Testing Library و Mock Service Worker (MSW)',
-          'اختبار سيناريوهات المستخدم الكاملة والمسارات الحساسة E2E باستخدام Playwright',
+        topicGroups: [
+          {
+            groupTitle: '1. هرم الاختبارات واختبارات الوحدة والتكامل (Unit & Integration Testing)',
+            items: [
+              'فلسفة اختبارات البرمجيات: هرم الاختبارات (Testing Pyramid) والتوازن بين السرعة وتكلفة الصيانة',
+              'اختبارات الوحدة السريعة (Unit Tests): كتابة الاختبارات باستخدام Vitest أو Jest للدوال الصافية ومعالجة البيانات',
+              'اختبار مكونات الواجهة بـ React Testing Library: التركيز على سلوك المستخدم بدلاً من تفاصيل التنفيذ الداخلية (Avoid Implementation Details)',
+              'محاكاة استدعاءات الشبكة: استخدام Mock Service Worker (MSW) لاعتراض طلبات الـ API ومحاكاة الاستجابات وحالات الفشل بأمان',
+            ],
+          },
+          {
+            groupTitle: '2. الاختبارات الشاملة وأتمتة النشر (E2E Testing & CI/CD Pipelines)',
+            items: [
+              'اختبارات المسار الكامل End-to-End (E2E) بـ Playwright أو Cypress: محاكاة تفاعل المستخدم الحقيقي، ملء النماذج، تسجيل الدخول، واختبار الشراء',
+              'خطوط التكامل والنشر المستمر (CI/CD Pipelines) بـ GitHub Actions: تشغيل الـ Linters (ESLint, Prettier)، فحص الأنواع TypeScript، وتشغيل الاختبارات آلياً قبل كل Merge',
+            ],
+          },
         ],
         links: [
           { label: 'دليل الاختبارات البرمجية الشامل Unit & Integration & E2E', href: '/articles/complete-software-testing-guide-unit-integration-e2e' },
         ],
       },
       {
-        id: 'perf-cwv-security',
-        title: 'الأداء الفائق وأمان الويب (Performance & Web Security)',
-        subtitle: 'سرعة البرق وحماية البيانات من الاختراق',
-        tag: 'معايير النخبة',
+        id: 'performance-security-careers',
+        title: 'الأداء الفائق، أمان الويب، والمسار المهني ومقابلات العمل (Performance, Security & Career)',
+        subtitle: 'الوصول لقمة السرعة والأمان وتخطي أصعب المقابلات الفنية',
+        tag: 'النخبة وسوق العمل',
         icon: Rocket,
-        learnItems: [
-          'تحسين مقاييس Core Web Vitals الثلاثة: LCP (سرعة التحميل)، INP (سرعة الاستجابة)، و CLS (ثبات التصميم)',
-          'تحليل حجم الحزمة واستبعاد المكتبات الثقيلة عبر Code Splitting و Dynamic Imports و Tree Shaking',
-          'تأمين الواجهات ضد أشهر ثغرات الويب: XSS (Cross-Site Scripting)، CSRF، و Clickjacking',
-          'تطبيق سياسة أمان المحتوى الصارمة Content Security Policy (CSP) وحماية الـ Headers',
+        topicGroups: [
+          {
+            groupTitle: '1. الأداء الفائق ومؤشرات Core Web Vitals (Web Performance)',
+            items: [
+              'مؤشرات الويب الحيوية الثلاثة (Core Web Vitals): LCP (سرعة التحميل الأكبر)، INP (سرعة التفاعل والاستجابة)، و CLS (ثبات العناصر ومنع القفزات)',
+              'تقنيات تسريع التحميل: تحليل حجم الحزم (Bundle Analysis)، تقسيم الكود (Code Splitting)، التحميل الديناميكي، وتنظيف المكتبات الزائدة (Tree Shaking)',
+              'استخدام أدوات الفحص المتقدمة: تدقيق الأداء بـ Google Lighthouse، وتبويب Performance في Chrome DevTools لتحديد الاختناقات',
+            ],
+          },
+          {
+            groupTitle: '2. أمان الواجهات الأمامية والـ OWASP Top 10 (Web Security)',
+            items: [
+              'الحماية ضد أشهر الثغرات الأمنية: Cross-Site Scripting (XSS) وطرق التطهير (Sanitization)، وثغرات CSRF، و Clickjacking',
+              'سياسات أمان المتصفح: سياسة أمان المحتوى الصارمة Content Security Policy (CSP)، ضبط ترويسات الأمان (Security Headers)، ومشاركة الموارد عبر الأصول (CORS)',
+            ],
+          },
+          {
+            groupTitle: '3. المسار المهني، الـ Portfolio ومقابلات التوظيف (Career & Interviews)',
+            items: [
+              'بناء ملف أعمال (Portfolio) نوعي: تصميم ونشر 2 إلى 3 مشاريع إنتاجية كبرى ذات قيمة حقيقية بدل المشاريع المكررة',
+              'استخدام أدوات الذكاء الاصطناعي (Claude Code / Cursor) لرفع الإنتاجية بدون الإضرار بجودة الأساسيات الهندسية',
+              'التحضير للمقابلات التقنية المعقدة في مصر والخليج والعالم: مقابلات الـ Live Coding، أسئلة معمارية الأنظمة، والأسئلة السلوكية',
+            ],
+          },
         ],
         links: [
           { label: 'تحسين الأداء و Core Web Vitals ومؤشرات السرعة', href: '/articles/web-performance-core-web-vitals-speed-optimization' },
           { label: 'دليل أمان الويب ومعايير OWASP Top 10 للمطورين', href: '/articles/web-security-developer-guide-owasp-top-10' },
-        ],
-      },
-      {
-        id: 'career-portfolio-interviews',
-        title: 'المسار المهني، الـ Portfolio ومقابلات التوظيف التقنية',
-        subtitle: 'من مرحلة التعلم إلى الحصول على أفضل العروض الوظيفية',
-        tag: 'سوق العمل والتوظيف',
-        icon: Briefcase,
-        learnItems: [
-          'بناء 2 إلى 3 مشاريع واقعية منشورة ذات قيمة إنتاجية بدل المشاريع التقليدية المكررة',
-          'استخدام أدوات الذكاء الاصطناعي (Claude Code / Cursor) لرفع الإنتاجية بدون الإضرار بجودة الأساسيات',
-          'التحضير للمقابلات التقنية المعقدة في مصر والخليج: Live Coding، أسئلة المعمارية، وأسئلة حل المشكلات',
-        ],
-        links: [
           { label: 'بناء أول مشروع احترافي للـ Portfolio الشخصي', href: '/articles/build-first-programming-project-portfolio' },
           { label: 'أسئلة انترفيو البرمجة في مصر والخليج 2027', href: '/articles/programming-interview-questions-egypt-gulf-2027' },
         ],
       },
     ],
     milestoneProject: {
-      title: 'مشروع التخرج النهائي الكبير (The Capstone Engineering Project)',
-      subtitle: 'مشروع الإنتاج الحقيقي الذي يثبت أهليتك الهندسية أمام أي شركة كبرى',
+      title: 'مشروع التخرج الهندسي النهائي الكبير (The Capstone Engineering Platform)',
+      subtitle: 'مشروع الإنتاج الحقيقي الذي يثبت أهليتك الهندسية كـ Senior Frontend Engineer أمام أي شركة عالمية',
       techStack: [
         'Next.js 15 App Router',
         'TypeScript Strict Mode',
         'React 19 & TanStack Query',
-        'Feature-Sliced Design',
+        'Feature-Sliced Design (FSD)',
         'Automated Tests (Vitest & Playwright)',
         'Core Web Vitals 95+',
-        'OWASP Security & CSP',
+        'OWASP Security & Strict CSP',
         'CI/CD GitHub Actions',
       ],
       challenge:
-        'بناء منصة SaaS سحابية أو منصة تجارة إلكترونية عالمية متكاملة، مبنية بمعمارية نظيفة، مغطاة باختبارات Unit و E2E، مع زمن استجابة فائق وحماية أمنية صارمة، ونشر مؤتمت عبر CI/CD.',
+        'بناء منصة SaaS سحابية أو منصة تجارة إلكترونية كاملة، مبنية بمعمارية نظيفة، مغطاة باختبارات Unit واختبارات E2E، مع زمن استجابة فائق وحماية أمنية صارمة، ونشر مؤتمت عبر CI/CD وتحقيق درجة 95+ في مقاييس الأداء والأمان.',
       projectLink: { label: 'استعرض دليل بناء مشاريع الـ Portfolio الاحترافية', href: '/articles/build-first-programming-project-portfolio' },
     },
-    nextStepPill: 'مبروك! لقد وصلت إلى مرحلة المهندس المحترف الجاهز لسوق العمل العالمي',
+    nextStepPill: 'مبروك! لقد وصلت إلى مستوى مهندس واجهات محترف (Senior Engineer) مؤهل للمنافسة العالمية',
   },
 ];
 
@@ -587,6 +838,7 @@ export function FrontendRoadmapTree() {
   const [completedStages, setCompletedStages] = useState<string[]>([]);
   const [currentStageBookmark, setCurrentStageBookmark] = useState<string>('00');
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     setMounted(true);
@@ -651,7 +903,6 @@ export function FrontendRoadmapTree() {
     } catch {
       // Storage unavailable or quota exceeded
     }
-    // Smooth scroll to stage element
     const elem = document.getElementById(`stage-${step}`);
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -659,8 +910,21 @@ export function FrontendRoadmapTree() {
   };
 
   const filteredMilestones = ROADMAP_MILESTONES.filter(milestone => {
-    if (activeFilter === 'all') return true;
-    return milestone.level === activeFilter;
+    if (activeFilter !== 'all' && milestone.level !== activeFilter) {
+      return false;
+    }
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    const titleMatch = milestone.title.toLowerCase().includes(q);
+    const descMatch = milestone.description.toLowerCase().includes(q);
+    const branchMatch = milestone.branches.some(b =>
+      b.title.toLowerCase().includes(q) ||
+      b.topicGroups.some(g =>
+        g.groupTitle.toLowerCase().includes(q) ||
+        g.items.some(item => item.toLowerCase().includes(q))
+      )
+    );
+    return titleMatch || descMatch || branchMatch;
   });
 
   const completionPercent = Math.round((completedStages.length / ROADMAP_MILESTONES.length) * 100);
@@ -673,13 +937,13 @@ export function FrontendRoadmapTree() {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/25 text-xs font-bold">
               <Compass className="h-3.5 w-3.5" />
-              <span>خارطة طريق هندسة الفرونت إند 2027 • مسار معتمد وشامل</span>
+              <span>خارطة طريق هندسة الفرونت إند 2027 • المنهج التفصيلي الشامل (المطابق لمعايير Roadmap.sh)</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-foreground">
-              خارطة الطريق الكاملة: من الصفر إلى Senior Frontend Engineer
+              خارطة الطريق الكاملة: من أساسيات الويب إلى Senior Frontend Engineer
             </h2>
             <p className="text-xs sm:text-sm text-foreground-muted max-w-3xl leading-relaxed">
-              منهج عملي منظم بالعامية المصرية يربط بين الفهم العميق للأساسيات وتطبيقات الإنتاج الحقيقية، مع روابط مباشرة لمئات الدروس والمشاريع البرمجية.
+              تفكيك تفصيلي ودقيق لمسار هندسة الواجهات الأمامية بالكامل (Internet, Git, HTML5, CSS3, JavaScript, React.js, Next.js, TypeScript, Architecture & Testing)، مصممة بالعامية المصرية ومربوطة بمئات الدروس والمشاريع العملية على المنصة.
             </p>
           </div>
 
@@ -711,440 +975,318 @@ export function FrontendRoadmapTree() {
           )}
         </div>
 
-        {/* Interactive Self-Assessment "أنت فين دلوقتي؟" */}
-        <div className="rounded-2xl border border-border/60 bg-surface/60 p-4 sm:p-5 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-foreground">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span>مش عارف تبدأ منين؟ اختر مستواك الحالي وسنرشدك فورًا:</span>
+        {/* Search & Topic Lookup Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="relative w-full sm:max-w-md">
+            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-muted" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="ابحث في محاور ومواضيع الخارطة (مثل: Event Loop, Flexbox, Next.js, Zod)..."
+              className="w-full pr-10 pl-4 py-2.5 rounded-xl border border-border bg-surface text-xs font-sans text-foreground placeholder:text-foreground-muted focus:outline-none focus:border-primary transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-foreground-muted hover:text-foreground"
+              >
+                مسح
+              </button>
+            )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
-            <button
-              onClick={() => setStageAsCurrent('00')}
-              className="p-3 text-right rounded-xl border border-border bg-card hover:border-amber-500/50 hover:bg-amber-500/5 transition-all group"
-            >
-              <div className="text-xs font-bold text-foreground group-hover:text-amber-400 flex items-center justify-between">
-                <span>مبتدئ تمامًا من الصفر</span>
-                <ArrowLeft className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
-              </div>
-              <p className="text-[11px] text-foreground-muted mt-1 leading-normal">
-                ابدأ من المرحلة 00 لفهم كيف يعمل الويب والتيرمينال و Git.
-              </p>
-            </button>
 
+          <div className="flex items-center gap-2 self-end sm:self-center">
             <button
-              onClick={() => setStageAsCurrent('01')}
-              className="p-3 text-right rounded-xl border border-border bg-card hover:border-teal-500/50 hover:bg-teal-500/5 transition-all group"
+              onClick={expandAll}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold border border-border bg-surface hover:bg-surface-hover text-foreground-secondary transition-colors"
             >
-              <div className="text-xs font-bold text-foreground group-hover:text-teal-400 flex items-center justify-between">
-                <span>عارف الأساسيات وعايز أتقن التصميم</span>
-                <ArrowLeft className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
-              </div>
-              <p className="text-[11px] text-foreground-muted mt-1 leading-normal">
-                انتقل للمرحلة 01 لإتقان HTML5 الدلالي، CSS Grid، و Tailwind.
-              </p>
+              توسيع كل المحطات
             </button>
-
             <button
-              onClick={() => setStageAsCurrent('02')}
-              className="p-3 text-right rounded-xl border border-border bg-card hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all group"
+              onClick={collapseAll}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold border border-border bg-surface hover:bg-surface-hover text-foreground-secondary transition-colors"
             >
-              <div className="text-xs font-bold text-foreground group-hover:text-yellow-400 flex items-center justify-between">
-                <span>عايز أفهم جافاسكريبت الحقيقية</span>
-                <ArrowLeft className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
-              </div>
-              <p className="text-[11px] text-foreground-muted mt-1 leading-normal">
-                المرحلة 02: 75 درسًا في محرك JS والـ Event Loop و 10 مشاريع عملية.
-              </p>
-            </button>
-
-            <button
-              onClick={() => setStageAsCurrent('03')}
-              className="p-3 text-right rounded-xl border border-border bg-card hover:border-cyan-500/50 hover:bg-cyan-500/5 transition-all group"
-            >
-              <div className="text-xs font-bold text-foreground group-hover:text-cyan-400 flex items-center justify-between">
-                <span>متمكن من JS ومستعد لـ React</span>
-                <ArrowLeft className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100 group-hover:-translate-x-1 transition-all" />
-              </div>
-              <p className="text-[11px] text-foreground-muted mt-1 leading-normal">
-                المرحلة 03: توثيق React الكامل (10 فصول) ومنظومة الـ Hooks و React 19.
-              </p>
+              طي الكل
             </button>
           </div>
         </div>
 
-        {/* Filter and View Actions Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-          {/* Stage Jump Pill Links */}
-          <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-            {ROADMAP_MILESTONES.map(m => {
-              const isCurrent = currentStageBookmark === m.step;
-              const isDone = completedStages.includes(m.step);
-              return (
-                <button
-                  key={m.step}
-                  onClick={() => setStageAsCurrent(m.step)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all text-xs font-bold ${
-                    isCurrent
-                      ? 'border-primary bg-primary/15 text-primary shadow-sm'
-                      : 'border-border bg-surface hover:bg-card text-foreground-secondary hover:text-foreground'
-                  }`}
-                >
-                  {isDone ? (
-                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                  ) : (
-                    <span className="font-mono text-[11px] opacity-70">{m.step}</span>
-                  )}
-                  <span>{m.role}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Level Filter & Expand Buttons */}
-          <div className="flex items-center gap-2">
-            <div className="inline-flex rounded-xl border border-border bg-surface p-1 text-xs">
-              <button
-                onClick={() => setActiveFilter('all')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                  activeFilter === 'all' ? 'bg-primary text-black' : 'text-foreground-muted hover:text-foreground'
-                }`}
-              >
-                الكل
-              </button>
-              <button
-                onClick={() => setActiveFilter('beginner')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                  activeFilter === 'beginner' ? 'bg-primary text-black' : 'text-foreground-muted hover:text-foreground'
-                }`}
-              >
-                مبتدئ
-              </button>
-              <button
-                onClick={() => setActiveFilter('intermediate')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                  activeFilter === 'intermediate' ? 'bg-primary text-black' : 'text-foreground-muted hover:text-foreground'
-                }`}
-              >
-                متوسط
-              </button>
-              <button
-                onClick={() => setActiveFilter('advanced')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-colors ${
-                  activeFilter === 'advanced' ? 'bg-primary text-black' : 'text-foreground-muted hover:text-foreground'
-                }`}
-              >
-                متقدم
-              </button>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-1 text-xs">
-              <button
-                onClick={expandAll}
-                className="px-2.5 py-1 rounded-lg border border-border hover:border-primary/40 text-foreground-muted hover:text-foreground font-bold transition-colors"
-              >
-                فتح الكل
-              </button>
-              <button
-                onClick={collapseAll}
-                className="px-2.5 py-1 rounded-lg border border-border hover:border-primary/40 text-foreground-muted hover:text-foreground font-bold transition-colors"
-              >
-                طي الكل
-              </button>
-            </div>
-          </div>
+        {/* Level Filters */}
+        <div className="flex flex-wrap items-center gap-2 pt-2">
+          <span className="text-xs font-bold text-foreground-muted ml-2">فلترة حسب المستوى:</span>
+          {[
+            { id: 'all', label: 'كافة المحطات (00 إلى 05)' },
+            { id: 'beginner', label: 'المبتدئ (00 و 01)' },
+            { id: 'intermediate', label: 'المتوسط (02 و 03)' },
+            { id: 'advanced', label: 'المتقدم (04 و 05)' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveFilter(tab.id as typeof activeFilter)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                activeFilter === tab.id
+                  ? 'bg-primary text-black border-primary shadow-sm'
+                  : 'bg-surface hover:bg-surface-hover border-border text-foreground-secondary'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Vertical Spine + Branching Timeline */}
-      <div className="relative pr-6 sm:pr-0">
-        {/* Continuous Spine Line */}
-        <div
-          aria-hidden="true"
-          className="absolute top-6 bottom-6 right-3 sm:right-1/2 sm:translate-x-1/2 w-0.5 bg-gradient-to-b from-amber-500/70 via-cyan-500/70 to-purple-500/70"
-        />
+      {/* Roadmap Milestones Sequence */}
+      <div className="space-y-10">
+        {filteredMilestones.map(milestone => {
+          const isExpanded = expandedStages[milestone.step] !== false;
+          const isCompleted = completedStages.includes(milestone.step);
+          const isCurrent = currentStageBookmark === milestone.step;
 
-        <div className="space-y-16">
-          {filteredMilestones.map((milestone, mIndex) => {
-            const isExpanded = expandedStages[milestone.step] !== false;
-            const isCompleted = completedStages.includes(milestone.step);
-            const isCurrentBookmark = currentStageBookmark === milestone.step;
-
-            return (
-              <div
-                key={milestone.step}
-                id={`stage-${milestone.step}`}
-                className="relative space-y-6 scroll-mt-24"
-              >
-                {/* Central Milestone Node */}
-                <div className="relative flex flex-col sm:items-center">
-                  {/* Step Circle Node */}
-                  <div
-                    className={`absolute -right-6 sm:static h-9 w-9 sm:h-14 sm:w-14 rounded-2xl border-2 ${
-                      milestone.accentClass
-                    } font-mono font-black text-xs sm:text-base flex items-center justify-center shadow-lg z-10 bg-background ${
-                      isCurrentBookmark ? 'ring-4 ring-primary/20 scale-105' : ''
-                    }`}
-                  >
-                    {isCompleted ? <Check className="h-5 w-5 text-primary" /> : milestone.step}
-                  </div>
-
-                  {/* Milestone Card Header */}
-                  <div className="sm:mt-4 w-full max-w-4xl rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-card relative z-10 space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge className={`border font-mono text-[11px] font-bold ${milestone.badgeClass}`}>
-                          {milestone.role}
-                        </Badge>
-                        <Badge variant="secondary" className="text-[11px] font-bold">
-                          المستوى: {milestone.roleAr}
-                        </Badge>
-                        <Badge variant="secondary" className="text-[11px] font-bold">
-                          المدة المتوقعة: {milestone.duration}
-                        </Badge>
-                      </div>
-
-                      {/* Interactive Stage Actions */}
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setStageAsCurrent(milestone.step)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border transition-colors ${
-                            isCurrentBookmark
-                              ? 'bg-primary/15 text-primary border-primary/30'
-                              : 'bg-surface hover:bg-card border-border text-foreground-muted hover:text-foreground'
-                          }`}
-                          title="تحديد كمحطة حالية"
-                        >
-                          <Bookmark className="h-3.5 w-3.5" />
-                          <span>{isCurrentBookmark ? 'محطتك الحالية' : 'أنا هنا الآن'}</span>
-                        </button>
-
-                        <button
-                          onClick={() => toggleStageCompletion(milestone.step)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold border transition-colors ${
-                            isCompleted
-                              ? 'bg-primary text-black border-primary'
-                              : 'bg-surface hover:bg-card border-border text-foreground-muted hover:text-foreground'
-                          }`}
-                        >
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          <span>{isCompleted ? 'مكتمل' : 'تحديد كمكتمل'}</span>
-                        </button>
-
-                        <button
-                          onClick={() => toggleStageExpand(milestone.step)}
-                          className="p-1.5 rounded-xl border border-border hover:border-primary/40 text-foreground-muted hover:text-foreground transition-colors"
-                          aria-label={isExpanded ? 'طي المحطة' : 'فتح المحطة'}
-                        >
-                          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                        </button>
-                      </div>
-                    </div>
-
+          return (
+            <div
+              key={milestone.step}
+              id={`stage-${milestone.step}`}
+              className={`rounded-3xl border transition-all duration-300 relative overflow-hidden bg-card shadow-card ${
+                isCurrent
+                  ? 'border-primary ring-2 ring-primary/20 shadow-2xl'
+                  : 'border-border/80 hover:border-border'
+              }`}
+            >
+              {/* Header Box */}
+              <div className="p-6 sm:p-8 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-2xl sm:text-3xl font-black text-primary px-3.5 py-1 rounded-2xl bg-primary/10 border border-primary/20">
+                      {milestone.step}
+                    </span>
                     <div>
-                      <h3 className="text-xl sm:text-2xl font-black text-foreground">
+                      <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-md border ${milestone.badgeClass}`}>
+                        {milestone.roleAr}
+                      </span>
+                      <h3 className="text-lg sm:text-xl font-black text-foreground mt-1">
                         {milestone.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed mt-1.5">
-                        {milestone.description}
-                      </p>
                     </div>
+                  </div>
 
-                    {/* Prerequisites and Learning Outcomes Callout (Collapsible / Visible) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                      {/* Prerequisites */}
-                      <div className="rounded-2xl border border-border/70 bg-surface/70 p-4 space-y-2">
-                        <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                          <Layers className="h-3.5 w-3.5 text-primary" />
-                          <span>المتطلبات السابقة (Prerequisites):</span>
-                        </span>
-                        <ul className="space-y-1.5 text-xs text-foreground-muted">
-                          {milestone.prerequisites.map((prereq, pIdx) => (
-                            <li key={pIdx} className="flex items-start gap-2">
-                              <span className="text-primary mt-1 font-bold">•</span>
-                              <span>{prereq}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                  <div className="flex items-center gap-2 self-end sm:self-center">
+                    <button
+                      onClick={() => setStageAsCurrent(milestone.step)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                        isCurrent
+                          ? 'bg-primary/20 text-primary border-primary/40'
+                          : 'bg-surface hover:bg-surface-hover border-border text-foreground-muted'
+                      }`}
+                      title="تحديد كمحطتي الحالية"
+                    >
+                      <Bookmark className="h-3.5 w-3.5" />
+                      <span>{isCurrent ? 'محطتك الحالية' : 'أنا هنا الآن'}</span>
+                    </button>
 
-                      {/* Learning Outcomes */}
-                      <div className="rounded-2xl border border-border/70 bg-surface/70 p-4 space-y-2">
-                        <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-                          <span>ماذا ستتقن عمليًا (Outcomes):</span>
-                        </span>
-                        <ul className="space-y-1.5 text-xs text-foreground-muted">
-                          {milestone.learningOutcomes.map((outcome, oIdx) => (
-                            <li key={oIdx} className="flex items-start gap-2">
-                              <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-                              <span>{outcome}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
+                    <button
+                      onClick={() => toggleStageCompletion(milestone.step)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+                        isCompleted
+                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                          : 'bg-surface hover:bg-surface-hover border-border text-foreground-muted'
+                      }`}
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      <span>{isCompleted ? 'مكتملة ✓' : 'تحديد كمكتملة'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => toggleStageExpand(milestone.step)}
+                      className="p-2 rounded-xl bg-surface hover:bg-surface-hover border border-border text-foreground-muted hover:text-foreground transition-colors"
+                      aria-label="تبديل العرض"
+                    >
+                      {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
 
-                {/* Branches Grid & Milestone Project under Stage */}
-                {isExpanded && (
-                  <div className="space-y-6 relative z-10 max-w-5xl mx-auto">
-                    {/* Branches Cards */}
-                    <div
-                      className={`grid grid-cols-1 ${
-                        milestone.branches.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-2'
-                      } gap-5`}
-                    >
-                      {milestone.branches.map(branch => {
-                        const Icon = branch.icon;
-                        return (
-                          <div
-                            key={branch.id}
-                            className="rounded-3xl border border-border bg-surface/80 backdrop-blur-sm p-6 shadow-card flex flex-col justify-between gap-5 hover:border-primary/40 transition-all group"
-                          >
-                            <div className="space-y-4">
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="flex items-center gap-3">
-                                  <div
-                                    className={`h-11 w-11 rounded-2xl border flex items-center justify-center shrink-0 ${milestone.accentClass}`}
-                                  >
-                                    <Icon className="h-5 w-5" />
-                                  </div>
-                                  <div>
-                                    <span className="text-[11px] text-foreground-muted block font-medium">
-                                      {branch.subtitle}
-                                    </span>
-                                    <h4 className="text-base font-extrabold text-foreground group-hover:text-primary transition-colors">
-                                      {branch.title}
-                                    </h4>
-                                  </div>
-                                </div>
-                                <Badge variant="secondary" className="text-[10px] font-bold shrink-0">
-                                  {branch.tag}
-                                </Badge>
-                              </div>
+                <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed max-w-4xl">
+                  {milestone.description}
+                </p>
 
-                              <div className="space-y-2 pt-1">
-                                <span className="text-[11px] font-bold text-foreground-muted block">
-                                  المفاهيم والمهارات المستهدفة:
-                                </span>
-                                <ul className="space-y-2">
-                                  {branch.learnItems.map(item => (
+                {/* Duration & Prerequisites Chips */}
+                <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface border border-border text-foreground-secondary">
+                    <span className="text-foreground-muted">المدة المقدرة:</span>
+                    <span className="font-bold text-foreground">{milestone.duration}</span>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface border border-border text-foreground-secondary">
+                    <span className="text-foreground-muted">المتطلبات السابقة:</span>
+                    <span className="font-bold text-foreground">{milestone.prerequisites[0]}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collapsible Content: Detailed Branches and Topics */}
+              {isExpanded && (
+                <div className="px-6 sm:px-8 pb-8 space-y-8 border-t border-border/70 pt-8 bg-surface/30">
+                  {/* Learning Outcomes */}
+                  <div className="rounded-2xl border border-border/80 bg-card p-5 space-y-3">
+                    <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <span>مخرجات التعلم والكفاءة الهندسية لهذه المحطة:</span>
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                      {milestone.learningOutcomes.map((outcome, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs text-foreground-secondary">
+                          <Check className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                          <span className="leading-relaxed">{outcome}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Branches & Detailed Topic Groups */}
+                  <div className="space-y-6">
+                    {milestone.branches.map(branch => {
+                      const IconComponent = branch.icon;
+
+                      return (
+                        <div
+                          key={branch.id}
+                          className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm space-y-5"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+                                <IconComponent className="h-5 w-5" />
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h4 className="text-base font-bold text-foreground">
+                                    {branch.title}
+                                  </h4>
+                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-elevated border border-border text-foreground-muted">
+                                    {branch.tag}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-foreground-muted mt-0.5">
+                                  {branch.subtitle}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Topic Groups Breakdown */}
+                          <div className="space-y-4">
+                            {branch.topicGroups.map((group, gIdx) => (
+                              <div
+                                key={gIdx}
+                                className="rounded-xl border border-border/60 bg-surface/50 p-4 space-y-2.5"
+                              >
+                                <h5 className="text-xs font-extrabold text-foreground flex items-center gap-2">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                  <span>{group.groupTitle}</span>
+                                </h5>
+                                <ul className="space-y-1.5 pr-3 list-none">
+                                  {group.items.map((item, iIdx) => (
                                     <li
-                                      key={item}
-                                      className="flex items-start gap-2 text-xs text-foreground-secondary leading-relaxed"
+                                      key={iIdx}
+                                      className="text-xs text-foreground-secondary flex items-start gap-2 leading-relaxed"
                                     >
-                                      <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                                      <span className="text-primary/70 font-mono text-[11px] mt-0.5">▪</span>
                                       <span>{item}</span>
                                     </li>
                                   ))}
                                 </ul>
                               </div>
-                            </div>
+                            ))}
+                          </div>
 
-                            {/* Direct Documentation & Lesson Links */}
-                            <div className="pt-4 border-t border-border/60 space-y-2">
-                              <span className="text-[11px] font-bold text-foreground-muted block">
-                                الدروس والمراجع المباشرة في المنصة:
-                              </span>
-                              <div className="flex flex-wrap gap-2">
-                                {branch.links.map(link => (
-                                  <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-background hover:bg-primary/10 border border-border hover:border-primary/40 text-xs font-bold text-foreground hover:text-primary transition-colors"
-                                  >
-                                    <span>{link.label}</span>
-                                    <ArrowLeft className="h-3 w-3" />
-                                  </Link>
-                                ))}
-                              </div>
+                          {/* Related Platform Links */}
+                          {branch.links && branch.links.length > 0 && (
+                            <div className="pt-2 flex flex-wrap items-center gap-2">
+                              <span className="text-xs font-bold text-foreground-muted ml-2">دروس وتوثيقات المنصة ذات الصلة:</span>
+                              {branch.links.map((link, lIdx) => (
+                                <Link
+                                  key={lIdx}
+                                  href={link.href}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-surface hover:bg-surface-hover border border-border text-foreground hover:text-primary transition-colors"
+                                >
+                                  <span>{link.label}</span>
+                                  <ExternalLink className="h-3 w-3 opacity-60" />
+                                </Link>
+                              ))}
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Milestone Practical Project Card */}
-                    <div className="rounded-3xl border border-primary/30 bg-gradient-to-r from-card via-surface to-card p-6 sm:p-7 shadow-card space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-2xl bg-primary/15 border border-primary/30 text-primary flex items-center justify-center shrink-0">
-                            <Sparkles className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <span className="text-[11px] font-bold text-primary block">
-                              المشروع التطبيقي لمحطة ({milestone.step}):
-                            </span>
-                            <h4 className="text-base sm:text-lg font-black text-foreground">
-                              {milestone.milestoneProject.title}
-                            </h4>
-                          </div>
+                          )}
                         </div>
+                      );
+                    })}
+                  </div>
 
-                        {milestone.milestoneProject.projectLink && (
-                          <Link href={milestone.milestoneProject.projectLink.href}>
-                            <Button size="sm" className="gap-2 font-bold shrink-0">
-                              <span>{milestone.milestoneProject.projectLink.label}</span>
-                              <ArrowLeft className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        )}
+                  {/* Milestone Practical Project */}
+                  <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[11px] font-bold text-primary uppercase tracking-wider block">
+                          تحدي الإتقان العملي لهذه المحطة
+                        </span>
+                        <h4 className="text-base font-black text-foreground mt-0.5">
+                          {milestone.milestoneProject.title}
+                        </h4>
+                        <p className="text-xs text-foreground-muted">
+                          {milestone.milestoneProject.subtitle}
+                        </p>
                       </div>
 
-                      <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed">
-                        {milestone.milestoneProject.challenge}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <span className="text-[11px] font-bold text-foreground-muted">الأدوات المستعملة:</span>
-                        {milestone.milestoneProject.techStack.map(tech => (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {milestone.milestoneProject.techStack.map((tech, tIdx) => (
                           <span
-                            key={tech}
-                            className="px-2.5 py-1 rounded-lg bg-background border border-border text-[11px] font-mono text-foreground font-bold"
+                            key={tIdx}
+                            className="px-2 py-0.5 rounded-md bg-surface text-[10px] font-mono font-bold text-foreground-secondary border border-border"
                           >
                             {tech}
                           </span>
                         ))}
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {/* Road Connector between Milestones */}
-                {mIndex < filteredMilestones.length - 1 && (
-                  <div className="hidden sm:flex justify-center pt-2">
-                    <div className="px-4 py-1.5 rounded-full bg-surface border border-border text-xs font-bold text-foreground-muted flex items-center gap-2">
-                      <span>{milestone.nextStepPill}</span>
-                      <ArrowLeft className="h-3.5 w-3.5 text-primary" />
-                    </div>
+                    <p className="text-xs text-foreground-secondary leading-relaxed bg-card/60 p-4 rounded-xl border border-border/60">
+                      {milestone.milestoneProject.challenge}
+                    </p>
+
+                    {milestone.milestoneProject.projectLink && (
+                      <div className="pt-1">
+                        <Link href={milestone.milestoneProject.projectLink.href}>
+                          <Button size="sm" className="gap-1.5 font-bold text-xs">
+                            <Rocket className="h-3.5 w-3.5" />
+                            <span>{milestone.milestoneProject.projectLink.label}</span>
+                            <ArrowLeft className="h-3.5 w-3.5" />
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+
+                  {/* Next Step Pill */}
+                  <div className="pt-2 text-center">
+                    <span className="inline-block text-xs font-bold text-foreground-muted px-4 py-1.5 rounded-full bg-surface border border-border">
+                      {milestone.nextStepPill}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Graduation Milestone: The Final Capstone Project Section */}
-      <section className="rounded-3xl border-2 border-primary/40 bg-gradient-to-b from-card via-surface to-background p-6 sm:p-10 shadow-2xl relative overflow-hidden space-y-6">
-        <div
-          className="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"
-          aria-hidden="true"
-        />
-
-        <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/15 text-primary border border-primary/30 text-xs font-black">
-            <Award className="h-4 w-4" />
-            <span>محطة التخرج الكبرى (The Final Capstone Project)</span>
+      {/* Capstone Project Section */}
+      <section className="rounded-3xl border border-primary/40 bg-gradient-to-br from-card via-surface to-card p-6 sm:p-10 shadow-card space-y-6">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 text-primary border border-primary/30 text-xs font-bold">
+            <Award className="h-3.5 w-3.5" />
+            <span>مشروع التخرج الهندسي الشامل لمسار الواجهات الأمامية</span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-black text-foreground">
-            مشروع التخرج النهائي: منصة إنتاجية عالمية تثبت جدارتك الهندسية
+            المشروع النهائي: بناء منصة إنتاجية كبرى قابلة للتوسع بمستوى الشركات العالمية
           </h3>
 
           <p className="text-xs sm:text-sm text-foreground-secondary leading-relaxed max-w-3xl">
